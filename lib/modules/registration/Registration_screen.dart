@@ -1,3 +1,5 @@
+import 'package:aoun_app/modules/login/login_screen.dart';
+import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatelessWidget {
@@ -11,6 +13,7 @@ class RegistrationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Aoun',
           style: TextStyle(
@@ -45,7 +48,7 @@ class RegistrationScreen extends StatelessWidget {
                   decoration: const InputDecoration(
                     labelText: 'First Name',
                     prefixIcon: Icon(
-                      Icons.info,
+                      Icons.edit,
                     ),
                     border: OutlineInputBorder(),
                   ),
@@ -65,7 +68,7 @@ class RegistrationScreen extends StatelessWidget {
                   decoration: const InputDecoration(
                     labelText: 'Last Name',
                     prefixIcon: Icon(
-                      Icons.info,
+                      Icons.edit,
                     ),
                     border: OutlineInputBorder(),
                   ),
@@ -145,22 +148,16 @@ class RegistrationScreen extends StatelessWidget {
                 const SizedBox(
                   height: 20.0,
                 ),
-                Container(
-                  width: double.infinity,
-                  color: Colors.blue,
-                  child: MaterialButton(
-                    onPressed: (){
-                      print(emailController.text);
-                      print(passwordController.text);
+                defaultButton(
+                    function: (){
+                      print(FnameController);
+                      print(LnameController);
+                      print(emailController);
+                      print(passwordController);
+                      print(phoneController);
                     },
-                    child: const Text(
-                      'REGISTER',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                    text: 'registration',
+                    IsUpperCase: true
                 ),
                 const SizedBox(
                   height: 20.0,
@@ -175,7 +172,9 @@ class RegistrationScreen extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+                      },
                       child: const Text(
                         'Login Now',
                         style: TextStyle(
