@@ -1,0 +1,256 @@
+import 'package:flutter/material.dart';
+class UserModel
+{
+  final int id;
+  final String name;
+  final String phone;
+  final String email;
+  UserModel({
+    required this.id,
+    required this.name,
+    required this.phone,
+    required this.email
+  });
+
+}
+class UsersScreen extends StatelessWidget
+{
+  List<UserModel> users =[
+    UserModel(
+        id: 1,
+        name: "Meshal",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 2,
+        name: "Turki",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 3,
+        name: "Khaled",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 4,
+        name: "Asem",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 5,
+        name: "Osama",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 6,
+        name: "Jehad",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 7,
+        name: "Abdulrahman",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 8,
+        name: "Nawaf",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 9,
+        name: "Bader",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 1,
+        name: "Meshal",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 2,
+        name: "Turki",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 3,
+        name: "Khaled",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 4,
+        name: "Asem",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 5,
+        name: "Osama",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 6,
+        name: "Jehad",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 7,
+        name: "Abdulrahman",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 8,
+        name: "Nawaf",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+    UserModel(
+        id: 9,
+        name: "Bader",
+        phone: "+966******",
+        email: "*****@gmail.com"
+    ),
+
+  ];
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+              'Users'
+          ),
+        ),
+        body:ListView.separated(
+            itemBuilder: (context,index)=> buildUserItem(users[index]),
+            separatorBuilder: (context,index)=>
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start:20.0,),
+                  child: Container(
+                    width: double.infinity,
+                    height: 1.0,
+                    color: Colors.grey[300],
+                  ),
+                ),
+            itemCount: users.length)
+    );
+  }
+
+  Widget buildUserItem(UserModel user)=> Padding(
+    padding: const EdgeInsets.all(20.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CircleAvatar(
+          backgroundColor: Colors.blue,
+          radius: 25.0,
+          child: Text(
+            '${user.id}',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+                fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(start:20.0,end: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${user.name}',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold
+                  ),
+                  //maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Phone:',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    Text(
+                      '${user.phone}',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+
+                Row(
+                  children: [
+                    Text(
+                      'Email:',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    Text(
+                      '${user.email}',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Container(
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                  onPressed: (){},
+                  icon: Icon(
+                      Icons.delete
+                  )
+              ),
+              IconButton(
+                  onPressed: (){},
+                  icon: Icon(
+                      Icons.edit
+                  )
+              )
+            ],
+          ),
+        ),
+
+      ],
+    ),
+  );
+
+}
