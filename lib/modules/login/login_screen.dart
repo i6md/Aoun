@@ -1,3 +1,4 @@
+import 'package:aoun_app/layout/home_layout.dart';
 import 'package:aoun_app/modules/registration/Registration_screen.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
@@ -114,8 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'login',
                       function: () {
                         if(formkey.currentState!.validate()){
-                          print(emailController);
-                          print(passwordController);
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
                         }
 
                       }, IsUpperCase: true,
