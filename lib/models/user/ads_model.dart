@@ -1,11 +1,13 @@
 class AdsModel
 {
   final String adName;
-  final String adDescription;
+  final String adResourceType;
   final String adDate;
+  final String adPlace;
   AdsModel({
     required this.adName,
-    required this.adDescription,
-    required this.adDate
+    required this.adResourceType,
+    required this.adDate,
+    required this.adPlace
 });
 }

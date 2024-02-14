@@ -1,7 +1,9 @@
 import 'package:aoun_app/layout/home_layout.dart';
 import 'package:aoun_app/modules/registration/Registration_screen.dart';
 import 'package:aoun_app/shared/components/components.dart';
+import 'package:aoun_app/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -29,15 +31,19 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))
         ),
         automaticallyImplyLeading: false,
-        title: const Text(
-          'Aoun',
-          style: TextStyle(
-            fontSize: 30.0,
-            color: Colors.white,
-          ),
+        title: Text(
+            'Aoun',
+            style: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  color: Colors.indigo,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.w700,
+                )
+            )
         ),
+        centerTitle: true,
 
-        backgroundColor: Colors.blue.withOpacity(0.8),
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -50,9 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Login',
+                    'Welcome back!\nGlad to see you again!',
                     style: TextStyle(
-                      fontSize: 40.0,
+                      fontSize: 25.0,
                       fontWeight: FontWeight.bold,
 
                     ),
@@ -141,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: const Text(
                             'Register Now',
                             style: TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 18.0,
                             ),
                           ),
                       )

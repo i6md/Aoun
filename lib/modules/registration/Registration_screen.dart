@@ -1,6 +1,7 @@
 import 'package:aoun_app/modules/login/login_screen.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegistrationScreen extends StatefulWidget {
   RegistrationScreen({super.key});
@@ -36,20 +37,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))
-        ),
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'Aoun',
-          style: TextStyle(
-            fontSize: 30.0,
-            color: Colors.white,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))
           ),
-        ),
+          automaticallyImplyLeading: false,
+          title: Text(
+              'Aoun',
+              style: GoogleFonts.lato(
+                  textStyle: TextStyle(
+                    color: Colors.indigo,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w700,
+                  )
+              )
+          ),
+          centerTitle: true,
 
-        backgroundColor: Colors.blue.withOpacity(0.8),
-      ),
+          backgroundColor: Colors.white,
+        ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Center(
@@ -62,9 +67,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Registration',
+                      'Hello! Register to get started',
                       style: TextStyle(
-                        fontSize: 40.0,
+                        fontSize: 25.0,
                         fontWeight: FontWeight.bold,
 
                       ),
@@ -234,7 +239,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           child: const Text(
                             'Login Now',
                             style: TextStyle(
-                              fontSize: 20.0,
+                              fontSize: 18.0,
                             ),
                           ),
                         )

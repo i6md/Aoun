@@ -1,151 +1,96 @@
-import 'package:aoun_app/models/user/ads_model.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
+import 'package:aoun_app/models/user/ads_model.dart';
 
+import '../post/post_details.dart';
 class EventsScreen extends StatelessWidget {
   List<AdsModel> ads = [
     AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
+      adName: "Summer Sale",
+      adResourceType: "Image",
+      adDate: "2024-03-10",
+      adPlace: "Online",
     ),
     AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
+      adName: "Tech Expo",
+      adResourceType: "Video",
+      adDate: "2024-03-15",
+      adPlace: "Convention Center",
     ),
     AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
+      adName: "Flash Deal",
+      adResourceType: "Banner",
+      adDate: "2024-03-18",
+      adPlace: "Shopping Mall",
     ),
     AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
+      adName: "Fitness Challenge",
+      adResourceType: "Image",
+      adDate: "2024-03-20",
+      adPlace: "Gym",
     ),
     AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
+      adName: "Food Festival",
+      adResourceType: "Video",
+      adDate: "2024-03-25",
+      adPlace: "City Park",
     ),
     AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
+      adName: "Travel Discounts",
+      adResourceType: "Banner",
+      adDate: "2024-03-28",
+      adPlace: "Travel Agency",
     ),
     AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
+      adName: "Gaming Tournament",
+      adResourceType: "Image",
+      adDate: "2024-04-02",
+      adPlace: "Esports Arena",
     ),
     AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
+      adName: "Fashion Show",
+      adResourceType: "Video",
+      adDate: "2024-04-05",
+      adPlace: "Fashion District",
     ),
     AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
+      adName: "Home Decor Expo",
+      adResourceType: "Banner",
+      adDate: "2024-04-10",
+      adPlace: "Exhibition Hall",
     ),
     AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
+      adName: "Health and Wellness Fair",
+      adResourceType: "Image",
+      adDate: "2024-04-15",
+      adPlace: "Community Center",
     ),
-    AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
-    ),
-    AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
-    ),
-    AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
-    ),
-    AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
-    ),
-    AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
-    ),
-    AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
-    ),
-    AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
-    ),
-    AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
-    ),
-    AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
-    ),
-    AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
-    ),
-    AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
-    ),
-    AdsModel(
-      adName: "Car Loan",
-      adDescription: "Get a loan to finance your dream car.",
-      adDate: "2024-02-09",
-    ),
-    AdsModel(
-      adName: "Home Mortgage",
-      adDescription: "Own your dream home with our mortgage solutions.",
-      adDate: "2024-02-10",
-    ),
-    AdsModel(
-      adName: "Personal Loan",
-      adDescription: "Need some extra cash? Apply for a personal loan today.",
-      adDate: "2024-02-11",
-    ),
-    // Add more ads as needed
   ];
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-        padding: EdgeInsets.only(top: 8),
+        padding: EdgeInsets.only(top: 9),
         itemBuilder: (context,index)=> buildListItem(
             adName: ads[index].adName,
-            adDescription: ads[index].adDescription,
-            adDate: ads[index].adDate
+            adResourceType: ads[index].adResourceType,
+            adDate: ads[index].adDate,
+            adPlace: ads[index].adPlace,
+            onTapp: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>PostDetalis(ads[index].adName, ads[index].adResourceType, ads[index].adDate, ads[index].adPlace)));
+            }
         ),
         separatorBuilder: (context,index)=>
             Padding(
-              padding: const EdgeInsetsDirectional.only(start:20.0, top: 6.0),
+              padding: const EdgeInsetsDirectional.only(start:5.0, top: 8.0),
               child: Container(
                 width: double.infinity,
-                height: 3.0,
+                height: 1.0,
                 color: Colors.grey[300],
               ),
             ),
         itemCount: ads.length
     );
+
   }
 
 }

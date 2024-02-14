@@ -1,0 +1,670 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:aoun_app/shared/components/components.dart';
+import 'dart:io';
+
+class CreatePostScreen extends StatefulWidget {
+  const CreatePostScreen({super.key});
+
+  @override
+  State<CreatePostScreen> createState() => _CreatePostScreenState();
+}
+
+class _CreatePostScreenState extends State<CreatePostScreen> {
+  List<String> postType = ['Offer', 'Request'];
+  var iselected = 0;
+  // var backColor = Colors.white;
+  // var textColor = Colors.black;
+  var ofSelected = false;
+  var reSelected = false;
+
+  var dropdownValueS = '';
+  var dropdownValueR = '';
+  var isSelected = false;
+  var resValue = 'Stationary';
+  // List<XFile>? images = [];
+  // List<File> _images = [];
+  List<Image> _images = [];
+
+  final Map<String, List<String>> sList = {
+    'Item': ['Stationary', 'Medicine', 'Car Needs'],
+    'Event': ['Student Clubs', 'Sports', 'Gatherings'],
+    'Ride': [
+      'KFUPM - SAR',
+      'SAR - KFUPM',
+      'KFUPM - Airport',
+      'Airport - KFUPM',
+      'KFUPM - Riyadh',
+      'Riyadh - KFUPM'
+    ]
+  };
+
+  TextEditingController? textController1;
+  TextEditingController? textController2;
+  TextEditingController? textController3;
+
+  var categoryValue = 'Item';
+
+  // Future<void> _pickImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedFiles = await picker.pickMultiImage();
+
+  //   if (pickedFiles != null) {
+  //     setState(() {
+  //       images!.addAll(pickedFiles);
+  //     });
+  //   }
+  // }
+
+  Future<void> _uploadImages() async {
+    // final picker = ImagePicker();
+    // final pickedFiles = await picker.pickImage(
+    //   source: ImageSource.gallery
+    //     // Adjust the maximum number of images as needed
+    //     );
+
+    // if (pickedFiles != null) {
+    //   setState(() {
+    //     // _images.clear(); // Clear existing images
+    //     _images.addAll(pickedFiles.map((pickedFile) => Image.file(
+    //         File(pickedFile.path),
+    //         width: 100,
+    //         height: 100,
+    //         fit: BoxFit.cover)));
+    //   });
+    // }
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _images.add(Image.file(File(pickedFile.path),
+            width: 100, height: 100, fit: BoxFit.cover));
+      });
+    }
+  }
+
+  // Future<void> _uploadImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       images!.add(XFile(pickedFile.path));
+  //     });
+  //   }
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: InkWell(
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () async {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back_rounded,
+            color: Color(0xFF0F1113),
+            size: 32,
+          ),
+        ),
+        title: 
+          Text(
+            'Create Post',
+            style: GoogleFonts.readexPro(fontSize: 20),
+          ),
+        
+        actions: [],
+        centerTitle: true,
+        elevation: 2,
+      ),
+      body: SafeArea(
+        top: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 0),
+            child: Column(mainAxisSize: MainAxisSize.max, children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    'Post Type',
+                    style: GoogleFonts.readexPro(fontSize: 15),
+                  ),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        ofSelected = true;
+                        reSelected = false;
+                      });
+                    },
+                    child: Container(
+                      // width: 300,
+                      // height: 150,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Color.fromARGB(255, 224, 227, 231),
+                        ),
+                        borderRadius: BorderRadius.circular(35),
+                        color: ofSelected
+                            ? Color.fromARGB(255, 3, 50, 71)
+                            : Colors.white,
+                      ),
+                      padding: EdgeInsets.all(20),
+                      // margin: EdgeInsets.all(20),
+                      child: Text(
+                        'Offer',
+                        style: GoogleFonts.readexPro(
+                          color: ofSelected ? Colors.white : Colors.black,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  InkWell(
+                      onTap: () {
+                        setState(() {
+                          reSelected = true;
+                          ofSelected = false;
+                        });
+                      },
+                      child: Container(
+                        // width: 300,
+                        // height: 150,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color.fromARGB(255, 224, 227, 231),
+                          ),
+                          borderRadius: BorderRadius.circular(35),
+                          color: reSelected
+                              ? Color.fromARGB(255, 3, 50, 71)
+                              : Colors.white,
+                        ),
+                        padding: EdgeInsets.all(20),
+                        // margin: EdgeInsets.all(20),
+                        child: Text(
+                          'Request',
+                          style: GoogleFonts.readexPro(
+                            color: reSelected ? Colors.white : Colors.black,
+                            fontSize: 15,
+                          ),
+                        ),
+                      )),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _images!.clear();
+                      });
+                    },
+                    child: const Text(
+                      'Reset Pictures',
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    )),
+              ),
+              // const SizedBox(
+              //   height: 5,
+              // ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(mainAxisSize: MainAxisSize.max, children: [
+                    InkWell(
+                      // onTap: _pickImage,
+                      onTap: _uploadImages,
+                      child: Container(
+                          // width: 300,
+                          // height: 150,
+
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Color.fromARGB(255, 224, 227, 231),
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            color: Color.fromARGB(255, 3, 50, 71),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 30, horizontal: 10),
+                          // margin: EdgeInsets.all(20),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add_outlined,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                'Add Photo',
+                                style: GoogleFonts.readexPro(
+                                    fontSize: 10, color: Colors.white),
+                              )
+                            ],
+                          )),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+
+                    // Row(
+                    //   children: _images!
+                    //       .map((image) => Padding(
+                    //             padding: const EdgeInsets.all(8.0),
+                    //             child: Image.network(
+                    //               image.name,
+                    //               height: 50,
+                    //               width: 50,
+                    //               fit: BoxFit.cover,
+                    //             ),
+                    //           ))
+                    //       .toList(),
+                    // ),
+                    // Expanded(
+                    //   child: ListView.builder(
+                    //     itemCount: _images.length,
+                    //     scrollDirection: Axis.horizontal,
+                    //     itemBuilder: (context, index) {
+                    //       return Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: _images[index],
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    Wrap(
+                      spacing: 10.0,
+                      children: List<Widget>.generate(
+                        _images.length,
+                        (int index) {
+                          return _images[index];
+                        },
+                      ).toList(),
+                    ),
+                    // Expanded(
+                    //   child: ListView.builder(
+                    //     itemCount: _images.length,
+                    //     scrollDirection: Axis.horizontal,
+                    //     itemBuilder: (context, index) {
+                    //       return Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: Image.file(
+                    //           _images[index],
+                    //           width: 100,
+                    //           height: 100,
+                    //           fit: BoxFit.cover,
+                    //         ),
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    // ClipRRect(
+                    //   borderRadius: BorderRadius.circular(8),
+                    //   child: Image.network(
+                    //     'https://picsum.photos/seed/634/600',
+                    //     width: 80,
+                    //     height: 80,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
+                    // const SizedBox(width: 20),
+                    // ClipRRect(
+                    //   borderRadius: BorderRadius.circular(8),
+                    //   child: Image.network(
+                    //     'https://picsum.photos/seed/634/600',
+                    //     width: 80,
+                    //     height: 80,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
+                  ]),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Text(
+                  'Title',
+                  style: GoogleFonts.readexPro(fontSize: 15),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Container(
+                  width: 350,
+                  child: TextFormField(
+                    controller: textController1,
+                    autofocus: true,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      labelText: 'e.g. Groceries',
+                      labelStyle: GoogleFonts.readexPro(
+                          color: Colors.grey, fontSize: 12),
+                      hintStyle: GoogleFonts.readexPro(),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 224, 227, 231),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 75, 57, 239),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding:
+                          EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                    // validator: _model.textController1Validator
+                    //     .asValidator(context),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Text(
+                  'Building Number',
+                  style: GoogleFonts.readexPro(fontSize: 15),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Container(
+                  width: 350,
+                  child: TextFormField(
+                    controller: textController2,
+                    // focusNode: _model.textFieldFocusNode2,
+                    autofocus: true,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      labelText: 'e.g. 839',
+                      labelStyle: GoogleFonts.readexPro(
+                          color: Colors.grey, fontSize: 12),
+                      // hintStyle: FlutterFlowTheme.of(context).labelMedium,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 224, 227, 231),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 75, 57, 239),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding:
+                          EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                    //   validator: _model.textController2Validator
+                    //       .asValidator(context),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Text(
+                  'Service Type',
+                  style: GoogleFonts.readexPro(fontSize: 15),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Container(
+                  width: 350,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: DropdownButtonFormField<String>(
+                      value: categoryValue,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        border: InputBorder.none,
+                      ),
+                      // value: selectedValue,
+                      items: sList.keys.map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+
+                          // padding: EdgeInsets.symmetric(
+                          //     horizontal: 16, vertical: 8),
+                          child: Text(
+                            category,
+                            style: GoogleFonts.readexPro(),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          categoryValue = val.toString();
+                          resValue = sList[categoryValue]![0];
+                          print(categoryValue);
+                          // resValue = '';
+                        });
+                      }),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Text(
+                  'Resource Type',
+                  style: GoogleFonts.readexPro(fontSize: 15),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Container(
+                  width: 350,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: DropdownButtonFormField<String>(
+                      value: resValue,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        border: InputBorder.none,
+                      ),
+                      // value: selectedValue,
+                      items: sList[categoryValue]!.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+
+                          // padding: EdgeInsets.symmetric(
+                          //     horizontal: 16, vertical: 8),
+                          child: Text(
+                            value,
+                            style: GoogleFonts.readexPro(),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (sValue) {
+                        setState(() {
+                          sValue = resValue;
+                        });
+                      }),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Text(
+                  'Body',
+                  style: GoogleFonts.readexPro(fontSize: 15),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Container(
+                  width: 350,
+                  child: TextFormField(
+                    controller: textController3,
+                    // focusNode: _model.textFieldFocusNode3,
+                    autofocus: true,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      labelStyle: GoogleFonts.readexPro(
+                          color: Colors.grey, fontSize: 12),
+                      // hintStyle: FlutterFlowTheme.of(context).labelMedium,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 224, 227, 231),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 75, 57, 239),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding:
+                          EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                    maxLines: null,
+                    // validator: _model.textController3Validator
+                    //     .asValidator(context),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     // Handle button press
+              //   },
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor:
+              //         Color.fromARGB(255, 3, 50, 71), // Button color
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius:
+              //           BorderRadius.circular(15.0), // Equal border radius
+              //     ),
+              //     padding: EdgeInsets.symmetric(horizontal: 150, vertical: 20),
+              //   ),
+              //   child: Text(
+              //     'Create',
+              //     style: GoogleFonts.readexPro(
+              //       color: Colors.white,
+              //     ),
+              //   ),
+              // ),
+              // Spacer(),
+              defaultButton(function: () {}, text: 'Create', IsUpperCase: false),
+              const SizedBox(
+                height: 20,
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}

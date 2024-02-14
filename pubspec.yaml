@@ -31,6 +31,14 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker: ^1.0.7
+  flutter_bloc: ^8.1.4
+  bloc: ^8.1.3
+  intl: ^0.19.0
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.10+1
+  google_fonts: 6.1.0
+  conditional_builder_null_safety: ^0.0.6
+  flutter_rating_bar: ^4.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -63,6 +71,11 @@ flutter:
 
   assets:
     - assets/images/Aoun_LOGOWB.png
+    - assets/images/Aoun_LOGOBB.png
+    - assets/images/img_arrow_down.svg
+    - assets/images/img_edit_2.svg
+    - assets/images/img_edit_2_1.svg
+    - assets/images/img_profile_image.png
 
 
 
@@ -77,12 +90,21 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+fonts:
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/PlayfairDisplayRomanRegular.ttf
+          weight: 400
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/LatoRegular.ttf
+          weight: 400
+        - asset: assets/fonts/LatoBold.ttf
+          weight: 700
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/MontserratMedium.ttf
+          weight: 500
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
