@@ -34,8 +34,9 @@ def lambda_handler(event, context):
         # if existing_item:
         #     raise ValueError(f"Item with ID {item_id} already exists")
 
+        service_identifier = "i"
         desired_length = 10
-        generated_id = str(uuid.uuid4())[:desired_length]
+        generated_id = f"{service_identifier}_{str(uuid.uuid4())[:desired_length]}"
 
         created_at = datetime.utcnow()  # Set created_at to the current datetime
         owner_id = event.get('owner_id')
