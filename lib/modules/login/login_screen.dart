@@ -2,6 +2,10 @@ import 'package:aoun_app/layout/home_layout.dart';
 import 'package:aoun_app/modules/registration/Registration_screen.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:aoun_app/modules/registration/Registration_screen.dart';
+import 'package:aoun_app/shared/components/components.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -20,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var passwordController = TextEditingController();
 
   bool isPassword = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +120,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'login',
                       function: () {
                         if(formkey.currentState!.validate()){
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+                          signInUser();
                         }
-
                       }, IsUpperCase: true,
 
 
@@ -155,4 +159,26 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+  void signInUser() async {
+    if (formkey.currentState!.validate()) {
+      try {
+        SignInResult signInResult = await Amplify.Auth.signIn(
+          username: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+        if (signInResult.isSignedIn) {
+          print('User signed in');
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+          // Navigate to your desired screen upon successful sign-in
+        } else {
+          print('User could not be signed in');
+        }
+      } on AuthException catch (e) {
+        print(e.message);
+        // Handle authentication errors here
+      }
+    }
+  }
+
 }

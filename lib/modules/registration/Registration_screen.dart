@@ -1,6 +1,9 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:aoun_app/modules/login/login_screen.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+
 
 class RegistrationScreen extends StatefulWidget {
   RegistrationScreen({super.key});
@@ -203,15 +206,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       height: 20.0,
                     ),
                     defaultButton(
-                        function: (){
-                          if(formkey.currentState!.validate()) {
-                            print(fnameController);
-                            print(lnameController);
-                            print(emailController);
-                            print(passwordController);
-                            print(phoneController);
-                          }
-                        },
+                        // function: registerUser,
+                        // function: (){
+                        //   if(formkey.currentState!.validate()) {
+                        //     // print(fnameController);
+                        //     // print(lnameController);
+                        //     // print(emailController);
+                        //     // print(passwordController);
+                        //     // print(phoneController);
+                        //   }
+                        // },
+                        function: registerUser,
                         text: 'registration',
                         IsUpperCase: true
                     ),
@@ -248,5 +253,33 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ),
     );
+  }
+  void registerUser() async {
+    if (formkey.currentState!.validate()) {
+      try {
+        Map<CognitoUserAttributeKey, String> userAttributes = {
+          CognitoUserAttributeKey.email: emailController.text,
+          CognitoUserAttributeKey.phoneNumber: phoneController.text, // Ensure this follows the E.164 format
+          // CognitoUserAttributeKey.givenName: fnameController.text,
+          // CognitoUserAttributeKey.familyName: lnameController.text,
+          CognitoUserAttributeKey.name: "${fnameController.text} ${lnameController.text}",
+          // Add other attributes here
+        };
+        final SignUpResult result = await Amplify.Auth.signUp(
+          username: emailController.text,
+          password: passwordController.text,
+          options: CognitoSignUpOptions(userAttributes: userAttributes),
+        );
+        if (result.isSignUpComplete) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        } else {
+          // Handle next steps based on result.nextStep
+          print("Sign up not complete, additional steps required");
+        }
+      } catch (e) {
+        print(e);
+        // Handle sign up error
+      }
+    }
   }
 }

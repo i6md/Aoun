@@ -5,6 +5,9 @@ import 'package:aoun_app/modules/login/login_screen.dart';
 import 'package:aoun_app/modules/report/report_post.dart';
 import 'package:aoun_app/modules/rides_screen/rides_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+
 
 class HomeScreen extends StatefulWidget{
   @override
@@ -78,10 +81,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text('Logout'),
-                onTap: () {
-                  // Navigate to the help & support screen
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
-                  // You can add navigation logic here
+                onTap: () async {
+                  try {
+                    await Amplify.Auth.signOut(); // Sign out the user
+                    // Navigate to the LoginScreen
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                  } catch (e) {
+                    print("Error signing out: $e");
+                    // Optionally, show an error message to the user
+                  }
                 },
               ),
             ],
