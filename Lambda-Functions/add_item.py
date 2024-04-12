@@ -3,6 +3,8 @@ import boto3
 from decimal import Decimal
 from datetime import datetime
 import uuid
+import base64
+import io
 
 
 def format_value(obj):
@@ -15,7 +17,13 @@ def format_value(obj):
 
 def lambda_handler(event, context):
     try:
-        event = json.loads(event["body"])
+        if "body" not in event or not event["body"]:
+            raise ValueError("Missing body in event")
+        try:
+            event = json.loads(event["body"])
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON in body")
+
         # Create a DynamoDB client
         dynamodb = boto3.resource('dynamodb')
 
@@ -24,15 +32,6 @@ def lambda_handler(event, context):
 
         # Get a reference to the DynamoDB table
         table = dynamodb.Table(table_name)
-
-        # Extract attributes from the event
-
-        # item_id = int(event.get('item_id'))
-
-        # # Check if an item with the same ID already exists
-        # existing_item = table.get_item(Key={'item_id': item_id}).get('Item')
-        # if existing_item:
-        #     raise ValueError(f"Item with ID {item_id} already exists")
 
         service_identifier = "i"
         desired_length = 10
@@ -56,6 +55,31 @@ def lambda_handler(event, context):
             'requester_id': '',
             'requested_at': ''
         }
+
+        pictures = [event.get(f"picture_{i+1}")
+                    for i in range(4) if event.get(f"picture_{i+1}")]
+
+        s3_client = boto3.client("s3")
+        pic_number = 1
+        for pic_data in pictures:
+            pic_id = f"{generated_id}_{pic_number}"
+            pic_file = base64.b64decode(pic_data["content"])
+            file_obj = io.BytesIO(pic_file)
+
+            # Include the extension in the filename
+            filename = f"{pic_id}.{pic_data['extension']}"
+
+            s3_client.upload_fileobj(
+                file_obj, "aoun-item-pictures", filename)  # Upload to S3
+            # Generate URL
+            pic_url = f"https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/{filename}"
+            # Add picture information to DynamoDB
+            dynamodb.Table("picture").put_item(Item={
+                "pic_id": pic_id,
+                "item_id": generated_id,
+                "url": pic_url
+            })
+            pic_number += 1
 
         # Put the new item into DynamoDB
         table.put_item(Item=new_item)

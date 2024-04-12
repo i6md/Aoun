@@ -15,6 +15,16 @@ variable "aws_region" {
   default     = "eu-north-1"  // replace with your default region
 }
 
+resource "aws_iam_user" "root" {
+  name = "root"
+  path = "/"
+}
+
+resource "aws_iam_user_policy_attachment" "user_admin_access" {
+  user       = aws_iam_user.root.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
 resource "aws_iam_role" "lambda_role" {
     name = "lambda_execution_role"
     
@@ -39,6 +49,11 @@ resource "aws_iam_role_policy_attachment" "lambda_execution_role_policy" {
 
 resource "aws_iam_role_policy_attachment" "dynamodb_full_access_policy" {
     policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+    role       = aws_iam_role.lambda_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "s3_full_access_policy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
     role       = aws_iam_role.lambda_role.name
 }
 
@@ -90,6 +105,97 @@ resource "aws_dynamodb_table" "item" {
         type = "S"
     }
 
+}
+
+resource "aws_dynamodb_table" "picture" {
+    name           = "picture"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "pic_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "pic_id"
+        type = "S"
+    }
+
+}
+
+resource "aws_s3_bucket" "aoun_item_pictures" {
+  bucket = "aoun-item-pictures"
+}
+
+resource "aws_s3_bucket_cors_configuration" "aoun_item_pictures" {
+  bucket = aws_s3_bucket.aoun_item_pictures.id  
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }  
+}
+
+resource "aws_s3_bucket_acl" "aoun_item_pictures" {
+    bucket = aws_s3_bucket.aoun_item_pictures.id
+    acl    = "public-read"
+    depends_on = [aws_s3_bucket_ownership_controls.aoun_item_pictures_ownership]
+}
+
+resource "aws_s3_bucket_ownership_controls" "aoun_item_pictures_ownership" {
+  bucket = aws_s3_bucket.aoun_item_pictures.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+  depends_on = [aws_s3_bucket_public_access_block.aoun_item_pictures]
+}
+
+# resource "aws_iam_user" "aoun_item_pictures_bucket" {
+#   name = "aoun-item-pictures-bucket"
+# }
+
+resource "aws_s3_bucket_public_access_block" "aoun_item_pictures" {
+  bucket = aws_s3_bucket.aoun_item_pictures.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_policy" "aoun_item_pictures_bucket" {
+    bucket = aws_s3_bucket.aoun_item_pictures.id
+    policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Principal = "*"
+        Action = [
+          "s3:*",
+        ]
+        Effect = "Allow"
+        Resource = [
+          "arn:aws:s3:::aoun-item-pictures",
+          "arn:aws:s3:::aoun-item-pictures/*"
+        ]
+      },
+      {
+        Sid = "PublicReadGetObject"
+        Principal = "*"
+        Action = [
+          "s3:GetObject",
+        ]
+        Effect   = "Allow"
+        Resource = [
+          "arn:aws:s3:::aoun-item-pictures",
+          "arn:aws:s3:::aoun-item-pictures/*"
+        ]
+      },
+    ]
+  })
+  
+  depends_on = [aws_s3_bucket_public_access_block.aoun_item_pictures]
 }
 
 data "archive_file" "lambda-functions" {
@@ -192,7 +298,7 @@ resource "aws_apigatewayv2_integration" "list_items" {
 
 resource "aws_apigatewayv2_route" "list_items" {
   api_id    = aws_apigatewayv2_api.lambda.id
-  route_key = "GET /list_items"
+  route_key = "POST /list_items"
 
   target = "integrations/${aws_apigatewayv2_integration.list_items.id}"
 }
