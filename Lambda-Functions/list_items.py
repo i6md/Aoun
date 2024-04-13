@@ -61,7 +61,7 @@ def format_value(obj):
 #         }
 
 
-def list_items(event, context):
+def lambda_handler(event, context):
     try:
         if "body" not in event or not event["body"]:
             raise ValueError("Missing body in event")
@@ -85,6 +85,13 @@ def list_items(event, context):
 
         if list_type == "all":
             items = table.scan()['Items']
+
+            if not items:
+                return {
+                    'statusCode': 404,
+                    'body': json.dumps({'message': 'No items found.'})
+                }
+
         elif list_type == "specific":
             if not item_id:
                 raise ValueError("Missing item_id in event body.")
@@ -92,11 +99,24 @@ def list_items(event, context):
                 KeyConditionExpression=boto3.dynamodb.conditions.Key(
                     'item_id').eq(item_id)
             )['Items']
+
+            if not items:
+                return {
+                    'statusCode': 404,
+                    'body': json.dumps({'message': 'Item not found with the provided id'})
+                }
+
         else:  # "available"
             items = table.scan(
                 FilterExpression=boto3.dynamodb.conditions.Attr(
                     'expired').eq(False)
             )['Items']
+
+            if not items:
+                return {
+                    'statusCode': 404,
+                    'body': json.dumps({'message': 'No available items found.'})
+                }
 
         # fetch pictures' URLs and attach to items
         for item in items:
