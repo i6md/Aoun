@@ -45,7 +45,7 @@ def list(api_url, payload):
                 print("Requester ID:", item.get("requester_id"))
                 print("Contact Number:", item.get("contact_number"))
                 print("Requested At:", item.get("requested_at"))
-                print("Taken:", item.get("taken"))
+                print("Expired:", item.get("expired"))
                 print("Pictures:", item.get("pictures"))
                 if "pictures" in item:
                     print("Pictures:")

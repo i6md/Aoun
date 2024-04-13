@@ -211,7 +211,7 @@ resource "aws_lambda_function" "add_item" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "add_item.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 5
+  timeout          = 20
 
 }
 
@@ -222,7 +222,7 @@ resource "aws_lambda_function" "request_item" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "request_item.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 5
+  timeout          = 20
 
 }
 
@@ -233,7 +233,7 @@ resource "aws_lambda_function" "list_items" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "list_items.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 5
+  timeout          = 20
 
 }
 
