@@ -29,7 +29,7 @@ def lambda_handler(event, context):
         item_id = event.get('item_id')
         client_id = event.get('client_id')
 
-        # Get the item to check using the item_id
+        # Get the item to update using the item_id
         response = item_table.scan(
             FilterExpression=Key('item_id').eq(
                 item_id) & Attr('expired').eq(False)
@@ -49,58 +49,39 @@ def lambda_handler(event, context):
         response = order_table.get_item(Key={'order_id': order_id})
         existing_order = response.get('Item', None)
 
-        if existing_order:
+        if not existing_order:
             return {
                 'statusCode': 400,
-                'body': json.dumps({'error': 'Order already exists'})
+                'body': json.dumps({'error': 'No order exists with the client ID'})
             }
 
         # Get the current datetime
-        current_datetime = datetime.utcnow().isoformat()
+        # current_datetime = datetime.utcnow().isoformat()
 
-        # Create a new item in the order_table
-        order_table.put_item(
-            Item={
-                'order_id': order_id,
-                'item_id': item_id,
-                'client_id': client_id,
-                'ordered_at': current_datetime,
-                'accepted': False,
-                'accepted_at': ''
-            }
+        # Update the item table
+        item_table.update_item(
+            Key={'item_id': item_id},
+            UpdateExpression='SET #exp = :val',
+            ExpressionAttributeNames={'#exp': 'expired'},
+            ExpressionAttributeValues={':val': True}
         )
 
-        # # Assuming there is only one item with the given id, retrieve it
-        # item_to_update = items[0]
-
-        # # Update the item attributes
-        # update_expression = "SET expired = :expired, client_id = :client_id, ordered_at = :ordered_at"
-        # expression_attribute_values = {
-        #     ':expired': True,
-        #     ':client_id': client_id,
-        #     ':ordered_at': datetime.utcnow().isoformat()
-        # }
-
-        # # Update the item in DynamoDB
-        # updated_item = table.update_item(
-        #     Key={'item_id': item_id},
-        #     UpdateExpression=update_expression,
-        #     ExpressionAttributeValues=expression_attribute_values,
-        #     ReturnValues='ALL_NEW'  # This option returns all the attributes of the updated item
-        # ).get('Attributes', {})
-
-        # Serialize the response with the custom encoder
-        serialized_response = json.dumps(
-            {'message': 'Item ordered successfully'}, default=default_encoder)
+        # Update the order table
+        order_table.update_item(
+            Key={'order_id': order_id},
+            UpdateExpression='SET #acc = :val1, #acc_at = :val2',
+            ExpressionAttributeNames={
+                '#acc': 'accepted', '#acc_at': 'accepted_at'},
+            ExpressionAttributeValues={':val1': True,
+                                       ':val2': datetime.utcnow().isoformat()}
+        )
 
         return {
             'statusCode': 200,
-            'body': serialized_response
+            'body': json.dumps({'message': 'order has been accepted successfully'}, default=default_encoder)
         }
 
     except Exception as e:
-        # Log the exception or print it for debugging
-        print(f"Error: {str(e)}")
         return {
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})

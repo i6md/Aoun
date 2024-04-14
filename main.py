@@ -89,9 +89,30 @@ def list_orders(api_url, payload):
                 print("Client ID:", order.get("client_id"))
                 print("Ordered At:", order.get("ordered_at"))
                 print("Accepted:", order.get("accepted"))
+                print("Accepted At:", order.get("accepted_at"))
 
         elif response.status_code == 204:
             print("Message:", "No orders found.")
+
+        else:
+            print("Error:", response.status_code, response.text)
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
+def accept_order(api_url, payload):
+    try:
+        # Make the POST request
+        response = requests.post(api_url, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+
+            # Display the details
+            print("Message:", data.get("message"))
 
         else:
             print("Error:", response.status_code, response.text)
@@ -251,6 +272,22 @@ def list_orders_operation():
     list_orders(api_url, payload)
 
 
+def accept_order_operation():
+    api_url_accept_order = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/accept_order"
+
+    # Prompt the user for item ID and client ID
+    item_id = input("Enter item ID: ")
+    client_id = input("Enter client ID: ")
+
+    # Construct the payload
+    payload = {
+        "item_id": item_id,
+        "client_id": client_id
+    }
+
+    accept_order(api_url_accept_order, payload)
+
+
 def add_item_operation():
     api_url_create_item = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_item"
     add_item(api_url_create_item)
@@ -262,12 +299,13 @@ def main():
         print("Select operation:")
         print("1. Add an item")
         print("2. List items")
-        print("3. order an item")
+        print("3. Order an item")
         print("4. List orders")
-        print("5. Exit")
+        print("5. Accept an order")
+        print("6. Exit")
 
         # Get user input
-        choice = input("Enter your choice (1/2/3/4/5): ")
+        choice = input("Enter your choice (1/2/3/4/5/6): ")
 
         if choice == '1':
             add_item_operation()
@@ -278,6 +316,8 @@ def main():
         elif choice == '4':
             list_orders_operation()
         elif choice == '5':
+            accept_order_operation()
+        elif choice == '6':
             print("Exiting the program. Goodbye!")
             break
         else:

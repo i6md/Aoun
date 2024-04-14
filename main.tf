@@ -251,6 +251,17 @@ resource "aws_lambda_function" "list_orders" {
 
 }
 
+resource "aws_lambda_function" "accept_order" {
+  function_name    = "accept_order"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "accept_order.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
+
 resource "aws_lambda_function" "list_items" {
   function_name    = "list_items"
   filename         = data.archive_file.lambda-functions.output_path
@@ -328,6 +339,20 @@ resource "aws_apigatewayv2_route" "list_orders" {
   target = "integrations/${aws_apigatewayv2_integration.list_orders.id}"
 }
 
+resource "aws_apigatewayv2_integration" "accept_order" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.accept_order.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "accept_order" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /accept_order"
+
+  target = "integrations/${aws_apigatewayv2_integration.accept_order.id}"
+}
+
 resource "aws_apigatewayv2_integration" "list_items" {
   api_id            = aws_apigatewayv2_api.lambda.id
   integration_type  = "AWS_PROXY"
@@ -376,6 +401,14 @@ resource "aws_lambda_permission" "list_orders_apigw_permision" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.list_orders.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "accept_order_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.accept_order.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
