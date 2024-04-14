@@ -51,9 +51,9 @@ def lambda_handler(event, context):
             'contact_number': contact_number,
             'title': title,
             'description': description,
-            'expired': False,
-            'requester_id': '',
-            'requested_at': ''
+            'item_type': "post",
+            'expired': False
+
         }
 
         pictures = [event.get(f"picture_{i+1}")

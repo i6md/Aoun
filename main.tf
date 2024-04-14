@@ -121,6 +121,20 @@ resource "aws_dynamodb_table" "picture" {
 
 }
 
+resource "aws_dynamodb_table" "item_order" {
+    name           = "item_order"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "order_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "order_id"
+        type = "S"
+    }
+
+}
+
 resource "aws_s3_bucket" "aoun_item_pictures" {
   bucket = "aoun-item-pictures"
 }
@@ -215,12 +229,23 @@ resource "aws_lambda_function" "add_item" {
 
 }
 
-resource "aws_lambda_function" "request_item" {
-  function_name    = "request_item"
+resource "aws_lambda_function" "order_item" {
+  function_name    = "order_item"
   filename         = data.archive_file.lambda-functions.output_path
   source_code_hash = data.archive_file.lambda-functions.output_base64sha256
   role             = aws_iam_role.lambda_role.arn
-  handler          = "request_item.lambda_handler"
+  handler          = "order_item.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
+
+resource "aws_lambda_function" "list_orders" {
+  function_name    = "list_orders"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_orders.lambda_handler"
   runtime          = "python3.9"
   timeout          = 20
 
@@ -275,18 +300,32 @@ resource "aws_apigatewayv2_route" "add_item" {
   target = "integrations/${aws_apigatewayv2_integration.add_item.id}"
 }
 
-resource "aws_apigatewayv2_integration" "request_item" {
+resource "aws_apigatewayv2_integration" "order_item" {
   api_id            = aws_apigatewayv2_api.lambda.id
   integration_type  = "AWS_PROXY"
-  integration_uri   = aws_lambda_function.request_item.invoke_arn
+  integration_uri   = aws_lambda_function.order_item.invoke_arn
   integration_method = "POST"
 }
 
-resource "aws_apigatewayv2_route" "request_item" {
+resource "aws_apigatewayv2_route" "order_item" {
   api_id    = aws_apigatewayv2_api.lambda.id
-  route_key = "POST /request_item"
+  route_key = "POST /order_item"
 
-  target = "integrations/${aws_apigatewayv2_integration.request_item.id}"
+  target = "integrations/${aws_apigatewayv2_integration.order_item.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_orders" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_orders.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_orders" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /list_orders"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_orders.id}"
 }
 
 resource "aws_apigatewayv2_integration" "list_items" {
@@ -325,10 +364,18 @@ resource "aws_lambda_permission" "add_item_apigw_permision" {
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
 
-resource "aws_lambda_permission" "request_item_apigw_permision" {
+resource "aws_lambda_permission" "order_item_apigw_permision" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.request_item.function_name
+  function_name = aws_lambda_function.order_item.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_orders_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_orders.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
