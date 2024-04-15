@@ -240,6 +240,28 @@ resource "aws_lambda_function" "order_item" {
 
 }
 
+resource "aws_lambda_function" "edit_item" {
+  function_name    = "edit_item"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "edit_item.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
+
+resource "aws_lambda_function" "delete_item" {
+  function_name    = "delete_item"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "delete_item.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
+
 resource "aws_lambda_function" "list_orders" {
   function_name    = "list_orders"
   filename         = data.archive_file.lambda-functions.output_path
@@ -325,6 +347,34 @@ resource "aws_apigatewayv2_route" "order_item" {
   target = "integrations/${aws_apigatewayv2_integration.order_item.id}"
 }
 
+resource "aws_apigatewayv2_integration" "edit_item" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.edit_item.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "edit_item" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /edit_item"
+
+  target = "integrations/${aws_apigatewayv2_integration.edit_item.id}"
+}
+
+resource "aws_apigatewayv2_integration" "delete_item" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.delete_item.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "delete_item" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /delete_item"
+
+  target = "integrations/${aws_apigatewayv2_integration.delete_item.id}"
+}
+
 resource "aws_apigatewayv2_integration" "list_orders" {
   api_id            = aws_apigatewayv2_api.lambda.id
   integration_type  = "AWS_PROXY"
@@ -393,6 +443,22 @@ resource "aws_lambda_permission" "order_item_apigw_permision" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.order_item.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "edit_item_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.edit_item.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "delete_item_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_item.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }

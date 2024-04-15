@@ -72,6 +72,72 @@ def order_item(api_url):
         print("An error occurred:", e)
 
 
+def edit_item(api_url):
+    try:
+        # Prompt the user for information
+        item_id = input("Enter item ID: ")
+        owner_id = input("Enter your ID: ")
+        title = input("Enter title: ")
+        description = input("Enter description: ")
+
+        root = Tk()
+        root.withdraw()  # Hide the main window
+        files = filedialog.askopenfilenames(
+            title="Select Pictures (Max 4)",
+            filetypes=[("Image files", "*.jpg;*.png;*.jpeg")],
+            multiple=True,
+        )
+        root.destroy()  # Close the hidden window
+
+        # Ensure max 4 pictures selected
+        if len(files) > 4:
+            raise ValueError("Please select a maximum of 4 pictures.")
+
+        # Construct the payload
+        payload = {
+            "item_id": item_id,
+            "owner_id": owner_id,
+            "title": title,
+            "description": description,
+        }
+
+        # Convert the images to base64 and add them to the payload
+        for i, f in enumerate(files):
+            with open(f, "rb") as image_file:
+                encoded_string = base64.b64encode(
+                    image_file.read()).decode('utf-8')
+                # Include the file extension
+                payload[f"picture_{i+1}"] = {"content": encoded_string,
+                                             "extension": os.path.splitext(f)[1][1:]}
+
+        # Make the POST request
+        response = requests.post(api_url, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            print(response.text)
+            # Parse the JSON response
+            data = response.json()
+
+            # Display the details
+            print("Message:", data.get("message"))
+            item_details = data.get("item")
+            if item_details:
+                print("\nItem Details:")
+                print("ID:", item_details.get("item_id"))
+                print("Created At:", item_details.get("created_at"))
+                print("Owner ID:", item_details.get("owner_id"))
+                print("Contact Number:", item_details.get("contact_number"))
+                print("Title:", item_details.get("title"))
+                print("Description:", item_details.get("description"))
+
+        else:
+            print("Error:", response.status_code, response.text)
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
 def list_orders(api_url, payload):
     try:
         # Make the POST request
@@ -121,11 +187,38 @@ def accept_order(api_url, payload):
         print("An error occurred:", e)
 
 
+def delete_item(api_url):
+    try:
+        # Prompt the user for information
+        item_id = input("Enter item ID: ")
+
+        # Construct the payload
+        payload = {
+            "item_id": item_id,
+        }
+
+        # Make the POST request
+        response = requests.post(api_url, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+
+            # Display the details
+            print("Message:", data.get("message"))
+
+        else:
+            print("Error:", response.status_code, response.text)
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
 def add_item(api_url):
     try:
         # Prompt the user for information
         owner_id = input("Enter your  ID: ")
-        contact_number = input("Enter contact number: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
 
@@ -145,7 +238,6 @@ def add_item(api_url):
         # Construct the payload
         payload = {
             "owner_id": owner_id,
-            "contact_number": contact_number,
             "title": title,
             "description": description,
         }
@@ -226,6 +318,16 @@ def order_operation():
     order_item(api_url)
 
 
+def edit_item_operation():
+    api_url_edit_item = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/edit_item"
+    edit_item(api_url_edit_item)
+
+
+def delete_item_operation():
+    api_url_delete_item = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/delete_item"
+    delete_item(api_url_delete_item)
+
+
 def list_orders_operation():
     api_url = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/list_orders"
 
@@ -300,12 +402,14 @@ def main():
         print("1. Add an item")
         print("2. List items")
         print("3. Order an item")
-        print("4. List orders")
-        print("5. Accept an order")
-        print("6. Exit")
+        print("4. Edit an item")  # Added option to edit an item
+        print("5. Delete an item")  # Added option to delete an item
+        print("6. List orders")
+        print("7. Accept an order")
+        print("8. Exit")  # Updated the exit option
 
         # Get user input
-        choice = input("Enter your choice (1/2/3/4/5/6): ")
+        choice = input("Enter your choice (1/2/3/4/5/6/7/8): ")
 
         if choice == '1':
             add_item_operation()
@@ -314,10 +418,14 @@ def main():
         elif choice == '3':
             order_operation()
         elif choice == '4':
-            list_orders_operation()
+            edit_item_operation()  # Added the call to edit_item_operation
         elif choice == '5':
-            accept_order_operation()
+            delete_item_operation()  # Added the call to delete_item_operation
         elif choice == '6':
+            list_orders_operation()
+        elif choice == '7':
+            accept_order_operation()
+        elif choice == '8':
             print("Exiting the program. Goodbye!")
             break
         else:

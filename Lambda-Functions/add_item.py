@@ -39,7 +39,6 @@ def lambda_handler(event, context):
 
         created_at = datetime.utcnow()  # Set created_at to the current datetime
         owner_id = event.get('owner_id')
-        contact_number = event.get('contact_number')
         title = event.get('title')
         description = event.get('description')
 
@@ -48,7 +47,6 @@ def lambda_handler(event, context):
             'item_id': generated_id,
             'created_at': format_value(created_at),
             'owner_id': owner_id,
-            'contact_number': contact_number,
             'title': title,
             'description': description,
             'item_type': "post",
