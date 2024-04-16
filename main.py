@@ -341,6 +341,72 @@ def request_item(api_url):
         print("An error occurred:", e)
 
 
+def report(api_url):
+    try:
+        # Prompt the user for information
+        object_id = input("Enter object ID: ")
+        reported_by = input("Enter your ID: ")
+
+        # Construct the payload
+        payload = {
+            "object_id": object_id,
+            "reported_by": reported_by
+        }
+
+        # Make the POST request
+        response = requests.post(api_url, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+
+            # Display the details
+            print("Message:", data.get("message"))
+            report_details = data.get("report")
+            if report_details:
+                print("\nReport Details:")
+                print("Report ID:", report_details.get("report_id"))
+                print("Created At:", report_details.get("created_at"))
+                print("Object ID:", report_details.get("object_id"))
+                print("Owner ID:", report_details.get("owner_id"))
+                print("Reported By:", report_details.get("reported_by"))
+
+        else:
+            print("Error:", response.status_code, response.text)
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
+def list_reports(api_url, payload):
+    try:
+        # Make the POST request
+        response = requests.post(api_url, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            # Display the details
+            data = response.json()
+            reports = data.get("reports")
+            for report in reports:
+                print("\nReport Details:")
+                print("Report ID:", report.get("report_id"))
+                print("Created At:", report.get("created_at"))
+                print("Object ID:", report.get("object_id"))
+                print("Owner ID:", report.get("owner_id"))
+                print("Reported By:", report.get("reported_by"))
+
+        elif response.status_code == 204:
+            print("Message:", "No reports found.")
+
+        else:
+            print("Error:", response.status_code, response.text)
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
 def list_items_operation():
     api_url = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/list_items"
 
@@ -462,6 +528,61 @@ def request_item_operation():
     request_item(api_url_request_item)
 
 
+def report_operation():
+    api_url = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/report"
+    report(api_url)
+
+
+def list_reports_operation():
+    api_url = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/list_reports"
+
+    print("Select operation:")
+    print("1. List all reports")
+    print("2. List specific report")
+    print("3. List reports by user")
+    print("4. List reports by object")
+    print("5. List reports by owner")
+    print("6. Exit")
+
+    choice = input("Enter your choice (1/2/3/4/5/6): ")
+
+    if choice == '1':
+        payload = {
+            "list_type": "all"
+        }
+    elif choice == '2':
+        report_id = input("Enter report ID: ")
+        payload = {
+            "list_type": "specific",
+            "report_id": report_id
+        }
+    elif choice == '3':
+        reported_by = input("Enter user ID: ")
+        payload = {
+            "list_type": "by_user",
+            "reported_by": reported_by
+        }
+    elif choice == '4':
+        object_id = input("Enter object ID: ")
+        payload = {
+            "list_type": "by_object",
+            "object_id": object_id
+        }
+    elif choice == '5':
+        owner_id = input("Enter owner ID: ")
+        payload = {
+            "list_type": "by_owner",
+            "owner_id": owner_id
+        }
+    elif choice == '6':
+        return
+    else:
+        print("Invalid choice. Please enter a valid option.")
+        return
+
+    list_reports(api_url, payload)
+
+
 def main():
     while True:
         # Display menu to the user
@@ -474,10 +595,12 @@ def main():
         print("6. Delete an item")  # Added option to delete an item
         print("7. List orders")
         print("8. Accept an order")
-        print("9. Exit")  # Updated the exit option
+        print("9. Report")  # Added option to report
+        print("10. List reports")  # Added option to list reports
+        print("11. Exit")  # Updated the exit option
 
         # Get user input
-        choice = input("Enter your choice (1/2/3/4/5/6/7/8/9): ")
+        choice = input("Enter your choice (1/2/3/4/5/6/7/8/9/10/11): ")
 
         if choice == '1':
             add_item_operation()
@@ -496,6 +619,10 @@ def main():
         elif choice == '8':
             accept_order_operation()
         elif choice == '9':
+            report_operation()  # Added the call to report_operation
+        elif choice == '10':
+            list_reports_operation()  # Added the call to list_reports_operation
+        elif choice == '11':
             print("Exiting the program. Goodbye!")
             break
         else:

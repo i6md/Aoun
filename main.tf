@@ -135,6 +135,20 @@ resource "aws_dynamodb_table" "item_order" {
 
 }
 
+resource "aws_dynamodb_table" "report" {
+    name           = "report"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "report_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "report_id"
+        type = "S"
+    }
+
+}
+
 resource "aws_s3_bucket" "aoun_item_pictures" {
   bucket = "aoun-item-pictures"
 }
@@ -306,16 +320,27 @@ resource "aws_lambda_function" "list_items" {
 
 }
 
-# resource "aws_lambda_function" "last_item" {
-#   function_name    = "last_item"
-#   filename         = data.archive_file.lambda-functions.output_path
-#   source_code_hash = data.archive_file.lambda-functions.output_base64sha256
-#   role             = aws_iam_role.lambda_role.arn
-#   handler          = "last_item.lambda_handler"
-#   runtime          = "python3.9"
-#   timeout          = 5
+resource "aws_lambda_function" "report" {
+  function_name    = "report"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "report.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
 
-# }
+}
+
+resource "aws_lambda_function" "list_reports" {
+  function_name    = "list_reports"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_reports.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
 
 resource "aws_apigatewayv2_api" "lambda" {
   name          = "Senior_project"
@@ -442,6 +467,34 @@ resource "aws_apigatewayv2_route" "list_items" {
   target = "integrations/${aws_apigatewayv2_integration.list_items.id}"
 }
 
+resource "aws_apigatewayv2_integration" "report" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.report.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "report" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /report"
+
+  target = "integrations/${aws_apigatewayv2_integration.report.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_reports" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_reports.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_reports" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /list_reports"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_reports.id}"
+}
+
 # resource "aws_apigatewayv2_integration" "last_item" {
 #   api_id            = aws_apigatewayv2_api.lambda.id
 #   integration_type  = "AWS_PROXY"
@@ -516,6 +569,22 @@ resource "aws_lambda_permission" "list_items_apigw_permision" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.list_items.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "report_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.report.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_reports_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_reports.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
