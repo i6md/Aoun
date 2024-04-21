@@ -16,6 +16,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../Filters/filter_dialog.dart';
+import '../searchDelegate/searchDelegate.dart';
+
 class HomeScreen extends StatelessWidget {
 
 
@@ -133,20 +136,39 @@ class HomeScreen extends StatelessWidget {
                 )
                 ,
                 IconButton(
-                    onPressed:() {
-                      print('search clicked');
-                    },
-                    color: Colors.grey[800],
-                    icon: const Icon(
-                      Icons.search,)
+                  onPressed:() {
+                    showSearch(
+                      context: context,
+                      delegate: DataSearch(HomeCubit.get(context).ads),
+                    );
+                  },
+                  color: Colors.grey[800],
+                  icon: const Icon(Icons.search),
                 ),
                 IconButton(
-                    onPressed:() {
-                      print('filter');
-                    },
-                    color: Colors.grey[800],
-                    icon: const Icon(
-                      Icons.filter_alt_sharp,)
+                  onPressed: () async {
+                    List<String> resourceTypes;
+                    switch (HomeCubit.get(context).counter) {
+                      case 0: // Items
+                        resourceTypes = ['Image', 'Video', 'Banner'];
+                        break;
+                      case 1: // Events
+                        resourceTypes = ['Sport Activity', 'Lecture', 'Baloot'];
+                        break;
+                      case 2: // Rides
+                        resourceTypes = ['KFUPM to Airport', 'Airport to KFUPM', 'Riyadh to KFUPM', 'KFUPM to Riyadh'];
+                        break;
+                      default:
+                        resourceTypes = [];
+                    }
+                    List<String> selectedFilters = await showDialog(
+                      context: context,
+                      builder: (context) => FilterDialog(selectedFilters: HomeCubit.get(context).filters, resourceTypes: resourceTypes),
+                    );
+                    HomeCubit.get(context).updateFilters(selectedFilters);
+                  },
+                  color: Colors.grey[800],
+                  icon: const Icon(Icons.filter_alt_sharp),
                 ),
               ],
             ),
