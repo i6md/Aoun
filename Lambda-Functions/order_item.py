@@ -65,7 +65,7 @@ def lambda_handler(event, context):
                 'item_id': item_id,
                 'client_id': client_id,
                 'ordered_at': current_datetime,
-                'accepted': False,
+                'status': 'waiting',
                 'accepted_at': ''
             }
         )

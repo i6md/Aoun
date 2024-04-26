@@ -27,12 +27,13 @@ def lambda_handler(event, context):
         list_type = event.get("list_type")
         item_id = event.get("item_id")
 
-        if list_type not in ["all", "not_accepted", "accepted", "specific"]:
+        if list_type not in ["all", "not_accepted", "accepted", "specific", "by_client"]:
             raise ValueError(
-                "Incorrect list_type. Should be 'all', 'not_accepted', 'accepted', or 'specific'.")
+                "Incorrect list_type. Should be 'all', 'not_accepted', 'accepted', or 'specific'or 'by_client'.")
 
-        if not item_id:
-            raise ValueError("Missing item_id in event body.")
+        if list_type != "by_client":
+            if not item_id:
+                raise ValueError("Missing item_id in event body.")
 
         dynamodb = boto3.resource('dynamodb')
 
@@ -54,25 +55,38 @@ def lambda_handler(event, context):
         elif list_type == "not_accepted":
             orders = table.scan(
                 FilterExpression=boto3.dynamodb.conditions.Attr(
-                    'item_id').eq(item_id) & Attr('accepted').eq(False)
+                    'item_id').eq(item_id) & Attr('status').ne('accepted')
             )['Items']
-
             if not orders:
                 return {
                     'statusCode': 404,
                     'body': json.dumps({'message': 'No non accepted orders found.'})
                 }
-
         elif list_type == "accepted":
             orders = table.scan(
                 FilterExpression=boto3.dynamodb.conditions.Attr(
-                    'item_id').eq(item_id) & Attr('accepted').eq(True)
+                    'item_id').eq(item_id) & Attr('status').eq('accepted')
+            )['Items']
+            if not orders:
+                return {
+                    'statusCode': 404,
+                    'body': json.dumps({'message': 'No accepted orders found.'})
+                }
+
+        elif list_type == "by_client":
+            client_id = event.get("client_id")
+            if not client_id:
+                raise ValueError(
+                    "Missing client_id in event body for 'by_client' list_type.")
+
+            orders = table.scan(
+                FilterExpression=Attr('client_id').eq(client_id)
             )['Items']
 
             if not orders:
                 return {
                     'statusCode': 404,
-                    'body': json.dumps({'message': 'No accepted orders found.'})
+                    'body': json.dumps({'message': 'No orders found for the given client.'})
                 }
 
         else:  # "specific"

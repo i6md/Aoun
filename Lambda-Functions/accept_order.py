@@ -69,12 +69,27 @@ def lambda_handler(event, context):
         # Update the order table
         order_table.update_item(
             Key={'order_id': order_id},
-            UpdateExpression='SET #acc = :val1, #acc_at = :val2',
+            UpdateExpression='SET #status = :val1, #acc_at = :val2',
             ExpressionAttributeNames={
-                '#acc': 'accepted', '#acc_at': 'accepted_at'},
-            ExpressionAttributeValues={':val1': True,
+                '#status': 'status', '#acc_at': 'accepted_at'},
+            ExpressionAttributeValues={':val1': 'accepted',
                                        ':val2': datetime.utcnow().isoformat()}
         )
+
+        # Get all other orders for the same item
+        other_orders = order_table.scan(
+            FilterExpression=Attr('item_id').eq(
+                item_id) & Attr('order_id').ne(order_id)
+        )['Items']
+
+        # Update all other orders to 'rejected'
+        for order in other_orders:
+            order_table.update_item(
+                Key={'order_id': order['order_id']},
+                UpdateExpression='SET #status = :val',
+                ExpressionAttributeNames={'#status': 'status'},
+                ExpressionAttributeValues={':val': 'rejected'}
+            )
 
         return {
             'statusCode': 200,

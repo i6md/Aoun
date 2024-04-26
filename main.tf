@@ -149,6 +149,20 @@ resource "aws_dynamodb_table" "report" {
 
 }
 
+resource "aws_dynamodb_table" "tech_report" {
+    name           = "tech_report"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "report_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "report_id"
+        type = "S"
+    }
+
+}
+
 resource "aws_s3_bucket" "aoun_item_pictures" {
   bucket = "aoun-item-pictures"
 }
@@ -309,6 +323,17 @@ resource "aws_lambda_function" "accept_order" {
 
 }
 
+resource "aws_lambda_function" "reject_order" {
+  function_name    = "reject_order"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "reject_order.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
+
 resource "aws_lambda_function" "list_items" {
   function_name    = "list_items"
   filename         = data.archive_file.lambda-functions.output_path
@@ -337,6 +362,28 @@ resource "aws_lambda_function" "list_reports" {
   source_code_hash = data.archive_file.lambda-functions.output_base64sha256
   role             = aws_iam_role.lambda_role.arn
   handler          = "list_reports.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
+
+resource "aws_lambda_function" "tech_report" {
+  function_name    = "tech_report"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "tech_report.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 20
+
+}
+
+resource "aws_lambda_function" "list_tech_reports" {
+  function_name    = "list_tech_reports"
+  filename         = data.archive_file.lambda-functions.output_path
+  source_code_hash = data.archive_file.lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_tech_reports.lambda_handler"
   runtime          = "python3.9"
   timeout          = 20
 
@@ -453,6 +500,20 @@ resource "aws_apigatewayv2_route" "accept_order" {
   target = "integrations/${aws_apigatewayv2_integration.accept_order.id}"
 }
 
+resource "aws_apigatewayv2_integration" "reject_order" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.reject_order.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "reject_order" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /reject_order"
+
+  target = "integrations/${aws_apigatewayv2_integration.reject_order.id}"
+}
+
 resource "aws_apigatewayv2_integration" "list_items" {
   api_id            = aws_apigatewayv2_api.lambda.id
   integration_type  = "AWS_PROXY"
@@ -493,6 +554,34 @@ resource "aws_apigatewayv2_route" "list_reports" {
   route_key = "POST /list_reports"
 
   target = "integrations/${aws_apigatewayv2_integration.list_reports.id}"
+}
+
+resource "aws_apigatewayv2_integration" "tech_report" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.tech_report.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "tech_report" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /tech_report"
+
+  target = "integrations/${aws_apigatewayv2_integration.tech_report.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_tech_reports" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_tech_reports.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_tech_reports" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "GET /list_tech_reports"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_tech_reports.id}"
 }
 
 # resource "aws_apigatewayv2_integration" "last_item" {
@@ -565,6 +654,14 @@ resource "aws_lambda_permission" "accept_order_apigw_permision" {
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
 
+resource "aws_lambda_permission" "reject_order_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.reject_order.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
 resource "aws_lambda_permission" "list_items_apigw_permision" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
@@ -589,6 +686,22 @@ resource "aws_lambda_permission" "list_reports_apigw_permision" {
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
 
+resource "aws_lambda_permission" "tech_report_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.tech_report.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_tech_reports_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_tech_reports.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
 # resource "aws_lambda_permission" "last_item_apigw_permision" {
 #   statement_id  = "AllowAPIGatewayInvoke"
 #   action        = "lambda:InvokeFunction"
@@ -596,3 +709,98 @@ resource "aws_lambda_permission" "list_reports_apigw_permision" {
 #   principal     = "apigateway.amazonaws.com"
 #   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 # }
+
+resource "aws_cognito_user_pool" "user_pool" {
+  name = "user_pool"
+
+  password_policy {
+    minimum_length    = 8
+    require_lowercase = true
+    require_numbers   = true
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "email"
+    required            = true
+    
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "phone_number"
+    required            = true
+    
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "name"
+    required            = true
+    
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "building_number"
+    required            = false
+
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "room_number"
+    required            = false
+
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  # auto_verified_attributes = ["email"]
+
+  # // Email configuration
+  # email_configuration {
+  #   email_sending_account = "COGNITO_DEFAULT"
+  # }
+
+}
+
+resource "aws_cognito_user_pool_client" "user_pool_client" {
+  name         = "user_pool_client"
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+
+  explicit_auth_flows = [
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_CUSTOM_AUTH"
+  ]
+}
+
+resource "aws_cognito_identity_pool" "identity_pool" {
+  identity_pool_name = "identity_pool"
+  allow_unauthenticated_identities = false
+
+  cognito_identity_providers {
+    client_id               = aws_cognito_user_pool_client.user_pool_client.id
+    provider_name           = aws_cognito_user_pool.user_pool.endpoint
+    server_side_token_check = false
+  }
+}

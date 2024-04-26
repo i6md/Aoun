@@ -30,6 +30,8 @@ def lambda_handler(event, context):
         if not reported_by:
             raise ValueError("Missing reported_by in event body")
 
+        description = event.get('description')
+
         # Determine the table to query and the corresponding id name based on the first letter of object_id
         object_type = object_id[0]
         if object_type == 'i':
@@ -71,7 +73,8 @@ def lambda_handler(event, context):
             'created_at': format_value(created_at),
             'object_id': object_id,
             'owner_id': owner_id,
-            'reported_by': reported_by
+            'reported_by': reported_by,
+            'description': description
         }
 
         # Put the new report into DynamoDB
