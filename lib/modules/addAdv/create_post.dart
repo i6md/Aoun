@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'package:path/path.dart' as p;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -26,6 +30,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   // List<XFile>? images = [];
   // List<File> _images = [];
   List<Image> _images = [];
+  List<XFile?> imageFiles = [];
 
   final Map<String, List<String>> sList = {
     'Item': ['Stationary', 'Medicine', 'Car Needs'],
@@ -40,9 +45,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     ]
   };
 
-  TextEditingController? textController1;
-  TextEditingController? textController2;
-  TextEditingController? textController3;
+  final textController1 = TextEditingController();
+  final textController2 = TextEditingController();
+  final textController3 = TextEditingController();
 
   var categoryValue = 'Item';
 
@@ -76,6 +81,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     // }
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    imageFiles.add(pickedFile);
 
     if (pickedFile != null) {
       setState(() {
@@ -115,12 +121,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             size: 32,
           ),
         ),
-        title: 
-          Text(
-            'Create Post',
-            style: GoogleFonts.readexPro(fontSize: 20),
-          ),
-        
+        title: Text(
+          'Create Post',
+          style: GoogleFonts.readexPro(fontSize: 20),
+        ),
         actions: [],
         centerTitle: true,
         elevation: 2,
@@ -657,7 +661,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               //   ),
               // ),
               // Spacer(),
-              defaultButton(function: () {}, text: 'Create', IsUpperCase: false),
+              defaultButton(
+                  function: () {
+                    if (categoryValue == 'Item') {
+                      addItem(textController1, textController2, textController3,
+                          imageFiles);
+                    }
+                  },
+                  text: 'Create',
+                  IsUpperCase: false),
               const SizedBox(
                 height: 20,
               ),
@@ -666,5 +678,59 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> addItem(
+      TextEditingController? textController1,
+      TextEditingController? textController2,
+      TextEditingController? textController3,
+      List<XFile?> images) async {
+    const apiUrl =
+        'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_item'; // Replace with your actual API URL
+
+    String? text1 = textController1?.text;
+    String? text2 = textController2?.text;
+    String? text3 = textController3?.text;
+
+    print('this is text1 $text1 text2 $text2 text3 $text3');
+    final requestHeaders = {'Content-Type': 'application/json'};
+    final requestBody = {
+      'owner_id': 'asem123',
+      'title': text1,
+      'description': text3,
+      'picture_1': {"content": "null", "extension": "null"}
+      // Add other pictures as needed
+    };
+    int counter = 1;
+    for (XFile? image in imageFiles) {
+      List<int> imageBytes = File(image!.path).readAsBytesSync();
+      String base64Image = base64Encode(imageBytes);
+      //print(
+      //    'I am heeereee\n \n I am heeereee\n \n I am heeereee\n \nI am heeereee\n \n $base64Image');
+      requestBody["picture_$counter"] = {
+        "content": base64Image,
+        "extension": p.extension(image.path).substring(1)
+      };
+      //Object? test1 = requestBody;
+      //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
+      //print('$test1');
+      counter++;
+    }
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: requestHeaders,
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final itemId = responseData['item']['item_id'];
+      final createdAt = responseData['item']['created_at'];
+      print('Item created successfully with ID $itemId at $createdAt');
+    } else {
+      print(
+          'Error creating item. Status code: ${response.statusCode}, Response: ${response.body}');
+    }
   }
 }
