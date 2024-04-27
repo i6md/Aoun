@@ -1,7 +1,10 @@
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:aoun_app/models/user/ads_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../shared/cubit/cubit.dart';
+import '../../shared/cubit/states.dart';
 import '../post/post_details.dart';
 class ItemsScreen extends StatelessWidget {
   List<AdsModel> ads = [
@@ -66,31 +69,53 @@ class ItemsScreen extends StatelessWidget {
       adPlace: "Community Center",
     ),
   ];
+  void applyFilters(List<String> filters) {
+    List<AdsModel> filteredAds = filters.isNotEmpty
+        ? ads.where((ad) => filters.contains(ad.adResourceType)).toList()
+        : ads;
+    // Now use filteredAds to update the UI
+  }
   @override
   Widget build(BuildContext context) {
-   return ListView.separated(
-     padding: EdgeInsets.only(top: 9),
-       itemBuilder: (context,index)=> buildListItem(
-           adName: ads[index].adName,
-           adResourceType: ads[index].adResourceType,
-           adDate: ads[index].adDate,
-           adPlace: ads[index].adPlace,
-           onTapp: (){
-             Navigator.push(context, MaterialPageRoute(builder: (context)=>PostDetalis(ads[index].adName, ads[index].adResourceType, ads[index].adDate, ads[index].adPlace)));
-   }
-       ),
-       separatorBuilder: (context,index)=>
-           Padding(
-             padding: const EdgeInsetsDirectional.only(start:5.0, top: 8.0),
-             child: Container(
-               width: double.infinity,
-               height: 1.0,
-               color: Colors.grey[300],
-             ),
-           ),
-       itemCount: ads.length
-   );
-
+    return BlocBuilder<HomeCubit, HomeStates>(
+      builder: (context, state) {
+        List<String> filters;
+        if (state is SearchResultsUpdatedState) {
+          filters = state.results;
+        } else {
+          filters = HomeCubit.get(context).filters;
+        }
+        List<AdsModel> filteredAds = filters.isNotEmpty
+            ? ads.where((ad) => filters.contains(ad.adResourceType)).toList()
+            : ads;
+        return ListView.separated(
+            padding: EdgeInsets.only(top: 9),
+            itemBuilder: (context, index) => buildListItem(
+                adName: filteredAds[index].adName,
+                adResourceType: filteredAds[index].adResourceType,
+                adDate: filteredAds[index].adDate,
+                adPlace: filteredAds[index].adPlace,
+                onTapp: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PostDetalis(
+                              filteredAds[index].adName,
+                              filteredAds[index].adResourceType,
+                              filteredAds[index].adDate,
+                              filteredAds[index].adPlace)));
+                }),
+            separatorBuilder: (context, index) => Padding(
+              padding: const EdgeInsetsDirectional.only(start: 5.0, top: 8.0),
+              child: Container(
+                width: double.infinity,
+                height: 1.0,
+                color: Colors.grey[300],
+              ),
+            ),
+            itemCount: filteredAds.length);
+      },
+    );
   }
 
 }

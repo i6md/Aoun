@@ -363,7 +363,8 @@ Widget buildListItem({
   required String adDate,
   required String adPlace,
   void Function()? onTapp,
-
+  void Function()? onDelete,
+  bool showDeleteButton=false,
 })=> Padding(
   padding: const EdgeInsets.all(8.0),
   child: InkWell(
@@ -406,6 +407,20 @@ Widget buildListItem({
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    if (showDeleteButton) // replace 'showDeleteButton' with your actual condition
+                      Positioned(
+                          top: 10,
+                          right: 10,
+                          child: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: (){
+                            if (onDelete != null) {
+                              onDelete();
+                            }
+
+                          },
+                          ),
+                      ),
                     IconButton(
                       onPressed: () {
                         // Add functionality here or replace with a non-interactive widget
