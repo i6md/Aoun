@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:path/path.dart' as p;
+import '../../layout/home_layout.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -665,7 +666,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   function: () {
                     if (categoryValue == 'Item') {
                       addItem(textController1, textController2, textController3,
-                          imageFiles);
+                          imageFiles, ofSelected);
                     }
                   },
                   text: 'Create',
@@ -684,9 +685,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       TextEditingController? textController1,
       TextEditingController? textController2,
       TextEditingController? textController3,
-      List<XFile?> images) async {
-    const apiUrl =
-        'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_item'; // Replace with your actual API URL
+      List<XFile?> images,
+      bool ofSelected) async {
+    String apiUrl;
+    if (ofSelected) {
+      apiUrl =
+          'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_item';
+    } else {
+      apiUrl =
+          'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/request_item';
+    }
 
     String? text1 = textController1?.text;
     String? text2 = textController2?.text;
@@ -727,10 +735,32 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       final responseData = json.decode(response.body);
       final itemId = responseData['item']['item_id'];
       final createdAt = responseData['item']['created_at'];
-      print('Item created successfully with ID $itemId at $createdAt');
+      final itemType = responseData['item']['item_type'];
+      print(
+          'Item created successfully with ID $itemId at $createdAt with item type: $itemType');
+
+      // Show success message to user
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Item created successfully!'),
+        ),
+      );
+
+      // Navigate to items screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
     } else {
       print(
           'Error creating item. Status code: ${response.statusCode}, Response: ${response.body}');
+
+      // Show error message to user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Item could not be created: ${response.body}'),
+        ),
+      );
     }
   }
 }
