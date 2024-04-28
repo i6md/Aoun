@@ -121,6 +121,34 @@ resource "aws_dynamodb_table" "picture" {
 
 }
 
+resource "aws_dynamodb_table" "event" {
+    name           = "event"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "event_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "event_id"
+        type = "S"
+    }
+
+}
+
+resource "aws_dynamodb_table" "event_picture" {
+    name           = "event_picture"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "pic_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "pic_id"
+        type = "S"
+    }
+
+}
+
 resource "aws_dynamodb_table" "item_order" {
     name           = "item_order"
     billing_mode   = "PROVISIONED"
@@ -134,6 +162,20 @@ resource "aws_dynamodb_table" "item_order" {
     }
 
 }
+
+resource "aws_dynamodb_table" "participant" {
+    name           = "participant"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "order_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "order_id"
+        type = "S"
+    }
+
+} 
 
 resource "aws_dynamodb_table" "report" {
     name           = "report"
@@ -240,6 +282,79 @@ resource "aws_s3_bucket_policy" "aoun_item_pictures_bucket" {
   depends_on = [aws_s3_bucket_public_access_block.aoun_item_pictures]
 }
 
+resource "aws_s3_bucket" "aoun_event_pictures" {
+  bucket = "aoun-event-pictures"
+}
+
+resource "aws_s3_bucket_cors_configuration" "aoun_event_pictures" {
+  bucket = aws_s3_bucket.aoun_event_pictures.id  
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }  
+}
+
+resource "aws_s3_bucket_acl" "aoun_event_pictures" {
+    bucket = aws_s3_bucket.aoun_event_pictures.id
+    acl    = "public-read"
+    depends_on = [aws_s3_bucket_ownership_controls.aoun_event_pictures_ownership]
+}
+
+resource "aws_s3_bucket_ownership_controls" "aoun_event_pictures_ownership" {
+  bucket = aws_s3_bucket.aoun_event_pictures.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+  depends_on = [aws_s3_bucket_public_access_block.aoun_event_pictures]
+}
+
+resource "aws_s3_bucket_public_access_block" "aoun_event_pictures" {
+  bucket = aws_s3_bucket.aoun_event_pictures.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_policy" "aoun_event_pictures_bucket" {
+    bucket = aws_s3_bucket.aoun_event_pictures.id
+    policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Principal = "*"
+        Action = [
+          "s3:*",
+        ]
+        Effect = "Allow"
+        Resource = [
+          "arn:aws:s3:::aoun-event-pictures",
+          "arn:aws:s3:::aoun-event-pictures/*"
+        ]
+      },
+      {
+        Sid = "PublicReadGetObject"
+        Principal = "*"
+        Action = [
+          "s3:GetObject",
+        ]
+        Effect   = "Allow"
+        Resource = [
+          "arn:aws:s3:::aoun-event-pictures",
+          "arn:aws:s3:::aoun-event-pictures/*"
+        ]
+      },
+    ]
+  })
+  
+  depends_on = [aws_s3_bucket_public_access_block.aoun_event_pictures]
+}
+
 data "archive_file" "lambda-functions" {
   type        = "zip"
   source_dir  = "./Lambda-Functions"
@@ -253,7 +368,7 @@ resource "aws_lambda_function" "add_item" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "add_item.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -264,7 +379,7 @@ resource "aws_lambda_function" "request_item" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "request_item.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -275,7 +390,7 @@ resource "aws_lambda_function" "order_item" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "order_item.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -286,7 +401,7 @@ resource "aws_lambda_function" "edit_item" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "edit_item.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -297,7 +412,7 @@ resource "aws_lambda_function" "delete_item" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "delete_item.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -308,7 +423,7 @@ resource "aws_lambda_function" "list_orders" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "list_orders.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -319,7 +434,7 @@ resource "aws_lambda_function" "accept_order" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "accept_order.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -330,7 +445,7 @@ resource "aws_lambda_function" "reject_order" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "reject_order.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -341,7 +456,7 @@ resource "aws_lambda_function" "list_items" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "list_items.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -352,7 +467,7 @@ resource "aws_lambda_function" "report" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "report.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -363,7 +478,7 @@ resource "aws_lambda_function" "list_reports" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "list_reports.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -374,7 +489,7 @@ resource "aws_lambda_function" "tech_report" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "tech_report.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
 
 }
 
@@ -385,7 +500,79 @@ resource "aws_lambda_function" "list_tech_reports" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "list_tech_reports.lambda_handler"
   runtime          = "python3.9"
-  timeout          = 20
+  timeout          = 60
+
+}
+
+data "archive_file" "event-lambda-functions" {
+  type        = "zip"
+  source_dir  = "./Event-Lambda-Functions"
+  output_path = "./Event-Lambda-Functions.zip"
+}
+
+resource "aws_lambda_function" "add_event" {
+  function_name    = "add_event"
+  filename         = data.archive_file.event-lambda-functions.output_path
+  source_code_hash = data.archive_file.event-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "add_event.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "list_events" {
+  function_name    = "list_events"
+  filename         = data.archive_file.event-lambda-functions.output_path
+  source_code_hash = data.archive_file.event-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_events.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "edit_event" {
+  function_name    = "edit_event"
+  filename         = data.archive_file.event-lambda-functions.output_path
+  source_code_hash = data.archive_file.event-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "edit_event.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "delete_event" {
+  function_name    = "delete_event"
+  filename         = data.archive_file.event-lambda-functions.output_path
+  source_code_hash = data.archive_file.event-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "delete_event.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "join_event" {
+  function_name    = "join_event"
+  filename         = data.archive_file.event-lambda-functions.output_path
+  source_code_hash = data.archive_file.event-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "join_event.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "list_participations" {
+  function_name    = "list_participations"
+  filename         = data.archive_file.event-lambda-functions.output_path
+  source_code_hash = data.archive_file.event-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_participations.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
 
 }
 
@@ -584,6 +771,90 @@ resource "aws_apigatewayv2_route" "list_tech_reports" {
   target = "integrations/${aws_apigatewayv2_integration.list_tech_reports.id}"
 }
 
+resource "aws_apigatewayv2_integration" "add_event" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.add_event.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "add_event" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /add_event"
+
+  target = "integrations/${aws_apigatewayv2_integration.add_event.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_events" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_events.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_events" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /list_events"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_events.id}"
+}
+
+resource "aws_apigatewayv2_integration" "edit_event" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.edit_event.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "edit_event" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /edit_event"
+
+  target = "integrations/${aws_apigatewayv2_integration.edit_event.id}"
+}
+
+resource "aws_apigatewayv2_integration" "delete_event" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.delete_event.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "delete_event" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /delete_event"
+
+  target = "integrations/${aws_apigatewayv2_integration.delete_event.id}"
+}
+
+resource "aws_apigatewayv2_integration" "join_event" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.join_event.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "join_event" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /join_event"
+
+  target = "integrations/${aws_apigatewayv2_integration.join_event.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_participations" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_participations.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_participations" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /list_participations"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_participations.id}"
+}
+
 # resource "aws_apigatewayv2_integration" "last_item" {
 #   api_id            = aws_apigatewayv2_api.lambda.id
 #   integration_type  = "AWS_PROXY"
@@ -702,6 +973,54 @@ resource "aws_lambda_permission" "list_tech_reports_apigw_permision" {
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
 
+resource "aws_lambda_permission" "add_event_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.add_event.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_events_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_events.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "edit_event_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.edit_event.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "delete_event_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_event.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "join_event_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.join_event.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_participations_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_participations.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
 # resource "aws_lambda_permission" "last_item_apigw_permision" {
 #   statement_id  = "AllowAPIGatewayInvoke"
 #   action        = "lambda:InvokeFunction"
@@ -774,12 +1093,24 @@ resource "aws_cognito_user_pool" "user_pool" {
     }
   }
 
-  # auto_verified_attributes = ["email"]
+  auto_verified_attributes = ["email"]
 
-  # // Email configuration
-  # email_configuration {
-  #   email_sending_account = "COGNITO_DEFAULT"
-  # }
+  // Add this line to allow sign-in with email
+  username_attributes = ["email"]
+
+  // Email configuration
+  email_configuration {
+    email_sending_account = "COGNITO_DEFAULT"
+  }
+
+  // Add these lines to enable verifying attribute changes
+  email_verification_message = "Your verification code is {####}."
+  email_verification_subject = "Code to verify your account"
+
+  // Add this block to enable verifying attribute changes
+  verification_message_template {
+    default_email_option  = "CONFIRM_WITH_CODE"
+  }
 
 }
 

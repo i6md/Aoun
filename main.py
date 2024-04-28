@@ -728,11 +728,11 @@ def main():
         print("11. List reports")  # Added option to list reports
         print("12. Tech Report")  # Added option for tech report
         print("13. List tech reports")  # Added option to list tech reports
-        print("14. Exit")  # Updated the exit option
+        print("q. Exit")  # Updated the exit option
 
         # Get user input
         choice = input(
-            "Enter your choice (1/2/3/4/5/6/7/8/9/10/11/12/13/14): ")
+            "Enter your choice (1/2/3/4/5/6/7/8/9/10/11/12/13): ")
 
         if choice == '1':
             add_item_operation()
@@ -760,7 +760,7 @@ def main():
             tech_report_operation()  # Added the call to tech_report_operation
         elif choice == '13':
             list_tech_reports_operation()  # Added the call to list_tech_reports_operation
-        elif choice == '14':
+        elif choice == 'q':
             print("Exiting the program. Goodbye!")
             break
         else:
