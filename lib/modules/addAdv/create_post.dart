@@ -32,6 +32,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   // List<File> _images = [];
   List<Image> _images = [];
   List<XFile?> imageFiles = [];
+  var absorb = false;
+  var allFieldsFilled = true;
+  Color addPhotoColor = Color.fromARGB(255, 3, 50, 71);
 
   final Map<String, List<String>> sList = {
     'Item': ['Stationary', 'Medicine', 'Car Needs'],
@@ -46,9 +49,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     ]
   };
 
-  final textController1 = TextEditingController();
-  final textController2 = TextEditingController();
-  final textController3 = TextEditingController();
+  TextEditingController textController1 = TextEditingController();
+  TextEditingController textController2 = TextEditingController();
+  TextEditingController textController3 = TextEditingController();
 
   var categoryValue = 'Item';
 
@@ -62,6 +65,23 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   //     });
   //   }
   // }
+  bool _checkFields() {
+    if ((reSelected || ofSelected) &&
+        textController1.text.isNotEmpty &&
+        textController2.text.isNotEmpty &&
+        textController3.text.isNotEmpty) {
+      setState(() {
+        allFieldsFilled = true;
+        print(allFieldsFilled);
+      });
+    } else {
+      setState(() {
+        allFieldsFilled = false;
+        print(allFieldsFilled);
+      });
+    }
+    return allFieldsFilled;
+  }
 
   Future<void> _uploadImages() async {
     // final picker = ImagePicker();
@@ -235,40 +255,43 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(mainAxisSize: MainAxisSize.max, children: [
-                    InkWell(
-                      // onTap: _pickImage,
-                      onTap: _uploadImages,
-                      child: Container(
-                          // width: 300,
-                          // height: 150,
+                    AbsorbPointer(
+                      absorbing: absorb,
+                      child: InkWell(
+                        // onTap: _pickImage,
+                        onTap: _uploadImages,
+                        child: Container(
+                            // width: 300,
+                            // height: 150,
 
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Color.fromARGB(255, 224, 227, 231),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color.fromARGB(255, 224, 227, 231),
+                              ),
+                              borderRadius: BorderRadius.circular(15),
+                              color: addPhotoColor,
                             ),
-                            borderRadius: BorderRadius.circular(15),
-                            color: Color.fromARGB(255, 3, 50, 71),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 30, horizontal: 10),
-                          // margin: EdgeInsets.all(20),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add_outlined,
-                                size: 20,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                'Add Photo',
-                                style: GoogleFonts.readexPro(
-                                    fontSize: 10, color: Colors.white),
-                              )
-                            ],
-                          )),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 30, horizontal: 10),
+                            // margin: EdgeInsets.all(20),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.add_outlined,
+                                  size: 20,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Add Photo',
+                                  style: GoogleFonts.readexPro(
+                                      fontSize: 10, color: Colors.white),
+                                )
+                              ],
+                            )),
+                      ),
                     ),
                     const SizedBox(
                       width: 20,
@@ -520,6 +543,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           categoryValue = val.toString();
                           resValue = sList[categoryValue]![0];
                           print(categoryValue);
+                          addPhotoColor = categoryValue == 'Ride'
+                              ? Colors.grey
+                              : Color.fromARGB(255, 3, 50, 71);
+                          absorb = categoryValue == 'Ride' ? true : false;
+
                           // resValue = '';
                         });
                       }),
@@ -664,9 +692,17 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               // Spacer(),
               defaultButton(
                   function: () {
-                    if (categoryValue == 'Item') {
-                      addItem(textController1, textController2, textController3,
-                          imageFiles, ofSelected);
+                    if (_checkFields()) {
+                      if (categoryValue == 'Item') {
+                        addItem(textController1, textController2,
+                            textController3, imageFiles, ofSelected);
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please Fill All Required Fields!'),
+                        ),
+                      );
                     }
                   },
                   text: 'Create',
@@ -709,21 +745,28 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       'picture_1': {"content": "null", "extension": "null"}
       // Add other pictures as needed
     };
-    int counter = 1;
-    for (XFile? image in imageFiles) {
-      List<int> imageBytes = File(image!.path).readAsBytesSync();
-      String base64Image = base64Encode(imageBytes);
-      //print(
-      //    'I am heeereee\n \n I am heeereee\n \n I am heeereee\n \nI am heeereee\n \n $base64Image');
-      requestBody["picture_$counter"] = {
-        "content": base64Image,
-        "extension": p.extension(image.path).substring(1)
-      };
-      //Object? test1 = requestBody;
-      //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
-      //print('$test1');
-      counter++;
+    if (imageFiles.isNotEmpty) {
+      int counter = 1;
+      for (XFile? image in imageFiles) {
+        List<int> imageBytes = File(image!.path).readAsBytesSync();
+        String base64Image = base64Encode(imageBytes);
+        //print(
+        //    'I am heeereee\n \n I am heeereee\n \n I am heeereee\n \nI am heeereee\n \n $base64Image');
+        requestBody["picture_$counter"] = {
+          "content": base64Image,
+          "extension": p.extension(image.path).substring(1)
+        };
+        //Object? test1 = requestBody;
+        //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
+        //print('$test1');
+        counter++;
+      }
+    } else {
+      requestBody.remove('picture_1');
     }
+    Object? test1 = requestBody;
+    //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
+    print('$test1');
 
     final response = await http.post(
       Uri.parse(apiUrl),

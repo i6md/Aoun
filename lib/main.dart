@@ -1,5 +1,6 @@
 import 'package:aoun_app/core/app_export.dart';
 import 'package:aoun_app/layout/home_layout.dart';
+import 'package:aoun_app/map/map.dart';
 import 'package:aoun_app/modules/login/login_screen.dart';
 import 'package:aoun_app/modules/registration/Registration_screen.dart';
 import 'package:aoun_app/modules/users/users_screen.dart';
@@ -30,10 +31,10 @@ class MyApp extends StatelessWidget {
           return BlocProvider(
             create: (context) => HomeCubit(),
             child: MaterialApp(
-              theme: ThemeData(textTheme: GoogleFonts.readexProTextTheme()),
+              theme: ThemeData(textTheme: GoogleFonts.workSansTextTheme()),
               title: 'Aoun',
               debugShowCheckedModeBanner: false,
-              home: SplashScreen(),
+              home: HomeScreen(),
             ),
           );
         }

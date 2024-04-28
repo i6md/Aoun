@@ -3,6 +3,7 @@ import 'package:aoun_app/modules/report/report_post.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:aoun_app/shared/components/components.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostDetalis extends StatefulWidget {
   const PostDetalis(this.adName, this.adResourceType, this.adDate, this.adPlace, {super.key});
@@ -20,6 +21,10 @@ class _PostDetailsState extends State<PostDetalis> {
   // final scaffoldKey = GlobalKey<ScaffoldState>();
   var follow = 'Follow';
   var heart = Icons.favorite_border_rounded;
+  void sendWhatsappM(){
+    String url = "whatsapp://send?+966555555555";
+    launchUrl(Uri.parse(url));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,25 +131,42 @@ class _PostDetailsState extends State<PostDetalis> {
                     child: Align(
                       alignment: AlignmentDirectional(1, 0),
                       child: IconButton(
-                        color: Colors.red,
-                      
-                        onPressed: () {setState(() {
-                          if (heart == Icons.favorite_rounded) {
-                            heart = Icons.favorite_border_rounded;
-                          }
-                          else {
-                            heart = Icons.favorite_rounded;
-                          }
-                          
-                        });},
+                        color: Colors.green,
+
+                        onPressed: () {
+                          sendWhatsappM();
+                        },
                         icon: Icon(
-                          heart,
+                          Icons.chat,
                         ),
                         style: ButtonStyle(
                             iconSize: MaterialStatePropertyAll(32),
                             backgroundColor: MaterialStateProperty.all(Colors.white)
-                            ),
+                        ),
                       ),
+                    ),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional(1, 0),
+                    child: IconButton(
+                      color: Colors.red,
+
+                      onPressed: () {setState(() {
+                        if (heart == Icons.favorite_rounded) {
+                          heart = Icons.favorite_border_rounded;
+                        }
+                        else {
+                          heart = Icons.favorite_rounded;
+                        }
+
+                      });},
+                      icon: Icon(
+                        heart,
+                      ),
+                      style: ButtonStyle(
+                          iconSize: MaterialStatePropertyAll(32),
+                          backgroundColor: MaterialStateProperty.all(Colors.white)
+                          ),
                     ),
                   ),
                 ],

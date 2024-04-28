@@ -8,6 +8,7 @@ import 'package:aoun_app/modules/profile_profile_info_tab_container_screen/profi
 import 'package:aoun_app/modules/report/report_post.dart';
 import 'package:aoun_app/modules/rides_screen/rides_screen.dart';
 import 'package:aoun_app/modules/settings/settings_screen.dart';
+import 'package:aoun_app/modules/users/users_screen.dart';
 import 'package:aoun_app/shared/cubit/cubit.dart';
 import 'package:aoun_app/shared/cubit/states.dart';
 import 'package:aoun_app/widgets/app_bar/appbar_title.dart';
@@ -20,7 +21,7 @@ import '../Filters/filter_dialog.dart';
 import '../searchDelegate/searchDelegate.dart';
 
 class HomeScreen extends StatelessWidget {
-
+  bool isAdmin = true;
 
 
   Widget build(BuildContext context) {
@@ -94,6 +95,16 @@ class HomeScreen extends StatelessWidget {
                       // You can add navigation logic here
                     },
                   ),
+                  if(isAdmin)
+                    ListTile(
+                      leading: Icon(Icons.supervised_user_circle_sharp),
+                      title: Text('Manage users'),
+                      onTap: () {
+                        // Navigate to the help & support screen
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>UsersScreen()));
+                        // You can add navigation logic here
+                      },
+                    ),
                   ListTile(
                     leading: Icon(Icons.logout),
                     title: Text('Logout'),
@@ -132,7 +143,7 @@ class HomeScreen extends StatelessWidget {
                     },
                     color: Colors.grey[800],
                     icon: const Icon(
-                      Icons.notifications,)
+                      Icons.notifications, color: Colors.indigo,)
                 )
                 ,
                 IconButton(
@@ -143,7 +154,7 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   color: Colors.grey[800],
-                  icon: const Icon(Icons.search),
+                  icon: const Icon(Icons.search, color: Colors.indigo,),
                 ),
                 IconButton(
                   onPressed: () async {
@@ -168,7 +179,7 @@ class HomeScreen extends StatelessWidget {
                     HomeCubit.get(context).updateFilters(selectedFilters);
                   },
                   color: Colors.grey[800],
-                  icon: const Icon(Icons.filter_alt_sharp),
+                  icon: const Icon(Icons.filter_alt_sharp, color: Colors.indigo,),
                 ),
               ],
             ),

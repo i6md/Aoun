@@ -1,4 +1,5 @@
 import 'package:aoun_app/layout/home_layout.dart';
+import 'package:aoun_app/modules/otp_form/otp_form.dart';
 import 'package:aoun_app/modules/registration/Registration_screen.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:aoun_app/widgets/custom_text_form_field.dart';
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'login',
                       function: () {
                         if(formkey.currentState!.validate()){
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpForm()));
                         }
 
                       }, IsUpperCase: true,
