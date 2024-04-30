@@ -149,6 +149,20 @@ resource "aws_dynamodb_table" "event_picture" {
 
 }
 
+resource "aws_dynamodb_table" "ride" {
+    name           = "ride"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "ride_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "ride_id"
+        type = "S"
+    }
+
+}
+
 resource "aws_dynamodb_table" "item_order" {
     name           = "item_order"
     billing_mode   = "PROVISIONED"
@@ -176,6 +190,20 @@ resource "aws_dynamodb_table" "participant" {
     }
 
 } 
+
+resource "aws_dynamodb_table" "passenger" {
+    name           = "passenger"
+    billing_mode   = "PROVISIONED"
+    hash_key       = "order_id"
+    read_capacity  = 5
+    write_capacity = 5
+
+    attribute {
+        name = "order_id"
+        type = "S"
+    }
+
+}
 
 resource "aws_dynamodb_table" "report" {
     name           = "report"
@@ -576,6 +604,78 @@ resource "aws_lambda_function" "list_participations" {
 
 }
 
+data "archive_file" "ride-lambda-functions" {
+  type        = "zip"
+  source_dir  = "./Ride-Lambda-Functions"
+  output_path = "./Ride-Lambda-Functions.zip"
+}
+
+resource "aws_lambda_function" "add_ride" {
+  function_name    = "add_ride"
+  filename         = data.archive_file.ride-lambda-functions.output_path
+  source_code_hash = data.archive_file.ride-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "add_ride.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "list_rides" {
+  function_name    = "list_rides"
+  filename         = data.archive_file.ride-lambda-functions.output_path
+  source_code_hash = data.archive_file.ride-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_rides.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "edit_ride" {
+  function_name    = "edit_ride"
+  filename         = data.archive_file.ride-lambda-functions.output_path
+  source_code_hash = data.archive_file.ride-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "edit_ride.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "delete_ride" {
+  function_name    = "delete_ride"
+  filename         = data.archive_file.ride-lambda-functions.output_path
+  source_code_hash = data.archive_file.ride-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "delete_ride.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "join_ride" {
+  function_name    = "join_ride"
+  filename         = data.archive_file.ride-lambda-functions.output_path
+  source_code_hash = data.archive_file.ride-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "join_ride.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "list_passengers" {
+  function_name    = "list_passengers"
+  filename         = data.archive_file.ride-lambda-functions.output_path
+  source_code_hash = data.archive_file.ride-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_passengers.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
 resource "aws_apigatewayv2_api" "lambda" {
   name          = "Senior_project"
   protocol_type = "HTTP"
@@ -855,6 +955,90 @@ resource "aws_apigatewayv2_route" "list_participations" {
   target = "integrations/${aws_apigatewayv2_integration.list_participations.id}"
 }
 
+resource "aws_apigatewayv2_integration" "add_ride" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.add_ride.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "add_ride" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /add_ride"
+
+  target = "integrations/${aws_apigatewayv2_integration.add_ride.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_rides" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_rides.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_rides" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /list_rides"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_rides.id}"
+}
+
+resource "aws_apigatewayv2_integration" "edit_ride" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.edit_ride.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "edit_ride" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /edit_ride"
+
+  target = "integrations/${aws_apigatewayv2_integration.edit_ride.id}"
+}
+
+resource "aws_apigatewayv2_integration" "delete_ride" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.delete_ride.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "delete_ride" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /delete_ride"
+
+  target = "integrations/${aws_apigatewayv2_integration.delete_ride.id}"
+}
+
+resource "aws_apigatewayv2_integration" "join_ride" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.join_ride.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "join_ride" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /join_ride"
+
+  target = "integrations/${aws_apigatewayv2_integration.join_ride.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_passengers" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_passengers.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_passengers" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /list_passengers"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_passengers.id}"
+}
+
 # resource "aws_apigatewayv2_integration" "last_item" {
 #   api_id            = aws_apigatewayv2_api.lambda.id
 #   integration_type  = "AWS_PROXY"
@@ -1017,6 +1201,54 @@ resource "aws_lambda_permission" "list_participations_apigw_permision" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.list_participations.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "add_ride_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.add_ride.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_rides_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_rides.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "edit_ride_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.edit_ride.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "delete_ride_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_ride.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "join_ride_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.join_ride.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_passengers_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_passengers.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }

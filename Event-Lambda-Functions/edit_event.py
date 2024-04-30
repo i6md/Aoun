@@ -62,11 +62,11 @@ def lambda_handler(event, context):
         # Get the current event
         current_event = events[0]
 
-        # Check if the new participants_number is less than the current number of participants
-        if 'participants_number' in current_event and Decimal(participants_number) < Decimal(current_event['participants_number']):
+        # Check if the new participants_number is less than the current number of joined participants
+        if 'joined' in current_event and Decimal(participants_number) < Decimal(current_event['joined']):
             return {
                 'statusCode': 400,
-                'body': json.dumps({'error': 'New participants number cannot be less than the current number of participants'})
+                'body': json.dumps({'error': 'New participants number cannot be less than the current number of joined participants'})
             }
 
         # Find old pics in the DB

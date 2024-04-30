@@ -3,8 +3,6 @@ import boto3
 from decimal import Decimal
 from datetime import datetime
 import uuid
-import base64
-import io
 
 
 def format_value(obj):
@@ -17,23 +15,17 @@ def format_value(obj):
 
 def lambda_handler(event, context):
     try:
-        if "body" not in event or not event["body"]:
-            raise ValueError("Missing body in event")
-        try:
-            event = json.loads(event["body"])
-        except json.JSONDecodeError:
-            raise ValueError("Invalid JSON in body")
-
+        event = json.loads(event["body"])
         # Create a DynamoDB client
         dynamodb = boto3.resource('dynamodb')
 
         # Specify the DynamoDB table name
-        table_name = 'item'
+        table_name = 'ride'
 
         # Get a reference to the DynamoDB table
         table = dynamodb.Table(table_name)
 
-        service_identifier = "i"
+        service_identifier = "r"
         desired_length = 10
         generated_id = f"{service_identifier}_{str(uuid.uuid4())[:desired_length]}"
 
@@ -41,50 +33,32 @@ def lambda_handler(event, context):
         owner_id = event.get('owner_id')
         title = event.get('title')
         description = event.get('description')
+        start_location = event.get('start_location')
+        end_location = event.get('end_location')
+        start_date_time = event.get('start_date_time')
+        available_seats = event.get('available_seats')
 
         # Create a new item with the specified attributes
         new_item = {
-            'item_id': generated_id,
+            'ride_id': generated_id,
             'created_at': format_value(created_at),
             'owner_id': owner_id,
             'title': title,
             'description': description,
-            'item_type': "offer",
+            'start_location': start_location,
+            'end_location': end_location,
+            'start_date_time': start_date_time,
+            'available_seats': available_seats,
+            'joined': 0,  # Set the 'joined' attribute to 0
             'expired': False
-
         }
-
-        pictures = [event.get(f"picture_{i+1}")
-                    for i in range(4) if event.get(f"picture_{i+1}")]
-
-        s3_client = boto3.client("s3")
-        pic_number = 1
-        for pic_data in pictures:
-            pic_id = f"{generated_id}_{pic_number}"
-            pic_file = base64.b64decode(pic_data["content"])
-            file_obj = io.BytesIO(pic_file)
-
-            # Include the extension in the filename
-            filename = f"{pic_id}.{pic_data['extension']}"
-
-            s3_client.upload_fileobj(
-                file_obj, "aoun-item-pictures", filename)  # Upload to S3
-            # Generate URL
-            pic_url = f"https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/{filename}"
-            # Add picture information to DynamoDB
-            dynamodb.Table("picture").put_item(Item={
-                "pic_id": pic_id,
-                "item_id": generated_id,
-                "url": pic_url
-            })
-            pic_number += 1
 
         # Put the new item into DynamoDB
         table.put_item(Item=new_item)
 
         return {
             'statusCode': 200,
-            'body': json.dumps({'message': 'Item created successfully', 'item': new_item}, default=format_value)
+            'body': json.dumps({'message': 'ride created successfully', 'ride': new_item}, default=format_value)
         }
 
     except Exception as e:
