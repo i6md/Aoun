@@ -11,7 +11,7 @@ from tkcalendar import DateEntry, Calendar
 def add_event(api_url):
     try:
         # Prompt the user for information
-        owner_id = input("Enter your  ID: ")
+        # owner_id = input("Enter your  ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
 
@@ -51,7 +51,7 @@ def add_event(api_url):
 
         # Construct the payload
         payload = {
-            "owner_id": owner_id,
+            # "owner_id": owner_id,
             "title": title,
             "description": description,
             "start_date_time": start_date_time,
@@ -71,7 +71,7 @@ def add_event(api_url):
                                              "extension": os.path.splitext(f)[1][1:]}
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -101,7 +101,7 @@ def add_event_operation():
 
 def list_events(api_url, payload):
     try:
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         if response.status_code == 200:
             data = response.json()
@@ -179,7 +179,7 @@ def edit_event(api_url):
     try:
         # Prompt the user for information
         event_id = input("Enter event ID: ")
-        owner_id = input("Enter your  ID: ")
+        # owner_id = input("Enter your  ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
 
@@ -220,7 +220,7 @@ def edit_event(api_url):
         # Construct the payload
         payload = {
             "event_id": event_id,
-            "owner_id": owner_id,
+            # "owner_id": owner_id,
             "title": title,
             "description": description,
             "start_date_time": start_date_time,
@@ -240,7 +240,7 @@ def edit_event(api_url):
                                              "extension": os.path.splitext(f)[1][1:]}
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -276,7 +276,7 @@ def delete_event(api_url):
             "event_id": event_id
         }
 
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         if response.status_code == 200:
             data = response.json()
@@ -302,14 +302,14 @@ def delete_event_operation():
 def join_event(api_url):
     try:
         event_id = input("Enter event ID: ")
-        client_id = input("Enter client ID: ")
+        # client_id = input("Enter client ID: ")
 
         payload = {
             "event_id": event_id,
-            "client_id": client_id
+            # "client_id": client_id
         }
 
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         if response.status_code == 200:
             data = response.json()
@@ -329,7 +329,7 @@ def join_event_operation():
 
 def list_participations(api_url, payload):
     try:
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         if response.status_code == 200:
             data = response.json()
@@ -390,7 +390,62 @@ def list_participations_operation():
     list_participations(api_url, payload)
 
 
+def get_token(api_url, payload):
+    try:
+
+        # Make the POST request
+        response = requests.post(api_url, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            print(response.text)
+            # Parse the JSON response
+            data = response.json()
+
+            # Display the details
+            print("Message:", data.get("message"))
+            user_data = data.get("userData")
+            if user_data:
+                return data.get("idToken")
+                # print("ID Token:", data.get("idToken"))
+                # print("User Data:")
+                # for key, value in user_data.items():
+                #     print(f"{key}: {value}")
+
+        else:
+            print("Error:", response.status_code, response.text)
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
+def get_token_operation(email, password):
+    api_url = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/get_token"
+
+    payload = {
+        "username": email,
+        "password": password
+    }
+
+    return get_token(api_url, payload)
+
+
+def change_token():
+    # get the email and password from the user
+    email = input("Enter your email: ")
+    password = input("Enter your password: ")
+
+    # get the id token
+    id_token = get_token_operation(email, password)
+
+    global headers
+    headers = {
+        "Authorization": "Bearer " + id_token
+    }
+
+
 def main():
+    change_token()
     while True:
         # Display menu to the user
         print("Select operation:")
@@ -400,6 +455,7 @@ def main():
         print("4. Delete an event")
         print("5. Join an event")
         print("6. List participations")
+        print("e. Change token")
         print("q. Quit")
 
         # Get user input
@@ -417,6 +473,8 @@ def main():
             join_event_operation()
         elif choice == "6":
             list_participations_operation()
+        elif choice.lower() == "e":
+            change_token()
         elif choice.lower() == "q":
             print("Exiting program...")
             break

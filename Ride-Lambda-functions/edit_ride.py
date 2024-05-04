@@ -3,8 +3,17 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from decimal import Decimal
 from datetime import datetime
-import uuid
-import os
+from urllib.parse import unquote
+import base64
+import re
+
+
+def parse_jwt(token):
+    base64_url = token.split('.')[1]  # Get the payload part of the token
+    base64_String = base64_url.replace('-', '+').replace('_', '/')
+    json_payload = unquote(base64.b64decode(
+        base64_String + "==").decode('utf-8'))
+    return json.loads(json_payload)
 
 
 def format_value(obj):
@@ -17,12 +26,20 @@ def format_value(obj):
 
 def lambda_handler(event, context):
     try:
-        if 'body' not in event or not event['body']:
-            raise ValueError('Missing body in event')
+        if "body" not in event or not event["body"]:
+            raise ValueError("Missing body in event")
         try:
-            event = json.loads(event['body'])
+            # Make header keys case-insensitive
+            headers = {k.lower(): v for k, v in event['headers'].items()}
+            if 'authorization' in headers:
+                id_token = headers['authorization'][7:]
+                event = json.loads(event["body"])
+            else:
+                raise ValueError("Missing Authorization header")
         except json.JSONDecodeError:
-            raise ValueError('Invalid JSON in body')
+            raise ValueError("Invalid JSON in body")
+
+        user_data = parse_jwt(id_token)
 
         # Create a DynamoDB client
         dynamodb = boto3.resource('dynamodb')
@@ -35,7 +52,12 @@ def lambda_handler(event, context):
 
         # Get ride details
         ride_id = event.get('ride_id')
-        owner_id = event.get('owner_id')
+        owner_id = user_data.get('email')
+        match = re.search('s(\d+)@', owner_id)
+        if match:
+            owner_id = match.group(1)
+        else:
+            owner_id = None
         title = event.get('title')
         description = event.get('description')
         start_location = event.get('start_location')

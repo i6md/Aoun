@@ -9,7 +9,7 @@ from tkinter import Tk, filedialog  # Import tkinter for GUI
 def add_item(api_url):
     try:
         # Prompt the user for information
-        owner_id = input("Enter your  ID: ")
+        # owner_id = input("Enter your  ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
 
@@ -28,7 +28,7 @@ def add_item(api_url):
 
         # Construct the payload
         payload = {
-            "owner_id": owner_id,
+            # "owner_id": owner_id,
             "title": title,
             "description": description,
         }
@@ -43,7 +43,7 @@ def add_item(api_url):
                                              "extension": os.path.splitext(f)[1][1:]}
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -78,7 +78,7 @@ def add_item_operation():
 def request_item(api_url):
     try:
         # Prompt the user for information
-        owner_id = input("Enter your ID: ")
+        # owner_id = input("Enter your ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
 
@@ -97,7 +97,7 @@ def request_item(api_url):
 
         # Construct the payload
         payload = {
-            "owner_id": owner_id,
+            # "owner_id": owner_id,
             "title": title,
             "description": description
         }
@@ -112,7 +112,7 @@ def request_item(api_url):
                                              "extension": os.path.splitext(f)[1][1:]}
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -145,7 +145,7 @@ def request_item_operation():
 def list_items(api_url, payload):
     try:
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -223,16 +223,16 @@ def order_item(api_url):
     try:
         # Prompt the user for item ID and requester ID
         item_id = input("Enter item ID: ")
-        client_id = input("Enter your ID: ")
+        # client_id = input("Enter your ID: ")
 
         # Construct the payload
         payload = {
             "item_id": item_id,
-            "client_id": client_id
+            # "client_id": client_id
         }
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -258,7 +258,7 @@ def edit_item(api_url):
     try:
         # Prompt the user for information
         item_id = input("Enter item ID: ")
-        owner_id = input("Enter your ID: ")
+        # owner_id = input("Enter your ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
 
@@ -278,7 +278,7 @@ def edit_item(api_url):
         # Construct the payload
         payload = {
             "item_id": item_id,
-            "owner_id": owner_id,
+            # "owner_id": owner_id,
             "title": title,
             "description": description,
         }
@@ -293,7 +293,7 @@ def edit_item(api_url):
                                              "extension": os.path.splitext(f)[1][1:]}
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -336,7 +336,7 @@ def delete_item(api_url):
         }
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -361,7 +361,7 @@ def delete_item_operation():
 def list_orders(api_url, payload):
     try:
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -443,7 +443,7 @@ def list_orders_operation():
 def accept_order(api_url, payload):
     try:
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -479,7 +479,7 @@ def accept_order_operation():
 def reject_order(api_url, payload):
     try:
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -516,18 +516,18 @@ def report(api_url):
     try:
         # Prompt the user for information
         object_id = input("Enter object ID: ")
-        reported_by = input("Enter your ID: ")
+        # reported_by = input("Enter your ID: ")
         description = input("Enter description: ")
 
         # Construct the payload
         payload = {
             "object_id": object_id,
-            "reported_by": reported_by,
+            # "reported_by": reported_by,
             "description": description
         }
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -561,7 +561,7 @@ def report_operation():
 def list_reports(api_url, payload):
     try:
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -640,17 +640,17 @@ def list_reports_operation():
 def tech_report(api_url):
     try:
         # Prompt the user for information
-        reported_by = input("Enter your ID: ")
+        # reported_by = input("Enter your ID: ")
         description = input("Enter description: ")
 
         # Construct the payload
         payload = {
-            "reported_by": reported_by,
+            # "reported_by": reported_by,
             "description": description
         }
 
         # Make the POST request
-        response = requests.post(api_url, json=payload)
+        response = requests.post(api_url, json=payload, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -682,7 +682,7 @@ def tech_report_operation():
 def list_tech_reports(api_url):
     try:
         # Make the GET request
-        response = requests.get(api_url)
+        response = requests.get(api_url, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -711,7 +711,62 @@ def list_tech_reports_operation():
     list_tech_reports(api_url)
 
 
+def get_token(api_url, payload):
+    try:
+
+        # Make the POST request
+        response = requests.post(api_url, json=payload)
+
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            print(response.text)
+            # Parse the JSON response
+            data = response.json()
+
+            # Display the details
+            print("Message:", data.get("message"))
+            user_data = data.get("userData")
+            if user_data:
+                return data.get("idToken")
+                # print("ID Token:", data.get("idToken"))
+                # print("User Data:")
+                # for key, value in user_data.items():
+                #     print(f"{key}: {value}")
+
+        else:
+            print("Error:", response.status_code, response.text)
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+
+def get_token_operation(email, password):
+    api_url = "https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/get_token"
+
+    payload = {
+        "username": email,
+        "password": password
+    }
+
+    return get_token(api_url, payload)
+
+
+def change_token():
+    # get the email and password from the user
+    email = input("Enter your email: ")
+    password = input("Enter your password: ")
+
+    # get the id token
+    id_token = get_token_operation(email, password)
+
+    global headers
+    headers = {
+        "Authorization": "Bearer " + id_token
+    }
+
+
 def main():
+    change_token()
     while True:
         # Display menu to the user
         print("Select operation:")
@@ -728,11 +783,12 @@ def main():
         print("11. List reports")  # Added option to list reports
         print("12. Tech Report")  # Added option for tech report
         print("13. List tech reports")  # Added option to list tech reports
+        print("e. Change token")  # Added the option to change the token
         print("q. Exit")  # Updated the exit option
 
         # Get user input
         choice = input(
-            "Enter your choice (1/2/3/4/5/6/7/8/9/10/11/12/13): ")
+            "Enter your choice (1/2/3/4/5/6/7/8/9/10/11/12/13/e/q): ")
 
         if choice == '1':
             add_item_operation()
@@ -760,6 +816,8 @@ def main():
             tech_report_operation()  # Added the call to tech_report_operation
         elif choice == '13':
             list_tech_reports_operation()  # Added the call to list_tech_reports_operation
+        elif choice == 'e':
+            change_token()
         elif choice == 'q':
             print("Exiting the program. Goodbye!")
             break

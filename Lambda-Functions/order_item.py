@@ -3,6 +3,17 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from decimal import Decimal
 from datetime import datetime
+from urllib.parse import unquote
+import base64
+import re
+
+
+def parse_jwt(token):
+    base64_url = token.split('.')[1]  # Get the payload part of the token
+    base64_String = base64_url.replace('-', '+').replace('_', '/')
+    json_payload = unquote(base64.b64decode(
+        base64_String + "==").decode('utf-8'))
+    return json.loads(json_payload)
 
 
 def default_encoder(obj):
@@ -13,7 +24,20 @@ def default_encoder(obj):
 
 def lambda_handler(event, context):
     try:
-        event = json.loads(event["body"])
+        if "body" not in event or not event["body"]:
+            raise ValueError("Missing body in event")
+        try:
+            # Make header keys case-insensitive
+            headers = {k.lower(): v for k, v in event['headers'].items()}
+            if 'authorization' in headers:
+                id_token = headers['authorization'][7:]
+                event = json.loads(event["body"])
+            else:
+                raise ValueError("Missing Authorization header")
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON in body")
+
+        user_data = parse_jwt(id_token)
         # Create a DynamoDB client
         dynamodb = boto3.resource('dynamodb')
 
@@ -27,7 +51,12 @@ def lambda_handler(event, context):
 
         # Extract parameters from the event
         item_id = event.get('item_id')
-        client_id = event.get('client_id')
+        client_id = user_data.get('email')
+        match = re.search('s(\d+)@', client_id)
+        if match:
+            client_id = match.group(1)
+        else:
+            client_id = None
 
         # Get the item to check using the item_id
         response = item_table.scan(
@@ -40,6 +69,13 @@ def lambda_handler(event, context):
             return {
                 'statusCode': 404,
                 'body': json.dumps({'error': 'Item not found with the provided id or item is expired'})
+            }
+
+        # Check if the client id is the same as the owner id
+        if items[0].get('owner_id') == client_id:
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'error': 'You cannot order your own item'})
             }
 
         # Generate a unique order ID

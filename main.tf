@@ -47,6 +47,11 @@ resource "aws_iam_role_policy_attachment" "lambda_execution_role_policy" {
     role       = aws_iam_role.lambda_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "cognito_power_user_policy" {
+    policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+    role       = aws_iam_role.lambda_role.name
+}
+
 resource "aws_iam_role_policy_attachment" "dynamodb_full_access_policy" {
     policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
     role       = aws_iam_role.lambda_role.name
@@ -233,6 +238,79 @@ resource "aws_dynamodb_table" "tech_report" {
 
 }
 
+resource "aws_s3_bucket" "aoun_user_pictures" {
+  bucket = "aoun-user-pictures"
+}
+
+resource "aws_s3_bucket_cors_configuration" "aoun_user_pictures" {
+  bucket = aws_s3_bucket.aoun_user_pictures.id  
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }  
+}
+
+resource "aws_s3_bucket_acl" "aoun_user_pictures" {
+    bucket = aws_s3_bucket.aoun_user_pictures.id
+    acl    = "public-read"
+    depends_on = [aws_s3_bucket_ownership_controls.aoun_user_pictures_ownership]
+}
+
+resource "aws_s3_bucket_ownership_controls" "aoun_user_pictures_ownership" {
+  bucket = aws_s3_bucket.aoun_user_pictures.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+  depends_on = [aws_s3_bucket_public_access_block.aoun_user_pictures]
+}
+
+resource "aws_s3_bucket_public_access_block" "aoun_user_pictures" {
+  bucket = aws_s3_bucket.aoun_user_pictures.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_policy" "aoun_user_pictures_bucket" {
+    bucket = aws_s3_bucket.aoun_user_pictures.id
+    policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Principal = "*"
+        Action = [
+          "s3:*",
+        ]
+        Effect = "Allow"
+        Resource = [
+          "arn:aws:s3:::aoun-user-pictures",
+          "arn:aws:s3:::aoun-user-pictures/*"
+        ]
+      },
+      {
+        Sid = "PublicReadGetObject"
+        Principal = "*"
+        Action = [
+          "s3:GetObject",
+        ]
+        Effect   = "Allow"
+        Resource = [
+          "arn:aws:s3:::aoun-user-pictures",
+          "arn:aws:s3:::aoun-user-pictures/*"
+        ]
+      },
+    ]
+  })
+  
+  depends_on = [aws_s3_bucket_public_access_block.aoun_user_pictures]
+}
+
 resource "aws_s3_bucket" "aoun_item_pictures" {
   bucket = "aoun-item-pictures"
 }
@@ -381,6 +459,45 @@ resource "aws_s3_bucket_policy" "aoun_event_pictures_bucket" {
   })
   
   depends_on = [aws_s3_bucket_public_access_block.aoun_event_pictures]
+}
+
+data "archive_file" "user-lambda-functions" {
+  type        = "zip"
+  source_dir  = "./User-Lambda-Functions"
+  output_path = "./User-Lambda-Functions.zip"
+}
+
+resource "aws_lambda_function" "add_user_info" {
+  function_name    = "add_user_info"
+  filename         = data.archive_file.user-lambda-functions.output_path
+  source_code_hash = data.archive_file.user-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "add_user_info.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "list_user_info" {
+  function_name    = "list_user_info"
+  filename         = data.archive_file.user-lambda-functions.output_path
+  source_code_hash = data.archive_file.user-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "list_user_info.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_lambda_function" "edit_user_info" {
+  function_name    = "edit_user_info"
+  filename         = data.archive_file.user-lambda-functions.output_path
+  source_code_hash = data.archive_file.user-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "edit_user_info.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
 }
 
 data "archive_file" "lambda-functions" {
@@ -676,6 +793,127 @@ resource "aws_lambda_function" "list_passengers" {
 
 }
 
+resource "aws_lambda_function" "get_token" {
+  function_name    = "get_token"
+  filename         = data.archive_file.ride-lambda-functions.output_path
+  source_code_hash = data.archive_file.ride-lambda-functions.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "get_token.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 60
+
+}
+
+resource "aws_cognito_user_pool" "user_pool" {
+  name = "user_pool"
+
+  password_policy {
+    minimum_length    = 8
+    require_lowercase = true
+    require_numbers   = true
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "email"
+    required            = true
+    
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "phone_number"
+    required            = true
+    
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "name"
+    required            = true
+    
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "building_number"
+    required            = false
+
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  schema {
+    attribute_data_type = "String"
+    name                = "room_number"
+    required            = false
+
+    string_attribute_constraints {
+      max_length = 256
+      min_length = 0
+    }
+  }
+
+  auto_verified_attributes = ["email"]
+
+  // Add this line to allow sign-in with email
+  username_attributes = ["email"]
+
+  // Email configuration
+  email_configuration {
+    email_sending_account = "COGNITO_DEFAULT"
+  }
+
+  // Add these lines to enable verifying attribute changes
+  email_verification_message = "Your verification code is {####}."
+  email_verification_subject = "Aoun Verification Code"
+
+  // Add this block to enable verifying attribute changes
+  verification_message_template {
+    default_email_option  = "CONFIRM_WITH_CODE"
+  }
+
+}
+
+resource "aws_cognito_user_pool_client" "user_pool_client" {
+  name         = "user_pool_client"
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+
+  explicit_auth_flows = [
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_CUSTOM_AUTH",
+    "ALLOW_USER_PASSWORD_AUTH"
+  ]
+
+   refresh_token_validity = 150
+}
+
+resource "aws_cognito_identity_pool" "identity_pool" {
+  identity_pool_name = "identity_pool"
+  allow_unauthenticated_identities = false
+
+  cognito_identity_providers {
+    client_id               = aws_cognito_user_pool_client.user_pool_client.id
+    provider_name           = aws_cognito_user_pool.user_pool.endpoint
+    server_side_token_check = false
+  }
+}
+
 resource "aws_apigatewayv2_api" "lambda" {
   name          = "Senior_project"
   protocol_type = "HTTP"
@@ -689,6 +927,66 @@ resource "aws_apigatewayv2_stage" "lambda" {
   auto_deploy = true
 }
 
+resource "aws_apigatewayv2_authorizer" "cognito_authorizer" {
+  api_id           = aws_apigatewayv2_api.lambda.id
+  authorizer_type  = "JWT"
+  identity_sources = ["$request.header.Authorization"]
+  name             = "cognito_authorizer"
+
+  jwt_configuration {
+    audience = [aws_cognito_user_pool_client.user_pool_client.id]
+    issuer   = "https://cognito-idp.eu-north-1.amazonaws.com/${aws_cognito_user_pool.user_pool.id}"
+  }
+}
+
+resource "aws_apigatewayv2_integration" "add_user_info" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.add_user_info.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "add_user_info" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /add_user_info"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
+
+  target = "integrations/${aws_apigatewayv2_integration.add_user_info.id}"
+}
+
+resource "aws_apigatewayv2_integration" "list_user_info" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.list_user_info.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "list_user_info" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /list_user_info"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
+
+  target = "integrations/${aws_apigatewayv2_integration.list_user_info.id}"
+}
+
+resource "aws_apigatewayv2_integration" "edit_user_info" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.edit_user_info.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "edit_user_info" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /edit_user_info"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
+
+  target = "integrations/${aws_apigatewayv2_integration.edit_user_info.id}"
+}
+
 resource "aws_apigatewayv2_integration" "add_item" {
   api_id            = aws_apigatewayv2_api.lambda.id
   integration_type  = "AWS_PROXY"
@@ -699,6 +997,8 @@ resource "aws_apigatewayv2_integration" "add_item" {
 resource "aws_apigatewayv2_route" "add_item" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /add_item"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.add_item.id}"
 }
@@ -713,6 +1013,8 @@ resource "aws_apigatewayv2_integration" "request_item" {
 resource "aws_apigatewayv2_route" "request_item" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /request_item"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.request_item.id}"
 }
@@ -727,6 +1029,8 @@ resource "aws_apigatewayv2_integration" "order_item" {
 resource "aws_apigatewayv2_route" "order_item" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /order_item"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.order_item.id}"
 }
@@ -741,6 +1045,8 @@ resource "aws_apigatewayv2_integration" "edit_item" {
 resource "aws_apigatewayv2_route" "edit_item" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /edit_item"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.edit_item.id}"
 }
@@ -755,6 +1061,8 @@ resource "aws_apigatewayv2_integration" "delete_item" {
 resource "aws_apigatewayv2_route" "delete_item" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /delete_item"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.delete_item.id}"
 }
@@ -769,6 +1077,8 @@ resource "aws_apigatewayv2_integration" "list_orders" {
 resource "aws_apigatewayv2_route" "list_orders" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /list_orders"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_orders.id}"
 }
@@ -783,6 +1093,8 @@ resource "aws_apigatewayv2_integration" "accept_order" {
 resource "aws_apigatewayv2_route" "accept_order" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /accept_order"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.accept_order.id}"
 }
@@ -797,6 +1109,8 @@ resource "aws_apigatewayv2_integration" "reject_order" {
 resource "aws_apigatewayv2_route" "reject_order" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /reject_order"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.reject_order.id}"
 }
@@ -811,6 +1125,8 @@ resource "aws_apigatewayv2_integration" "list_items" {
 resource "aws_apigatewayv2_route" "list_items" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /list_items"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_items.id}"
 }
@@ -825,6 +1141,8 @@ resource "aws_apigatewayv2_integration" "report" {
 resource "aws_apigatewayv2_route" "report" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /report"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.report.id}"
 }
@@ -839,6 +1157,8 @@ resource "aws_apigatewayv2_integration" "list_reports" {
 resource "aws_apigatewayv2_route" "list_reports" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /list_reports"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_reports.id}"
 }
@@ -853,6 +1173,8 @@ resource "aws_apigatewayv2_integration" "tech_report" {
 resource "aws_apigatewayv2_route" "tech_report" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /tech_report"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.tech_report.id}"
 }
@@ -867,6 +1189,8 @@ resource "aws_apigatewayv2_integration" "list_tech_reports" {
 resource "aws_apigatewayv2_route" "list_tech_reports" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "GET /list_tech_reports"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_tech_reports.id}"
 }
@@ -881,6 +1205,8 @@ resource "aws_apigatewayv2_integration" "add_event" {
 resource "aws_apigatewayv2_route" "add_event" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /add_event"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.add_event.id}"
 }
@@ -895,6 +1221,8 @@ resource "aws_apigatewayv2_integration" "list_events" {
 resource "aws_apigatewayv2_route" "list_events" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /list_events"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_events.id}"
 }
@@ -909,6 +1237,8 @@ resource "aws_apigatewayv2_integration" "edit_event" {
 resource "aws_apigatewayv2_route" "edit_event" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /edit_event"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.edit_event.id}"
 }
@@ -923,6 +1253,8 @@ resource "aws_apigatewayv2_integration" "delete_event" {
 resource "aws_apigatewayv2_route" "delete_event" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /delete_event"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.delete_event.id}"
 }
@@ -937,6 +1269,8 @@ resource "aws_apigatewayv2_integration" "join_event" {
 resource "aws_apigatewayv2_route" "join_event" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /join_event"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.join_event.id}"
 }
@@ -951,6 +1285,8 @@ resource "aws_apigatewayv2_integration" "list_participations" {
 resource "aws_apigatewayv2_route" "list_participations" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /list_participations"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_participations.id}"
 }
@@ -965,6 +1301,8 @@ resource "aws_apigatewayv2_integration" "add_ride" {
 resource "aws_apigatewayv2_route" "add_ride" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /add_ride"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.add_ride.id}"
 }
@@ -979,6 +1317,8 @@ resource "aws_apigatewayv2_integration" "list_rides" {
 resource "aws_apigatewayv2_route" "list_rides" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /list_rides"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_rides.id}"
 }
@@ -993,6 +1333,8 @@ resource "aws_apigatewayv2_integration" "edit_ride" {
 resource "aws_apigatewayv2_route" "edit_ride" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /edit_ride"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.edit_ride.id}"
 }
@@ -1007,6 +1349,8 @@ resource "aws_apigatewayv2_integration" "delete_ride" {
 resource "aws_apigatewayv2_route" "delete_ride" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /delete_ride"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.delete_ride.id}"
 }
@@ -1021,6 +1365,8 @@ resource "aws_apigatewayv2_integration" "join_ride" {
 resource "aws_apigatewayv2_route" "join_ride" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /join_ride"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.join_ride.id}"
 }
@@ -1035,8 +1381,24 @@ resource "aws_apigatewayv2_integration" "list_passengers" {
 resource "aws_apigatewayv2_route" "list_passengers" {
   api_id    = aws_apigatewayv2_api.lambda.id
   route_key = "POST /list_passengers"
+  authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
 
   target = "integrations/${aws_apigatewayv2_integration.list_passengers.id}"
+}
+
+resource "aws_apigatewayv2_integration" "get_token" {
+  api_id            = aws_apigatewayv2_api.lambda.id
+  integration_type  = "AWS_PROXY"
+  integration_uri   = aws_lambda_function.get_token.invoke_arn
+  integration_method = "POST"
+}
+
+resource "aws_apigatewayv2_route" "get_token" {
+  api_id    = aws_apigatewayv2_api.lambda.id
+  route_key = "POST /get_token"
+
+  target = "integrations/${aws_apigatewayv2_integration.get_token.id}"
 }
 
 # resource "aws_apigatewayv2_integration" "last_item" {
@@ -1052,6 +1414,30 @@ resource "aws_apigatewayv2_route" "list_passengers" {
 
 #   target = "integrations/${aws_apigatewayv2_integration.last_item.id}"
 # }
+
+resource "aws_lambda_permission" "add_user_info_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.add_user_info.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "list_user_info_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.list_user_info.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "edit_user_info_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.edit_user_info.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
 
 resource "aws_lambda_permission" "add_item_apigw_permision" {
   statement_id  = "AllowAPIGatewayInvoke"
@@ -1253,6 +1639,14 @@ resource "aws_lambda_permission" "list_passengers_apigw_permision" {
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 }
 
+resource "aws_lambda_permission" "get_token_apigw_permision" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.get_token.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
+}
+
 # resource "aws_lambda_permission" "last_item_apigw_permision" {
 #   statement_id  = "AllowAPIGatewayInvoke"
 #   action        = "lambda:InvokeFunction"
@@ -1261,109 +1655,3 @@ resource "aws_lambda_permission" "list_passengers_apigw_permision" {
 #   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*"
 # }
 
-resource "aws_cognito_user_pool" "user_pool" {
-  name = "user_pool"
-
-  password_policy {
-    minimum_length    = 8
-    require_lowercase = true
-    require_numbers   = true
-  }
-
-  schema {
-    attribute_data_type = "String"
-    name                = "email"
-    required            = true
-    
-    string_attribute_constraints {
-      max_length = 256
-      min_length = 0
-    }
-  }
-
-  schema {
-    attribute_data_type = "String"
-    name                = "phone_number"
-    required            = true
-    
-    string_attribute_constraints {
-      max_length = 256
-      min_length = 0
-    }
-  }
-
-  schema {
-    attribute_data_type = "String"
-    name                = "name"
-    required            = true
-    
-    string_attribute_constraints {
-      max_length = 256
-      min_length = 0
-    }
-  }
-
-  schema {
-    attribute_data_type = "String"
-    name                = "building_number"
-    required            = false
-
-    string_attribute_constraints {
-      max_length = 256
-      min_length = 0
-    }
-  }
-
-  schema {
-    attribute_data_type = "String"
-    name                = "room_number"
-    required            = false
-
-    string_attribute_constraints {
-      max_length = 256
-      min_length = 0
-    }
-  }
-
-  auto_verified_attributes = ["email"]
-
-  // Add this line to allow sign-in with email
-  username_attributes = ["email"]
-
-  // Email configuration
-  email_configuration {
-    email_sending_account = "COGNITO_DEFAULT"
-  }
-
-  // Add these lines to enable verifying attribute changes
-  email_verification_message = "Your verification code is {####}."
-  email_verification_subject = "Code to verify your account"
-
-  // Add this block to enable verifying attribute changes
-  verification_message_template {
-    default_email_option  = "CONFIRM_WITH_CODE"
-  }
-
-}
-
-resource "aws_cognito_user_pool_client" "user_pool_client" {
-  name         = "user_pool_client"
-  user_pool_id = aws_cognito_user_pool.user_pool.id
-
-  explicit_auth_flows = [
-    "ALLOW_USER_SRP_AUTH",
-    "ALLOW_REFRESH_TOKEN_AUTH",
-    "ALLOW_CUSTOM_AUTH"
-  ]
-}
-
-resource "aws_cognito_identity_pool" "identity_pool" {
-  identity_pool_name = "identity_pool"
-  allow_unauthenticated_identities = false
-
-  cognito_identity_providers {
-    client_id               = aws_cognito_user_pool_client.user_pool_client.id
-    provider_name           = aws_cognito_user_pool.user_pool.endpoint
-    server_side_token_check = false
-  }
-}

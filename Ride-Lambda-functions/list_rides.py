@@ -3,12 +3,22 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from decimal import Decimal
 from datetime import datetime
+from urllib.parse import unquote
+import base64
 
 
 def format_value(obj):
     if isinstance(obj, Decimal):
         return str(obj)
     raise TypeError("Type not serializable")
+
+
+def parse_jwt(token):
+    base64_url = token.split('.')[1]  # Get the payload part of the token
+    base64_String = base64_url.replace('-', '+').replace('_', '/')
+    json_payload = unquote(base64.b64decode(
+        base64_String + "==").decode('utf-8'))
+    return json.loads(json_payload)
 
 
 def expire_rides(table):
@@ -38,9 +48,17 @@ def lambda_handler(event, context):
         if "body" not in event or not event["body"]:
             raise ValueError("Missing body in event")
         try:
-            event = json.loads(event["body"])
+            # Make header keys case-insensitive
+            headers = {k.lower(): v for k, v in event['headers'].items()}
+            if 'authorization' in headers:
+                id_token = headers['authorization'][7:]
+                event = json.loads(event["body"])
+            else:
+                raise ValueError("Missing Authorization header")
         except json.JSONDecodeError:
             raise ValueError("Invalid JSON in body")
+
+        user_data = parse_jwt(id_token)
 
         list_type = event.get("list_type")
         ride_id = event.get("ride_id")
