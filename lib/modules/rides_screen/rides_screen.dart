@@ -7,73 +7,66 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../shared/cubit/cubit.dart';
 import '../../shared/cubit/states.dart';
 import '../post/post_details.dart';
+
 class RidesScreen extends StatelessWidget {
   //'KFUPM to Airport', 'Airport to KFUPM', 'Riyadh to KFUPM', 'KFUPM to Riyadh'
   List<AdsModel> ads = [
     AdsModel(
-      adName: "KFUPM to Airport",
-      adResourceType: "KFUPM to Airport",
-      adDate: "2024-03-10",
-      adPlace: "Online",
-      photoUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
-    AdsModel(
-      adName: "Airport to KFUPM",
-      adResourceType: "Airport to KFUPM",
-      adDate: "2024-03-15",
-      adPlace: "Convention Center",
+        adName: "KFUPM to Airport",
+        adResourceType: "KFUPM to Airport",
+        adDate: "2024-03-10",
+        adPlace: "Online",
         photoUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
     AdsModel(
-      adName: "Riyadh to KFUPM",
-      adResourceType: "Riyadh to KFUPM",
-      adDate: "2024-03-18",
-      adPlace: "Shopping Mall",
+        adName: "Airport to KFUPM",
+        adResourceType: "Airport to KFUPM",
+        adDate: "2024-03-15",
+        adPlace: "Convention Center",
         photoUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
     AdsModel(
-      adName: "KFUPM to Riyadh",
-      adResourceType: "KFUPM to Riyadh",
-      adDate: "2024-03-20",
-      adPlace: "Gym",
+        adName: "Riyadh to KFUPM",
+        adResourceType: "Riyadh to KFUPM",
+        adDate: "2024-03-18",
+        adPlace: "Shopping Mall",
         photoUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
     AdsModel(
-      adName: "KFUPM to Airport",
-      adResourceType: "KFUPM to Airport",
-      adDate: "2024-03-25",
-      adPlace: "City Park",
+        adName: "KFUPM to Riyadh",
+        adResourceType: "KFUPM to Riyadh",
+        adDate: "2024-03-20",
+        adPlace: "Gym",
         photoUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
     AdsModel(
-      adName: "Airport to KFUPM",
-      adResourceType: "Airport to KFUPM",
-      adDate: "2024-03-28",
-      adPlace: "Travel Agency",
+        adName: "KFUPM to Airport",
+        adResourceType: "KFUPM to Airport",
+        adDate: "2024-03-25",
+        adPlace: "City Park",
         photoUrl:
-'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
     AdsModel(
-      adName: "Riyadh to KFUPM",
-      adResourceType: "Riyadh to KFUPM",
-      adDate: "2024-04-02",
-      adPlace: "Esports Arena",
+        adName: "Airport to KFUPM",
+        adResourceType: "Airport to KFUPM",
+        adDate: "2024-03-28",
+        adPlace: "Travel Agency",
         photoUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
     AdsModel(
-      adName: "KFUPM to Riyadh",
-      adResourceType: "KFUPM to Riyadh",
-      adDate: "2024-04-05",
-      adPlace: "Fashion District",
+        adName: "Riyadh to KFUPM",
+        adResourceType: "Riyadh to KFUPM",
+        adDate: "2024-04-02",
+        adPlace: "Esports Arena",
         photoUrl:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'
-    ),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
+    AdsModel(
+        adName: "KFUPM to Riyadh",
+        adResourceType: "KFUPM to Riyadh",
+        adDate: "2024-04-05",
+        adPlace: "Fashion District",
+        photoUrl:
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
   ];
   void applyFilters(List<String> filters) {
     List<AdsModel> filteredAds = filters.isNotEmpty
@@ -81,6 +74,7 @@ class RidesScreen extends StatelessWidget {
         : ads;
     // Now use filteredAds to update the UI
   }
+
   @override
   // Widget build(BuildContext context) {
   //   return BlocBuilder<HomeCubit, HomeStates>(
@@ -143,24 +137,22 @@ class RidesScreen extends StatelessWidget {
               textAlign: TextAlign.left,
               style: GoogleFonts.readexPro(
                   textStyle: TextStyle(
-                    color: Colors.indigo,
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w700,
-
-                  )
-              ),
-            )
-            ,
+                color: Colors.indigo,
+                fontSize: 25.0,
+                fontWeight: FontWeight.w700,
+              )),
+            ),
             Container(
               width: double.infinity,
               height: 1.0,
               color: Colors.grey[300],
             ),
             Container(
-              height : 90,
+              height: 90,
               child: Expanded(
                 child: ListView.separated(
-                  scrollDirection: Axis.horizontal, // This makes the ListView scroll horizontally
+                  scrollDirection: Axis
+                      .horizontal, // This makes the ListView scroll horizontally
                   itemCount: filteredAds.length,
                   itemBuilder: (context, index) {
                     return buildListItem3(
@@ -177,17 +169,16 @@ class RidesScreen extends StatelessWidget {
                                       filteredAds[index].adName,
                                       filteredAds[index].adResourceType,
                                       filteredAds[index].adDate,
-                                      filteredAds[index].adPlace
-                                  )
-                              )
-                          );
-                        }
+                                      filteredAds[index].adPlace)));
+                        });
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Container(
+                      width: 1.0,
+                      height: double.infinity,
+                      color: Colors.grey[300],
                     );
-                  }, separatorBuilder: (BuildContext context, int index) { return Container(
-                  width: 1.0,
-                  height: double.infinity,
-                  color: Colors.grey[300],
-                );},
+                  },
                 ),
               ),
             ),
@@ -197,11 +188,10 @@ class RidesScreen extends StatelessWidget {
               textAlign: TextAlign.left,
               style: GoogleFonts.readexPro(
                   textStyle: TextStyle(
-                    color: Colors.indigo,
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w700,
-                  )
-              ),
+                color: Colors.indigo,
+                fontSize: 25.0,
+                fontWeight: FontWeight.w700,
+              )),
             ),
             Container(
               width: double.infinity,
@@ -211,7 +201,8 @@ class RidesScreen extends StatelessWidget {
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // This specifies the number of columns in the grid
+                  crossAxisCount:
+                      2, // This specifies the number of columns in the grid
                   childAspectRatio: 3 / 2, // Adjust according to your needs
                 ),
                 itemCount: filteredAds.length,
@@ -229,12 +220,8 @@ class RidesScreen extends StatelessWidget {
                                   filteredAds[index].adName,
                                   filteredAds[index].adResourceType,
                                   filteredAds[index].adDate,
-                                  filteredAds[index].adPlace
-                              )
-                          )
-                      );
-                    }
-                ),
+                                  filteredAds[index].adPlace)));
+                    }),
               ),
             ),
           ],

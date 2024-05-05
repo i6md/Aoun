@@ -4,31 +4,30 @@ import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Widget defaultButton({
-  double width= double.infinity,
-Color background = const Color.fromARGB(255, 3, 50, 71),
+  double width = double.infinity,
+  Color background = const Color.fromARGB(255, 3, 50, 71),
   required VoidCallback? function,
   required String text,
   required bool IsUpperCase,
-})=> Container(
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(8),
-    color: background,
-  ),
-  height: 50.0,
-  width: width,
-
-  child: MaterialButton(
-    onPressed: function,
-    child: Text(
-      IsUpperCase ? text.toUpperCase() : text,
-      style: GoogleFonts.readexPro(
-        fontSize: 15.0,
-        color: Colors.white,
+}) =>
+    Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: background,
       ),
-    ),
-  ),
-);
-
+      height: 50.0,
+      width: width,
+      child: MaterialButton(
+        onPressed: function,
+        child: Text(
+          IsUpperCase ? text.toUpperCase() : text,
+          style: GoogleFonts.readexPro(
+            fontSize: 15.0,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
 
 Widget defaultFormField({
   required TextEditingController controller,
@@ -38,35 +37,35 @@ Widget defaultFormField({
   required String label,
   double? height,
   TextInputAction? action,
-
   void Function(String?)? onChange,
   IconData? prefix,
   bool secureText = false,
   IconData? suffix,
   VoidCallback? suffixPressed,
-})=>TextFormField(
-  controller: controller,
-  decoration: InputDecoration(
-    labelText: label,
-    prefixIcon: Icon(
-      prefix,
-    ),
-    suffixIcon:suffix != null ? IconButton(
-        icon: Icon(suffix),
-        onPressed: suffixPressed,
-    ) : null,
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10)
-    ),
-  ),
-  style: TextStyle(height: height ?? 2),
-  keyboardType: type,
-  textInputAction: action,
-  obscureText: secureText,
-  onFieldSubmitted: onSubmit,
-  onChanged: onChange,
-  validator: validate,
-);
+}) =>
+    TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(
+          prefix,
+        ),
+        suffixIcon: suffix != null
+            ? IconButton(
+                icon: Icon(suffix),
+                onPressed: suffixPressed,
+              )
+            : null,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      style: TextStyle(height: height ?? 2),
+      keyboardType: type,
+      textInputAction: action,
+      obscureText: secureText,
+      onFieldSubmitted: onSubmit,
+      onChanged: onChange,
+      validator: validate,
+    );
 
 Widget text_field({
   required TextEditingController? subjectController,
@@ -131,9 +130,9 @@ Widget text_field({
     );
 
 Widget notificationRequest(
-    {required String name,
-      required String place,
-      required String rating}) =>
+        {required String name,
+        required String place,
+        required String rating}) =>
     Container(
       width: double.infinity,
       height: 100,
@@ -255,10 +254,10 @@ Widget notificationRequest(
     );
 
 Widget notificationOffer(
-    {required String title,
-      required String name,
-      required String place,
-      required String rating}) =>
+        {required String title,
+        required String name,
+        required String place,
+        required String rating}) =>
     Container(
         width: double.infinity,
         height: 105,
@@ -349,15 +348,15 @@ Widget notificationOffer(
             ])));
 
 Widget reportText({required String label}) => Align(
-  alignment: Alignment.centerLeft,
-  child: Text(
-    label,
-    style: GoogleFonts.readexPro(
-      color: Colors.black,
-      fontSize: 15,
-    ),
-  ),
-);
+      alignment: Alignment.centerLeft,
+      child: Text(
+        label,
+        style: GoogleFonts.readexPro(
+          color: Colors.black,
+          fontSize: 15,
+        ),
+      ),
+    );
 
 Widget buildListItem({
   required String adName,
@@ -366,157 +365,151 @@ Widget buildListItem({
   required String adPlace,
   void Function()? onTapp,
   void Function()? onDelete,
-  bool showAdminButtons=false,
-
-})=> Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: InkWell(
-    onTap: onTapp,
-    child: Transform(
-      alignment: FractionalOffset.center,
-      transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.002) // This value controls the perspective effect
-        ..rotateX(0.01) // These values control the rotation
-        ..rotateY(0.01),
-      child: Card(
-        elevation: 4.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage( image:
-              NetworkImage(
-                  'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/AcetoFive.JPG/330px-AcetoFive.JPG'
-              ),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.4),
-                  BlendMode.darken,
-                ),
-              ),
-          borderRadius: BorderRadius.circular(9.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.5),
-                blurRadius: 15.0,
-                spreadRadius: 5.0,
-                offset: Offset(5, 5),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      if (showAdminButtons) // replace 'showDeleteButton' with your actual condition
-                        IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: (){
-                          if (onDelete != null) {
-                            onDelete();
-                          }
-
-                        },
-                        ),
-                      if (showAdminButtons) // replace 'showEditButton' with your actual condition
-                        IconButton(
-                          icon: Icon(Icons.edit, color: Colors.white),
-                          onPressed: (){
-                            if (onDelete != null) {
-                              onDelete();
-                            }
-
-                          },
-                        ),
-
-                      IconButton(
-                        onPressed: () {
-                          // Add functionality here or replace with a non-interactive widget
-                        },
-                        icon: Icon(Icons.thumb_up_alt_rounded,
-                        color: Colors.white,),
-                      ),
-                      SizedBox(
-                          height: (showAdminButtons) ? 45 : 75,
-                      ),
-                      CircleAvatar(
-                        radius: 35,
-                        backgroundImage: NetworkImage('https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/i_769af3ac-d_1.jpg'),
-                      ),
-                    ],
+  bool showAdminButtons = false,
+}) =>
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        onTap: onTapp,
+        child: Transform(
+          alignment: FractionalOffset.center,
+          transform: Matrix4.identity()
+            ..setEntry(
+                3, 2, 0.002) // This value controls the perspective effect
+            ..rotateX(0.01) // These values control the rotation
+            ..rotateY(0.01),
+          child: Card(
+            elevation: 4.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/AcetoFive.JPG/330px-AcetoFive.JPG'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.4),
+                    BlendMode.darken,
                   ),
                 ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children:
-                    [
-                      Text(
-                        adDate,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                        ),
-                      ),
-
-                      SizedBox(
-                        height: 75,
-                      ),
-                      Text(
-                        adName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        "Turki",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        '${adPlace}',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
-                        ),
-                      ),
-                    ],
+                borderRadius: BorderRadius.circular(9.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 15.0,
+                    spreadRadius: 5.0,
+                    offset: Offset(5, 5),
                   ),
-                )
-              ],
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          if (showAdminButtons) // replace 'showDeleteButton' with your actual condition
+                            IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                if (onDelete != null) {
+                                  onDelete();
+                                }
+                              },
+                            ),
+                          if (showAdminButtons) // replace 'showEditButton' with your actual condition
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.white),
+                              onPressed: () {
+                                if (onDelete != null) {
+                                  onDelete();
+                                }
+                              },
+                            ),
+                          IconButton(
+                            onPressed: () {
+                              // Add functionality here or replace with a non-interactive widget
+                            },
+                            icon: Icon(
+                              Icons.thumb_up_alt_rounded,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(
+                            height: (showAdminButtons) ? 45 : 75,
+                          ),
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundImage: NetworkImage(
+                                'https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/i_769af3ac-d_1.jpg'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            adDate,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 75,
+                          ),
+                          Text(
+                            adName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            "Turki",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            '${adPlace}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),
       ),
-    ),
-  ),
-)
-
-
-;
-
+    );
 
 //Padding(
 //   padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -599,163 +592,166 @@ Widget buildListItem1({
   required String adPlace,
   void Function()? onTapp,
   void Function()? onDelete,
-  bool showAdminButtons=false,
-}) => Padding(
-  padding: const EdgeInsets.symmetric(vertical : 15.0, horizontal: 15.0),
-  child: Transform(
-    alignment: FractionalOffset.center,
-    transform: Matrix4.identity()
-      ..setEntry(3, 2, 0.045) // This value controls the perspective effect
-      ..rotateX(-0.015) // These values control the rotation
-      ..rotateY(0),
-    child: Container(
-
-      decoration: BoxDecoration(
-        image: DecorationImage( image:
-        NetworkImage(
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/AcetoFive.JPG/330px-AcetoFive.JPG'
-        ),
-          fit: BoxFit.fill,
-          colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.5),
-            BlendMode.srcATop,
-          ),
-        ),
-        borderRadius: BorderRadius.circular(9.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 19,
-            spreadRadius: 5.0,
-            offset: Offset(5, 5),
-          ),
-        ],
-      ),
-      child: Card(
-        color: Colors.transparent, // make the card transparent
-        elevation: 9.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(19.0),
-        ),
-        child: ExpansionTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(19.0),
-          ),
-          title: Text(adName ,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          subtitle: Text(adDate,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),),
-          children: <Widget>[ Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (showAdminButtons) // replace 'showDeleteButton' with your actual condition
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: (){
-                        if (onDelete != null) {
-                          onDelete();
-                        }
-
-                      },
-                    ),
-                  if (showAdminButtons) // replace 'showEditButton' with your actual condition
-                    IconButton(
-                      icon: Icon(Icons.edit, color: Colors.white),
-                      onPressed: (){
-                        if (onDelete != null) {
-                          onDelete();
-                        }
-
-                      },
-                    ),
-
-                  IconButton(
-                    onPressed: () {
-                      // Add functionality here or replace with a non-interactive widget
-                    },
-                    icon: Icon(Icons.thumb_up_alt_rounded,
-                      color: Colors.white,),
-                  ),
-                  SizedBox(
-                    height: (showAdminButtons) ? 25 : 50,
-                  ),
-                  CircleAvatar(
-                    radius: 35,
-                    backgroundImage: NetworkImage('https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/i_769af3ac-d_1.jpg'),
-                  ),
-                ],
+  bool showAdminButtons = false,
+}) =>
+    Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
+      child: Transform(
+        alignment: FractionalOffset.center,
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.045) // This value controls the perspective effect
+          ..rotateX(-0.015) // These values control the rotation
+          ..rotateY(0),
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/AcetoFive.JPG/330px-AcetoFive.JPG'),
+              fit: BoxFit.fill,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5),
+                BlendMode.srcATop,
               ),
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children:
-                [
-                  Text(
-                    "Owner name : Turki",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(
-                    height: (showAdminButtons) ? 35 : 65,
-                  ),
-                  Text(
-                    'Place: ${adPlace}',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                    ),
-                  ),
-                  Text(
-                    'Type: ${adResourceType}',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                    ),
-                  ),
-                ],
-              )
+            ),
+            borderRadius: BorderRadius.circular(9.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 19,
+                spreadRadius: 5.0,
+                offset: Offset(5, 5),
+              ),
             ],
           ),
-          ],
-          trailing: IconButton(
-            icon: Icon(Icons.arrow_forward, color: Colors.white,),
-            onPressed: onTapp,
+          child: Card(
+            color: Colors.transparent, // make the card transparent
+            elevation: 9.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(19.0),
+            ),
+            child: ExpansionTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(19.0),
+              ),
+              title: Text(
+                adName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              subtitle: Text(
+                adDate,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        if (showAdminButtons) // replace 'showDeleteButton' with your actual condition
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              if (onDelete != null) {
+                                onDelete();
+                              }
+                            },
+                          ),
+                        if (showAdminButtons) // replace 'showEditButton' with your actual condition
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.white),
+                            onPressed: () {
+                              if (onDelete != null) {
+                                onDelete();
+                              }
+                            },
+                          ),
+                        IconButton(
+                          onPressed: () {
+                            // Add functionality here or replace with a non-interactive widget
+                          },
+                          icon: Icon(
+                            Icons.thumb_up_alt_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          height: (showAdminButtons) ? 25 : 50,
+                        ),
+                        CircleAvatar(
+                          radius: 35,
+                          backgroundImage: NetworkImage(
+                              'https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/i_769af3ac-d_1.jpg'),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "Owner name : Turki",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          height: (showAdminButtons) ? 35 : 65,
+                        ),
+                        Text(
+                          'Place: ${adPlace}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        Text(
+                          'Type: ${adResourceType}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ],
+              trailing: IconButton(
+                icon: Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                ),
+                onPressed: onTapp,
+              ),
+            ),
           ),
         ),
       ),
-    ),
-  ),
-);
+    );
 
 Widget buildListItem2({
   required String adName,
@@ -765,7 +761,7 @@ Widget buildListItem2({
   required String photoUrl,
   void Function()? onTapp,
   void Function()? onDelete,
-  bool showAdminButtons=false,
+  bool showAdminButtons = false,
 }) {
   // Define a state variable to control the scale of the card
   bool isPressed = false;
@@ -774,7 +770,7 @@ Widget buildListItem2({
     // When the card is pressed, set isPressed to true to increase the scale
     onTap: onTapp,
     child: Padding(
-      padding: const EdgeInsets.symmetric(vertical : 15.0, horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
       child: Transform(
         alignment: FractionalOffset.center,
         transform: Matrix4.identity()
@@ -783,10 +779,8 @@ Widget buildListItem2({
           ..rotateY(0),
         child: Container(
           decoration: BoxDecoration(
-            image: DecorationImage( image:
-            NetworkImage(
-                photoUrl
-            ),
+            image: DecorationImage(
+              image: NetworkImage(photoUrl),
               fit: BoxFit.fill,
               colorFilter: ColorFilter.mode(
                 Colors.black.withOpacity(0.5),
@@ -824,35 +818,25 @@ Widget buildListItem2({
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white
-                        ),
+                            color: Colors.white),
                       ),
                       Text(
                         adResourceType,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white
-                        ),
+                        style: TextStyle(fontSize: 13, color: Colors.white),
                       ),
                       Text(
                         adDate,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white
-                        ),
+                        style: TextStyle(fontSize: 11, color: Colors.white),
                       ),
                       Text(
                         adPlace,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white
-                        ),
+                        style: TextStyle(fontSize: 11, color: Colors.white),
                       ),
                     ],
                   ),
@@ -880,6 +864,7 @@ Widget buildListItem2({
     ),
   );
 }
+
 Widget buildListItem3({
   required String adName,
   required String adResourceType,
@@ -888,7 +873,7 @@ Widget buildListItem3({
   required String photoUrl,
   void Function()? onTapp,
   void Function()? onDelete,
-  bool showAdminButtons=false,
+  bool showAdminButtons = false,
 }) {
   // Define a state variable to control the scale of the card
   bool isPressed = false;
@@ -897,7 +882,7 @@ Widget buildListItem3({
     // When the card is pressed, set isPressed to true to increase the scale
     onTap: onTapp,
     child: Padding(
-      padding: const EdgeInsets.symmetric(vertical : 10.0, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
       child: Transform(
         alignment: FractionalOffset.center,
         transform: Matrix4.identity()
@@ -908,10 +893,8 @@ Widget buildListItem3({
           width: 150,
           height: 10,
           decoration: BoxDecoration(
-            image: DecorationImage( image:
-            NetworkImage(
-                photoUrl
-            ),
+            image: DecorationImage(
+              image: NetworkImage(photoUrl),
               fit: BoxFit.fill,
               colorFilter: ColorFilter.mode(
                 Colors.black.withOpacity(0.5),
@@ -941,22 +924,17 @@ Widget buildListItem3({
                         style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white
-                        ),
+                            color: Colors.white),
                       ),
                       Text(
                         adPlace,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.white
-                        ),
+                        style: TextStyle(fontSize: 11, color: Colors.white),
                       ),
                     ],
                   ),
                 ),
-
               ],
             ),
           ),

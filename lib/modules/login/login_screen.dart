@@ -5,6 +5,10 @@ import 'package:aoun_app/shared/components/components.dart';
 import 'package:aoun_app/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+
+import 'auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -14,7 +18,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final RegExp kfupmEmailRegex = RegExp(r'^[sg]\d{9}@kfupm\.edu\.sa$', caseSensitive: false);
+  final RegExp kfupmEmailRegex =
+      RegExp(r'^[sg]\d{9}@kfupm\.edu\.sa$', caseSensitive: false);
 
   var formkey = GlobalKey<FormState>();
 
@@ -29,21 +34,16 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))
-        ),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
         automaticallyImplyLeading: false,
-        title: Text(
-            'Aoun',
+        title: Text('Aoun',
             style: GoogleFonts.lato(
                 textStyle: TextStyle(
-                  color: Colors.indigo,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.w700,
-                )
-            )
-        ),
+              color: Colors.indigo,
+              fontSize: 25.0,
+              fontWeight: FontWeight.w700,
+            ))),
         centerTitle: true,
-
         backgroundColor: Colors.white,
       ),
       body: Padding(
@@ -61,7 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 25.0,
                       fontWeight: FontWeight.bold,
-
                     ),
                   ),
                   const SizedBox(
@@ -70,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   defaultFormField(
                       controller: emailController,
                       type: TextInputType.emailAddress,
-                      validate: (value){
+                      validate: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
                         } else if (!kfupmEmailRegex.hasMatch(value)) {
@@ -80,54 +79,51 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       label: 'Email Address',
                       prefix: Icons.email,
-                      onChange: (value){
+                      onChange: (value) {
                         print(value);
                       },
-                      onSubmit: (value){
+                      onSubmit: (value) {
                         print(value);
-                      }
-                  ),
+                      }),
                   const SizedBox(
                     height: 10,
                   ),
                   defaultFormField(
-                      controller: passwordController,
-                      type: TextInputType.visiblePassword,
-                      validate: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your Password';
-                        }
-                      },
-                      label: 'Password',
-                      prefix: Icons.lock,
-                      secureText: isPassword,
-                      suffix: isPassword? Icons.visibility : Icons.visibility_off,
-                      onSubmit: (value){
-                            print(value);
-                             },
-                      onChange: (value){
-                        print(value);
-                      },
-                      suffixPressed:(){
-                        setState(() {
-                          isPassword=!isPassword;
-                        });
-                      } ,
-
+                    controller: passwordController,
+                    type: TextInputType.visiblePassword,
+                    validate: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your Password';
+                      }
+                    },
+                    label: 'Password',
+                    prefix: Icons.lock,
+                    secureText: isPassword,
+                    suffix:
+                        isPassword ? Icons.visibility : Icons.visibility_off,
+                    onSubmit: (value) {
+                      print(value);
+                    },
+                    onChange: (value) {
+                      print(value);
+                    },
+                    suffixPressed: () {
+                      setState(() {
+                        isPassword = !isPassword;
+                      });
+                    },
                   ),
                   const SizedBox(
                     height: 20.0,
                   ),
                   defaultButton(
-                      text: 'login',
-                      function: () {
-                        if(formkey.currentState!.validate()){
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpForm()));
-                        }
-
-                      }, IsUpperCase: true,
-
-
+                    text: 'login',
+                    function: () {
+                      if (formkey.currentState!.validate()) {
+                        signInUser();
+                      }
+                    },
+                    IsUpperCase: true,
                   ),
                   const SizedBox(
                     height: 20.0,
@@ -142,15 +138,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       TextButton(
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RegistrationScreen()));
-                          },
-                          child: const Text(
-                            'Register Now',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                            ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RegistrationScreen()));
+                        },
+                        child: const Text(
+                          'Register Now',
+                          style: TextStyle(
+                            fontSize: 18.0,
                           ),
+                        ),
                       )
                     ],
                   ),
@@ -161,5 +160,65 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void signInUser() async {
+    if (formkey.currentState!.validate()) {
+      print(emailController.text.trim());
+      print(passwordController.text.trim());
+
+      try {
+        SignInResult signInResult = await Amplify.Auth.signIn(
+          username: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+        if (signInResult.isSignedIn) {
+          getToken(); // remove after testing
+          print('User signed in');
+
+          // // Retrieve the current auth session
+          // AuthSession authSession = await Amplify.Auth.fetchAuthSession(options: CognitoSessionOptions(getAWSCredentials: true));
+          //
+          // // Check if the session is a Cognito Auth Session and print the ID Token
+          // if (authSession is CognitoAuthSession && authSession.isSignedIn) {
+          //   print('ID Token: ${authSession.userPoolTokens?.idToken}');
+          // }
+
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          // Navigate to your desired screen upon successful sign-in
+        } else {
+          print('User could not be signed in');
+        }
+      } on AuthException catch (e) {
+        print(e.message);
+        // Handle authentication errors here
+      }
+    }
+  }
+
+  // use this function in the needed classes to get the idToken (by calling it. line: 180) to use in the request header
+  // dont forget to add "import auth_service.dart"
+  void getToken() async {
+    // Create an instance of AuthService
+    final AuthService authService = AuthService();
+    // Call the getIdToken method
+    var idToken = await authService.refreshIdToken();
+
+    if (idToken != null) {
+      print(idToken);
+
+      // var headers = {
+      //   'Authorization': 'Bearer $idToken',
+      // };
+
+      // Use the headers in your backend request
+    } else {
+      print("token not available");
+      Amplify.Auth.signOut();
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      // Handle the scenario where the token is not available
+    }
   }
 }

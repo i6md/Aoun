@@ -31,37 +31,37 @@ class _MapScreenState extends State<MapScreen> {
     ));
   }
 
-  // void _onSymbolTapped(Symbol symbol) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return Container(
-  //         height: 250, // Adjust the height as needed
-  //         color: Colors.white, // Background color for the sheet
-  //         child: Center(
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: <Widget>[
-  //               Text('Vacuum', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-  //               SizedBox(height: 10), // For spacing
-  //               Text('824 views', style: TextStyle(fontSize: 18)),
-  //               SizedBox(height: 10), // For spacing
-  //               Text('3 min ago', style: TextStyle(fontSize: 18)),
-  //               // Add more widgets for additional ad information
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  void _onSymbolTapped(Symbol symbol) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 250, // Adjust the height as needed
+          color: Colors.white, // Background color for the sheet
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('Vacuum', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10), // For spacing
+                Text('824 views', style: TextStyle(fontSize: 18)),
+                SizedBox(height: 10), // For spacing
+                Text('3 min ago', style: TextStyle(fontSize: 18)),
+                // Add more widgets for additional ad information
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-  // @override
-  // void dispose() {
-  //   // Remove the symbol tap listener
-  //   mapController?.onSymbolTapped.remove(_onSymbolTapped);
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    // Remove the symbol tap listener
+    mapController?.onSymbolTapped.remove(_onSymbolTapped);
+    super.dispose();
+  }
 
 
   @override
