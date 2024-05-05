@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:aoun_app/core/app_export.dart';
 import 'package:aoun_app/widgets/custom_elevated_button.dart';
 import 'package:aoun_app/widgets/custom_text_form_field.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 
-// ignore_for_file: must_be_immutable
 class ProfileSecurityPage extends StatefulWidget {
-  const ProfileSecurityPage({Key? key})
-      : super(
-          key: key,
-        );
+  const ProfileSecurityPage({Key? key}) : super(key: key);
 
   @override
   ProfileSecurityPageState createState() => ProfileSecurityPageState();
@@ -17,13 +14,12 @@ class ProfileSecurityPage extends StatefulWidget {
 class ProfileSecurityPageState extends State<ProfileSecurityPage>
     with AutomaticKeepAliveClientMixin<ProfileSecurityPage> {
   TextEditingController passwordController = TextEditingController();
-
   TextEditingController newpasswordController = TextEditingController();
-
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -94,9 +90,58 @@ class ProfileSecurityPageState extends State<ProfileSecurityPage>
           CustomElevatedButton(
             text: "Update Password",
             buttonStyle: CustomButtonStyles.fillGray,
+            onPressed: () => changePassword(context),
           ),
         ],
       ),
     );
+  }
+
+  void changePassword(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        // Sign in with the old password to verify user identity
+        // await Amplify.Auth.signIn(
+        //   username: emailController.text,
+        //   password: passwordController.text,
+        // );
+
+        // Change password
+        await Amplify.Auth.updatePassword(
+          newPassword: newpasswordController.text,
+          oldPassword: passwordController.text,
+        );
+
+        // Password successfully changed.
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Success'),
+            content: Text('Password changed successfully.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } catch (e) {
+        // Handle error.
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to change password. ${e.toString()}'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 }

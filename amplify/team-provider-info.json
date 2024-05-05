@@ -1,0 +1,28 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-aoun-staging-125012-authRole",
+      "UnauthRoleArn": "arn:aws:iam::521388467136:role/amplify-aoun-staging-125012-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::521388467136:role/amplify-aoun-staging-125012-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-aoun-staging-125012-deployment",
+      "UnauthRoleName": "amplify-aoun-staging-125012-unauthRole",
+      "StackName": "amplify-aoun-staging-125012",
+      "StackId": "arn:aws:cloudformation:us-east-1:521388467136:stack/amplify-aoun-staging-125012/ee1823b0-c812-11ee-8cb7-0ebb932961c7",
+      "AmplifyAppId": "duiehut4h941o",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-aoun-staging-125012-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "function": {
+        "aoundad14e77PreSignup": {
+          "DOMAINALLOWLIST": "kfupm.edu.sa",
+          "deploymentBucketName": "amplify-aoun-staging-125012-deployment",
+          "s3Key": "amplify-builds/aoundad14e77PreSignup-502b3041493066585764-build.zip"
+        }
+      },
+      "auth": {
+        "aoundad14e77": {}
+      }
+    }
+  }
+}
