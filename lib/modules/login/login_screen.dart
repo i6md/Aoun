@@ -8,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
+import 'auth_service.dart';
+
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
@@ -175,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: passwordController.text.trim(),
         );
         if (signInResult.isSignedIn) {
+          getToken();  // remove after testing
           print('User signed in');
 
 
@@ -201,7 +204,31 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
+  // use this function in the needed classes to get the idToken (by calling it. line: 180) to use in the request header
+  // dont forget to add "import auth_service.dart"
+  void getToken() async {
+    // Create an instance of AuthService
+    final AuthService authService = AuthService();
+    // Call the getIdToken method
+    var idToken = await authService.refreshIdToken();
 
+    if (idToken != null) {
+
+      print(idToken);
+
+      // var headers = {
+      //   'Authorization': 'Bearer $idToken',
+      // };
+
+
+      // Use the headers in your backend request
+    } else {
+      print("token not available");
+      Amplify.Auth.signOut();
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+      // Handle the scenario where the token is not available
+    }
+  }
 
 
 }
