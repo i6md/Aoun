@@ -23,7 +23,7 @@ class AuthService {
   }
 
   // Public method to get the token
-  Future<String?> getToken(BuildContext context) async {
+  Future<String?> getToken() async {
     // Call the refreshIdToken method
     var idToken = await refreshIdToken();
 
@@ -33,10 +33,10 @@ class AuthService {
       // Sign out the user and redirect to login screen
       print("Token not available, signing out.");
       await Amplify.Auth.signOut();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => LoginScreen()),
+      // );
       return null;
     }
   }

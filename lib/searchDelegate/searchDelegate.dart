@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../shared/cubit/cubit.dart';
 
 class DataSearch extends SearchDelegate<AdsModel> {
-  final List<AdsModel> dataList;
+  final Future<List<AdsModel>> dataList;
 
   DataSearch(this.dataList);
 
@@ -29,46 +29,88 @@ class DataSearch extends SearchDelegate<AdsModel> {
         progress: transitionAnimation,
       ),
       onPressed: () {
-        close(context, AdsModel(adName: '', adResourceType: '', adDate: '', adPlace: ''));
+        close(
+            context,
+            AdsModel(
+              adId: '',
+              adName: '',
+              adResourceType: '',
+              adDate: null,
+              adPlace: '',
+              adDescription: '',
+            ));
       },
     );
   }
 
   @override
+  @override
   Widget buildResults(BuildContext context) {
-    final suggestionList = dataList.where((item) => item.adName.startsWith(query)).toList();
-
-    // Emit a new state with the search results
-    HomeCubit.get(context).updateSearchResults(suggestionList.map((item) => item.adName).toList());
-
-    // Close the search page
-    close(context, AdsModel(adName: '', adResourceType: '', adDate: '', adPlace: ''));
-
-    return Container(); // Return an empty container as the search page is closed
+    return FutureBuilder<List<AdsModel>>(
+      future: dataList,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final suggestionList = snapshot.data
+              ?.where((item) => item.adName!.startsWith(query))
+              .toList();
+          // Emit a new state with the search results
+          HomeCubit.get(context).updateSearchResults(
+              suggestionList!.map((item) => item.adName!).toList());
+          // Close the search page
+          close(
+              context,
+              AdsModel(
+                  adId: '',
+                  adName: '',
+                  adResourceType: '',
+                  adDate: null,
+                  adPlace: '',
+                  adDescription: ''));
+          return Container(); // Return an empty container as the search page is closed
+        }
+      },
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = dataList.where((item) => item.adName.startsWith(query)).toList();
-
-    return ListView.builder(
-      itemBuilder: (context, index) => ListTile(
-        title: Text(suggestionList[index].adName),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PostDetalis(
-                suggestionList[index].adName,
-                suggestionList[index].adResourceType,
-                suggestionList[index].adDate,
-                suggestionList[index].adPlace,
-              ),
+    return FutureBuilder<List<AdsModel>>(
+      future: dataList,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final suggestionList = snapshot.data!
+              .where((item) => item.adName!.startsWith(query))
+              .toList();
+          return ListView.builder(
+            itemBuilder: (context, index) => ListTile(
+              title: Text(suggestionList[index].adName!),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PostDetalis(
+                        suggestionList[index].adId,
+                        suggestionList[index].adName!,
+                        suggestionList[index].adResourceType!,
+                        suggestionList[index].adDate!,
+                        suggestionList[index].adPlace!,
+                        suggestionList[index].adDescription!),
+                  ),
+                );
+              },
             ),
+            itemCount: suggestionList.length,
           );
-        },
-      ),
-      itemCount: suggestionList.length,
+        }
+      },
     );
   }
 }

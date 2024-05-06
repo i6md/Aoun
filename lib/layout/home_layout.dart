@@ -25,6 +25,7 @@ import '../searchDelegate/searchDelegate.dart';
 
 class HomeScreen extends StatelessWidget {
   bool isAdmin = true;
+  HomeScreen({super.key});
 
   Widget build(BuildContext context) {
     return BlocProvider(

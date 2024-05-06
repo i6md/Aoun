@@ -175,8 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: passwordController.text.trim(),
         );
         if (signInResult.isSignedIn) {
-
-          var idToken = await authService.getToken(context);
+          var idToken = await authService.getToken();
           print(idToken);
           print('User signed in');
 
@@ -200,6 +199,4 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-
-
 }
