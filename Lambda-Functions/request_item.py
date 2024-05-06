@@ -48,9 +48,11 @@ def lambda_handler(event, context):
 
         # Specify the DynamoDB table name
         table_name = 'item'
+        user_table_name = 'user'
 
         # Get a reference to the DynamoDB table
         table = dynamodb.Table(table_name)
+        user_table = dynamodb.Table(user_table_name)
 
         service_identifier = "i"
         desired_length = 10
@@ -65,6 +67,10 @@ def lambda_handler(event, context):
             owner_id = None
         title = event.get('title')
         description = event.get('description')
+        # Query the user table to get the user's building
+        user_response = user_table.get_item(Key={'user_id': owner_id})
+        building = user_response['Item'].get(
+            'building') if 'Item' in user_response else None
 
         # Create a new item with the specified attributes
         new_item = {
@@ -73,6 +79,7 @@ def lambda_handler(event, context):
             'owner_id': owner_id,
             'title': title,
             'description': description,
+            'building': building,
             'item_type': "request",
             'expired': False
 

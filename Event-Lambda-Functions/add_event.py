@@ -108,7 +108,7 @@ def lambda_handler(event, context):
             # Add picture information to DynamoDB
             dynamodb.Table("event_picture").put_item(Item={
                 "pic_id": pic_id,
-                "item_id": generated_id,
+                "event_id": generated_id,
                 "url": pic_url
             })
             pic_number += 1
