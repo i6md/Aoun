@@ -220,10 +220,13 @@ Widget notificationRequest(
                     width: 2,
                   ),
                 ),
-                child: Icon(
-                  Icons.clear_rounded,
-                  color: Color(0xFFFC0202),
-                  size: 24,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.clear_rounded,
+                    color: Color(0xFFFC0202),
+                    size: 24,
+                  ),
+                  onPressed: () {},
                 ),
               ),
             ),
@@ -237,14 +240,17 @@ Widget notificationRequest(
                   //     .secondaryBackground,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Color.fromARGB(255, 57, 210, 192),
+                    color: Color.fromARGB(255, 3, 50, 71),
                     width: 2,
                   ),
                 ),
-                child: Icon(
-                  Icons.check_rounded,
-                  color: Color.fromARGB(255, 57, 210, 192),
-                  size: 24,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.check_rounded,
+                    color: Color.fromARGB(255, 3, 50, 71),
+                    size: 24,
+                  ),
+                  onPressed: () {},
                 ),
               ),
             ),
@@ -359,10 +365,10 @@ Widget reportText({required String label}) => Align(
     );
 
 Widget buildListItem({
-  required String adName,
-  required String adResourceType,
-  required String adDate,
-  required String adPlace,
+  required String? adName,
+  required String? adResourceType,
+  required DateTime? adDate,
+  required String? adPlace,
   void Function()? onTapp,
   void Function()? onDelete,
   bool showAdminButtons = false,
@@ -448,8 +454,9 @@ Widget buildListItem({
                           ),
                           CircleAvatar(
                             radius: 35,
-                            backgroundImage: NetworkImage(
-                                'https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/i_769af3ac-d_1.jpg'),
+                            backgroundImage: //Image.asset('Aoun_LOGOBB.png');
+                                NetworkImage(
+                                    'https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/i_102df067-f_1.jpg'),
                           ),
                         ],
                       ),
@@ -461,7 +468,7 @@ Widget buildListItem({
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            adDate,
+                            timeDifference(adDate)!,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 13,
@@ -471,7 +478,7 @@ Widget buildListItem({
                             height: 75,
                           ),
                           Text(
-                            adName,
+                            adName!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -510,6 +517,30 @@ Widget buildListItem({
         ),
       ),
     );
+String? timeDifference(DateTime? adDate) {
+  final Duration timeDifference = DateTime.now().difference(adDate!);
+  final String timeDiffString;
+  if (timeDifference.inMinutes < 60) {
+    if (timeDifference.inMinutes == 1) {
+      timeDiffString = "${timeDifference.inMinutes} minute ago";
+    } else {
+      timeDiffString = "${timeDifference.inMinutes} minutes ago";
+    }
+  } else if (timeDifference.inHours < 24) {
+    if (timeDifference.inHours == 1) {
+      timeDiffString = "${timeDifference.inHours} hour ago";
+    } else {
+      timeDiffString = "${timeDifference.inHours} hours ago";
+    }
+  } else {
+    if (timeDifference.inDays == 1) {
+      timeDiffString = "${timeDifference.inDays} day ago";
+    } else {
+      timeDiffString = "${timeDifference.inDays} days ago";
+    }
+  }
+  return timeDiffString;
+}
 
 //Padding(
 //   padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -592,6 +623,7 @@ Widget buildListItem1({
   required String adPlace,
   void Function()? onTapp,
   void Function()? onDelete,
+
   bool showAdminButtons = false,
 }) =>
     Padding(
@@ -754,14 +786,15 @@ Widget buildListItem1({
     );
 
 Widget buildListItem2({
-  required String adName,
-  required String adResourceType,
-  required String adDate,
-  required String adPlace,
-  required String photoUrl,
+  required String? adName,
+  required dynamic? adResourceType,
+  required DateTime? adDate,
+  required String? adPlace,
   void Function()? onTapp,
   void Function()? onDelete,
+  List<dynamic>? adImages,
   bool showAdminButtons = false,
+  required String? photoUrl,
 }) {
   // Define a state variable to control the scale of the card
   bool isPressed = false;
@@ -780,7 +813,7 @@ Widget buildListItem2({
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(photoUrl),
+              image: NetworkImage(adImages?.first!),
               fit: BoxFit.fill,
               colorFilter: ColorFilter.mode(
                 Colors.black.withOpacity(0.5),
@@ -812,7 +845,7 @@ Widget buildListItem2({
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        adName,
+                        adName!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -821,19 +854,19 @@ Widget buildListItem2({
                             color: Colors.white),
                       ),
                       Text(
-                        adResourceType,
+                        adResourceType!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 13, color: Colors.white),
                       ),
                       Text(
-                        adDate,
+                        timeDifference(adDate)!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),
                       ),
                       Text(
-                        adPlace,
+                        adPlace!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),
@@ -866,11 +899,12 @@ Widget buildListItem2({
 }
 
 Widget buildListItem3({
-  required String adName,
-  required String adResourceType,
-  required String adDate,
-  required String adPlace,
-  required String photoUrl,
+  required String? adName,
+  dynamic? adResourceType,
+  required DateTime? adDate,
+  required String? adPlace,
+  required String? photoUrl,
+  List<dynamic>? adImages,
   void Function()? onTapp,
   void Function()? onDelete,
   bool showAdminButtons = false,
@@ -894,7 +928,7 @@ Widget buildListItem3({
           height: 10,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(photoUrl),
+              image: NetworkImage(adImages?.first!),
               fit: BoxFit.fill,
               colorFilter: ColorFilter.mode(
                 Colors.black.withOpacity(0.5),
@@ -918,7 +952,7 @@ Widget buildListItem3({
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        adName,
+                        adName!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -927,7 +961,7 @@ Widget buildListItem3({
                             color: Colors.white),
                       ),
                       Text(
-                        adPlace,
+                        adPlace!,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),

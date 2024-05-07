@@ -16,12 +16,14 @@ class OtpForm extends StatefulWidget {
 
 class _OtpFormState extends State<OtpForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers =
+      List.generate(6, (_) => TextEditingController());
 
   void confirmSignUp() async {
     if (_formKey.currentState!.validate()) {
       try {
-        final String confirmationCode = _controllers.map((controller) => controller.text).join();
+        final String confirmationCode =
+            _controllers.map((controller) => controller.text).join();
         final String email = widget.email;
 
         final SignUpResult result = await Amplify.Auth.confirmSignUp(
@@ -31,7 +33,7 @@ class _OtpFormState extends State<OtpForm> {
 
         if (result.isSignUpComplete) {
           print("Verification is complete");
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
         } else {
           print('Sign-up confirmation not complete, additional steps required');
         }
@@ -82,8 +84,7 @@ class _OtpFormState extends State<OtpForm> {
     return Scaffold(
       appBar: AppBar(
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))
-        ),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
         automaticallyImplyLeading: false,
         title: Text(
           'Aoun',
@@ -102,9 +103,11 @@ class _OtpFormState extends State<OtpForm> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            Text('2-Step Verification', style: Theme.of(context).textTheme.headlineLarge),
+            Text('2-Step Verification',
+                style: Theme.of(context).textTheme.headlineLarge),
             SizedBox(height: 15),
-            Text('Please Enter the 6-digits code that you received', style: Theme.of(context).textTheme.bodyMedium),
+            Text('Please Enter the 6-digits code that you received',
+                style: Theme.of(context).textTheme.bodyMedium),
             SizedBox(height: 80),
             Form(
               key: _formKey,
@@ -113,7 +116,8 @@ class _OtpFormState extends State<OtpForm> {
                 children: [
                   for (int i = 0; i < 6; i++) ...[
                     _buildOtpField(i),
-                    if (i < 5) SizedBox(width: 10), // Add spacing between the fields
+                    if (i < 5)
+                      SizedBox(width: 10), // Add spacing between the fields
                   ]
                 ],
               ),
@@ -126,18 +130,24 @@ class _OtpFormState extends State<OtpForm> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Back To Sign-in Page', style: TextStyle(color: Colors.white, fontSize: 20)),
+                  child: Text('Back To Sign-in Page',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(15)),
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        EdgeInsets.all(15)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.red),
                   ),
                 ),
                 TextButton(
                   onPressed: confirmSignUp,
-                  child: Text('Verify', style: TextStyle(color: Colors.white, fontSize: 20)),
+                  child: Text('Verify',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
                   style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(15)),
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo),
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        EdgeInsets.all(15)),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.indigo),
                   ),
                 ),
               ],

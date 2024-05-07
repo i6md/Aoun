@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:aoun_app/modules/rate/rate_post.dart';
 import 'package:aoun_app/modules/report/report_post.dart';
 import 'package:flutter/material.dart';
@@ -6,13 +8,17 @@ import 'package:aoun_app/shared/components/components.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PostDetalis extends StatefulWidget {
-  const PostDetalis(this.adName, this.adResourceType, this.adDate, this.adPlace,
-      {super.key});
+  const PostDetalis(this.adId, this.adName, this.adResourceType, this.adDate,
+      this.adPlace, this.adDescription,
+      {super.key, this.adPictures});
 
-  final String adName;
-  final String adResourceType;
-  final String adDate;
-  final String adPlace;
+  final String? adId;
+  final String? adName;
+  final dynamic? adResourceType;
+  final DateTime? adDate;
+  final String? adPlace;
+  final String? adDescription;
+  final List<dynamic>? adPictures;
 
   @override
   State<PostDetalis> createState() => _PostDetailsState();
@@ -120,7 +126,7 @@ class _PostDetailsState extends State<PostDetalis> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(
-                    widget.adName,
+                    widget.adName!,
                     style: GoogleFonts.readexPro(
                       fontSize: 25,
                     ),
@@ -171,7 +177,7 @@ class _PostDetailsState extends State<PostDetalis> {
             Align(
               alignment: AlignmentDirectional(-1, 0),
               child: Text(
-                widget.adResourceType,
+                widget.adResourceType!,
                 style: GoogleFonts.readexPro(
                   fontSize: 14,
                 ),
@@ -190,7 +196,7 @@ class _PostDetailsState extends State<PostDetalis> {
                       size: 20,
                     ),
                     Text(
-                      widget.adPlace,
+                      widget.adPlace!,
                       style: GoogleFonts.readexPro(
                         fontSize: 12,
                       ),
@@ -206,7 +212,7 @@ class _PostDetailsState extends State<PostDetalis> {
                       size: 20,
                     ),
                     Text(
-                      widget.adDate,
+                      timeDifference(widget.adDate)!,
                       style: GoogleFonts.readexPro(
                         fontSize: 12,
                       ),
@@ -318,7 +324,7 @@ class _PostDetailsState extends State<PostDetalis> {
             Align(
               alignment: AlignmentDirectional(-1, 0),
               child: Text(
-                'lhdsflhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh.',
+                widget.adDescription!,
                 style: GoogleFonts.readexPro(
                   fontSize: 14,
                 ),
@@ -337,48 +343,74 @@ class _PostDetailsState extends State<PostDetalis> {
               ),
             ),
             Expanded(
-              child: GridView(
-                padding: EdgeInsets.zero,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 1,
-                ),
-                scrollDirection: Axis.vertical,
-                children: [
-                  ClipRRect(
+                child: GridView.builder(
+              padding: EdgeInsets.zero,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1,
+              ),
+              scrollDirection: Axis.vertical,
+              itemCount:
+                  widget.adPictures?.length ?? 0, // Use null-aware operator
+              itemBuilder: (context, index) {
+                if (widget.adPictures == null) {
+                  // Render a blank grid cell
+                  return Container(); // You can customize this to show any placeholder
+                } else {
+                  return ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.network(
-                      'assets/images/Aoun_LOGOWB.png',
+                      widget.adPictures![index],
                       width: 300,
                       height: 200,
                       fit: BoxFit.cover,
                     ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      'assets/images/Aoun_LOGOBB.png',
-                      width: 300,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                  );
+                }
+              },
+            )),
             Align(
               alignment: AlignmentDirectional(-1, 0),
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
                 child: defaultButton(
-                    function: () {}, text: 'Reserve', IsUpperCase: false),
+                    function: () {
+                      orderItem(widget.adId!);
+                    },
+                    text: 'Reserve',
+                    IsUpperCase: false),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> orderItem(String itemId) async {
+    const String apiUrl =
+        'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/order_item';
+    final requestHeaders = {'Content-Type': 'application/json'};
+    final requestBody = {
+      'item_id': itemId,
+    };
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: requestHeaders,
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final message = responseData['message'];
+      print('Item ordered successfully: $message');
+    } else {
+      final errorResponse = json.decode(response.body);
+      final error = errorResponse['error'];
+      print('Error ordering item: $error');
+    }
   }
 }

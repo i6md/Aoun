@@ -28,7 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  http: ^1.2.0
+  universal_io: ^2.0.4
+  http: ^1.2.1
   flutter:
     sdk: flutter
   image_picker: ^1.0.7
@@ -41,7 +42,7 @@ dependencies:
   conditional_builder_null_safety: ^0.0.6
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.2.6
-  mapbox_gl: ^0.14.0
+  mapbox_gl: ^0.16.0
 
 
   # The following adds the Cupertino Icons font to your application.

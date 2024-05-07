@@ -75,27 +75,7 @@ class ProfileProfileInfoTabContainerScreenState
         padding: EdgeInsets.symmetric(horizontal: 104.h, vertical: 32.v),
         decoration: AppDecoration.white,
         child: Column(children: [
-          SizedBox(
-              height: 116.v,
-              width: 100.h,
-              child: Stack(alignment: Alignment.bottomLeft, children: [
-                CustomImageView(
-                    imagePath: 'assets/images/img_profile_image.png',
-                    height: 100.adaptSize,
-                    width: 100.adaptSize,
-                    radius: BorderRadius.circular(50.h),
-                    alignment: Alignment.topCenter),
-                Padding(
-                    padding: EdgeInsets.only(left: 31.h),
-                    child: CustomIconButton(
-                        height: 32.adaptSize,
-                        width: 32.adaptSize,
-                        padding: EdgeInsets.all(5.h),
-                        alignment: Alignment.bottomLeft,
-                        child:
-                            CustomImageView(imagePath: ImageConstant.imgEdit2)))
-              ])),
-          SizedBox(height: 10.v),
+
           Text("Archie Copeland".toUpperCase(),
               style: theme.textTheme.bodyLarge),
           SizedBox(height: 13.v),

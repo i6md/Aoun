@@ -7,24 +7,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/user/ads_model.dart';
 
+class HomeCubit extends Cubit<HomeStates> {
+  HomeCubit() : super(HomeInitialState());
 
-class HomeCubit extends Cubit <HomeStates>
-{
-  HomeCubit(): super(HomeInitialState());
   static HomeCubit get(context) => BlocProvider.of(context);
+
+  printToken() {
+    // TODO: implement print
+  }
+
   int counter = 0;
   ItemsScreen itemsScreen = ItemsScreen();
   EventsScreen eventsScreen = EventsScreen();
   RidesScreen ridesScreen = RidesScreen();
   List<String> filters = [];
-  List<Widget> screens = [
-    ItemsScreen(),EventsScreen(),RidesScreen()
-  ];
-  List<String> titles = [
-    'Items',
-    'Events',
-    'Rides'
-  ];
+  List<Widget> screens = [ItemsScreen(), EventsScreen(), RidesScreen()];
+  List<String> titles = ['Items', 'Events', 'Rides'];
 
   void changeIndex(int index) {
     counter = index;
@@ -33,12 +31,12 @@ class HomeCubit extends Cubit <HomeStates>
     emit(HomeChangeBottomNabBarState());
   }
 
-  void updateFilters(List<String> newFilters) {
+  void updateFilters(List<String> newFilters) async {
     filters = newFilters;
     // Apply the filters to the screens
-    itemsScreen.applyFilters(filters);
-    eventsScreen.applyFilters(filters);
-    ridesScreen.applyFilters(filters);
+    // itemsScreen.applyFilters(filters, await itemsScreen.fetchAds());
+    // eventsScreen.applyFilters(filters, await eventsScreen.fetchEvents());
+    // ridesScreen.applyFilters(filters);
     emit(FiltersUpdatedState());
   }
 
@@ -46,17 +44,17 @@ class HomeCubit extends Cubit <HomeStates>
     emit(SearchResultsUpdatedState(results));
   }
 
-  List<AdsModel> get ads {
+  Future<List<dynamic>> get ads async {
     switch (counter) {
       case 0:
-        return itemsScreen.ads;
+        return await itemsScreen.fetchAds();
       case 1:
-        return eventsScreen.ads;
+        return await eventsScreen.fetchEvents(); // Assuming eventsScreen and ridesScreen also have fetchAds method
       case 2:
-        return ridesScreen.ads;
+        return await ridesScreen
+            .ads; // Assuming eventsScreen and ridesScreen also have fetchAds method
       default:
         return [];
     }
   }
-
 }

@@ -25,6 +25,7 @@ import '../searchDelegate/searchDelegate.dart';
 
 class HomeScreen extends StatelessWidget {
   bool isAdmin = true;
+  HomeScreen({super.key});
 
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -185,17 +186,20 @@ class HomeScreen extends StatelessWidget {
                     List<String> resourceTypes;
                     switch (HomeCubit.get(context).counter) {
                       case 0: // Items
-                        resourceTypes = ['Image', 'Video', 'Banner'];
+                        resourceTypes = ['request', 'offer'];
+                        // ['Stationary', 'Medicine', 'Car Needs', 'Others'];
                         break;
                       case 1: // Events
-                        resourceTypes = ['Sport Activity', 'Lecture', 'Baloot'];
+                        resourceTypes = ['Student Clubs', 'Sports', 'Gatherings', 'Others'];
                         break;
                       case 2: // Rides
                         resourceTypes = [
-                          'KFUPM to Airport',
-                          'Airport to KFUPM',
-                          'Riyadh to KFUPM',
-                          'KFUPM to Riyadh'
+                          'KFUPM - Airport',
+                          'Airport - KFUPM',
+                          'Riyadh - KFUPM',
+                          'KFUPM - Riyadh',
+                          'SAR - KFUPM',
+                          'KFUPM - SAR',
                         ];
                         break;
                       default:

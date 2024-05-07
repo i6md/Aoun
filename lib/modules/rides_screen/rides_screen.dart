@@ -11,6 +11,7 @@ import '../post/post_details.dart';
 class RidesScreen extends StatelessWidget {
   //'KFUPM to Airport', 'Airport to KFUPM', 'Riyadh to KFUPM', 'KFUPM to Riyadh'
   List<AdsModel> ads = [
+    /*
     AdsModel(
         adName: "KFUPM to Airport",
         adResourceType: "KFUPM to Airport",
@@ -66,7 +67,7 @@ class RidesScreen extends StatelessWidget {
         adDate: "2024-04-05",
         adPlace: "Fashion District",
         photoUrl:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),*/
   ];
   void applyFilters(List<String> filters) {
     List<AdsModel> filteredAds = filters.isNotEmpty
@@ -156,20 +157,23 @@ class RidesScreen extends StatelessWidget {
                   itemCount: filteredAds.length,
                   itemBuilder: (context, index) {
                     return buildListItem3(
-                        adName: filteredAds[index].adName,
-                        adResourceType: filteredAds[index].adResourceType,
-                        adDate: filteredAds[index].adDate,
-                        adPlace: filteredAds[index].adPlace,
+                        adName: filteredAds[index].adName!,
+                        adResourceType: filteredAds[index].adResourceType!,
+                        adDate: filteredAds[index].adDate!,
+                        adPlace: filteredAds[index].adPlace!,
                         photoUrl: filteredAds[index].photoUrl,
                         onTapp: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PostDetalis(
-                                      filteredAds[index].adName,
-                                      filteredAds[index].adResourceType,
-                                      filteredAds[index].adDate,
-                                      filteredAds[index].adPlace)));
+                                        filteredAds[index].adId,
+                                        filteredAds[index].adName!,
+                                        filteredAds[index].adResourceType!,
+                                        filteredAds[index].adDate!,
+                                        filteredAds[index].adPlace!,
+                                        filteredAds[index].adDescription!,
+                                      )));
                         });
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -207,20 +211,22 @@ class RidesScreen extends StatelessWidget {
                 ),
                 itemCount: filteredAds.length,
                 itemBuilder: (context, index) => buildListItem2(
-                    adName: filteredAds[index].adName,
-                    adResourceType: filteredAds[index].adResourceType,
-                    adDate: filteredAds[index].adDate,
-                    adPlace: filteredAds[index].adPlace,
+                    adName: filteredAds[index].adName!,
+                    adResourceType: filteredAds[index].adResourceType!,
+                    adDate: filteredAds[index].adDate!,
+                    adPlace: filteredAds[index].adPlace!,
                     photoUrl: filteredAds[index].photoUrl,
                     onTapp: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => PostDetalis(
-                                  filteredAds[index].adName,
-                                  filteredAds[index].adResourceType,
-                                  filteredAds[index].adDate,
-                                  filteredAds[index].adPlace)));
+                                  filteredAds[index].adId,
+                                  filteredAds[index].adName!,
+                                  filteredAds[index].adResourceType!,
+                                  filteredAds[index].adDate!,
+                                  filteredAds[index].adPlace!,
+                                  filteredAds[index].adDescription!)));
                     }),
               ),
             ),

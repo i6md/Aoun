@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'package:aoun_app/modules/login/auth_service.dart';
 import 'package:path/path.dart' as p;
 import '../../layout/home_layout.dart';
-
+import 'package:universal_io/io.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:aoun_app/shared/components/components.dart';
-import 'dart:io';
+//import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class CreatePostScreen extends StatefulWidget {
@@ -17,6 +18,8 @@ class CreatePostScreen extends StatefulWidget {
 }
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
+  _CreatePostScreenState();
+
   List<String> postType = ['Offer', 'Request'];
   var iselected = 0;
   // var backColor = Colors.white;
@@ -731,20 +734,48 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       apiUrl =
           'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/request_item';
     }
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
+    print(token);
 
     String? text1 = textController1?.text;
     String? text2 = textController2?.text;
     String? text3 = textController3?.text;
 
     print('this is text1 $text1 text2 $text2 text3 $text3');
-    final requestHeaders = {'Content-Type': 'application/json'};
+    final requestHeaders = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    print(token);
     final requestBody = {
-      'owner_id': 'asem123',
       'title': text1,
       'description': text3,
       'picture_1': {"content": "null", "extension": "null"}
       // Add other pictures as needed
     };
+    if (imageFiles.isNotEmpty) {
+      int counter = 1;
+      for (XFile? image in imageFiles) {
+        List<int> imageBytes = await File(image!.path).readAsBytes();
+        String base64Image = base64Encode(imageBytes);
+        //print(
+        //    'I am heeereee\n \n I am heeereee\n \n I am heeereee\n \nI am heeereee\n \n $base64Image');
+        requestBody["picture_$counter"] = {
+          "content": base64Image,
+          "extension": p.extension(image.path).substring(1)
+        };
+        //Object? test1 = requestBody;
+        //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
+        //print('$test1');
+        counter++;
+      }
+    } else {
+      requestBody.remove('picture_1');
+    }
+    Object? test1 = requestBody;
+    //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
+    //print('$test1');
     if (imageFiles.isNotEmpty) {
       int counter = 1;
       for (XFile? image in imageFiles) {
@@ -764,9 +795,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     } else {
       requestBody.remove('picture_1');
     }
-    Object? test1 = requestBody;
+    //Object? test1 = requestBody;
     //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
-    print('$test1');
+    //print('$test1');
 
     final response = await http.post(
       Uri.parse(apiUrl),

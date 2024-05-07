@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:aoun_app/modules/addAdv/appPost_screen.dart';
@@ -22,7 +25,6 @@ class _ReportPostSceenState extends State<ReportPostScreen> {
     return Scaffold(
         // backgroundColor: Colors.white,
         appBar: AppBar(
-
           title: Text(
             'Report',
             style: GoogleFonts.readexPro(
@@ -49,7 +51,6 @@ class _ReportPostSceenState extends State<ReportPostScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              
               reportText(label: 'Subject'),
               // defaultFormField(
               //     controller: subjectController,
@@ -144,5 +145,35 @@ class _ReportPostSceenState extends State<ReportPostScreen> {
             ],
           ),
         ));
+  }
+
+  Future<void> createReport() async {
+    const apiUrl =
+        'https://your-backend-url/report'; // Replace with your actual backend URL
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      'object_id': 'i_1234567890', // Replace with the actual object ID
+      'reported_by': 'user123', // Replace with the actual user ID
+    });
+
+    try {
+      final response =
+          await http.post(Uri.parse(apiUrl), headers: headers, body: body);
+      final responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        final reportId = responseBody['report']['report_id'];
+        final createdAt = responseBody['report']['created_at'];
+        // Handle successful report creation
+        print('Report created successfully. Report ID: $reportId');
+      } else {
+        final errorMessage = responseBody['error'];
+        // Handle error scenario
+        print('Error creating report: $errorMessage');
+      }
+    } catch (e) {
+      // Handle network or other exceptions
+      print('Error: $e');
+    }
   }
 }

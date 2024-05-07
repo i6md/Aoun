@@ -2,6 +2,7 @@ import 'package:aoun_app/layout/home_layout.dart';
 import 'package:aoun_app/modules/login/login_screen.dart';
 import 'package:aoun_app/modules/otp_form/otp_form.dart';
 import 'package:aoun_app/shared/components/components.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -224,17 +225,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             fontSize: 20.0,
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
-                          },
-                          child: const Text(
-                            'Login Now',
-                            style: TextStyle(
-                              fontSize: 18.0,
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()));
+                            },
+                            child: const Text(
+                              'Login Now',
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontSize: 18.0,
+                              ),
                             ),
                           ),
                         )

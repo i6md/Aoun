@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../shared/cubit/cubit.dart';
+
 class FilterDialog extends StatefulWidget {
   final List<String> selectedFilters;
   final List<String> resourceTypes;
