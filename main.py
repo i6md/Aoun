@@ -12,6 +12,7 @@ def add_item(api_url):
         # owner_id = input("Enter your  ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
+        category = input("Enter category: ")
 
         root = Tk()
         root.withdraw()  # Hide the main window
@@ -31,6 +32,7 @@ def add_item(api_url):
             # "owner_id": owner_id,
             "title": title,
             "description": description,
+            "category": category
         }
 
         # Convert the images to base64 and add them to the payload
@@ -59,9 +61,9 @@ def add_item(api_url):
                 print("ID:", item_details.get("item_id"))
                 print("Created At:", item_details.get("created_at"))
                 print("Owner ID:", item_details.get("owner_id"))
-                print("Contact Number:", item_details.get("contact_number"))
                 print("Title:", item_details.get("title"))
                 print("Description:", item_details.get("description"))
+                print("Category:", item_details.get("category"))
 
         else:
             print("Error:", response.status_code, response.text)
@@ -81,6 +83,7 @@ def request_item(api_url):
         # owner_id = input("Enter your ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
+        category = input("Enter category: ")
 
         root = Tk()
         root.withdraw()  # Hide the main window
@@ -99,7 +102,8 @@ def request_item(api_url):
         payload = {
             # "owner_id": owner_id,
             "title": title,
-            "description": description
+            "description": description,
+            "category": category
         }
 
         # Convert the images to base64 and add them to the payload
@@ -129,6 +133,7 @@ def request_item(api_url):
                 print("Owner ID:", item_details.get("owner_id"))
                 print("Title:", item_details.get("title"))
                 print("Description:", item_details.get("description"))
+                print("Category:", item_details.get("category"))
 
         else:
             print("Error:", response.status_code, response.text)
@@ -261,6 +266,7 @@ def edit_item(api_url):
         # owner_id = input("Enter your ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
+        category = input("Enter category: ")
 
         root = Tk()
         root.withdraw()  # Hide the main window
@@ -281,6 +287,7 @@ def edit_item(api_url):
             # "owner_id": owner_id,
             "title": title,
             "description": description,
+            "category": category
         }
 
         # Convert the images to base64 and add them to the payload
@@ -309,9 +316,9 @@ def edit_item(api_url):
                 print("ID:", item_details.get("item_id"))
                 print("Created At:", item_details.get("created_at"))
                 print("Owner ID:", item_details.get("owner_id"))
-                print("Contact Number:", item_details.get("contact_number"))
                 print("Title:", item_details.get("title"))
                 print("Description:", item_details.get("description"))
+                print("Category:", item_details.get("category"))
 
         else:
             print("Error:", response.status_code, response.text)

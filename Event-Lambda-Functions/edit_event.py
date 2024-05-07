@@ -62,6 +62,7 @@ def lambda_handler(event, context):
             owner_id = None
         title = event.get('title')
         description = event.get('description')
+        category = event.get('category')
         start_date_time = event.get('start_date_time')
         end_date_time = event.get('end_date_time')
         building = event.get('building')
@@ -124,9 +125,9 @@ def lambda_handler(event, context):
 
         response = table.update_item(
             Key={"event_id": event_id},
-            UpdateExpression="set owner_id = :o, title = :t, description = :d, start_date_time = :s, end_date_time = :e, building = :b, room = :r, participants_number = :p",
+            UpdateExpression="set owner_id = :o, title = :t, description = :d, start_date_time = :s, end_date_time = :e, building = :b, room = :r, participants_number = :p, category = :c",
             ExpressionAttributeValues={
-                ":o": owner_id, ":t": title, ":d": description, ":s": start_date_time, ":e": end_date_time, ":b": building, ":r": room, ":p": participants_number},
+                ":o": owner_id, ":t": title, ":d": description, ":s": start_date_time, ":e": end_date_time, ":b": building, ":r": room, ":p": participants_number, ":c": category},
             ReturnValues="ALL_NEW",
         )
 

@@ -10,6 +10,7 @@ def add_ride(api_url):
         # owner_id = input("Enter your  ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
+        category = input("Enter category: ")
         start_location = input("Enter start location: ")
         end_location = input("Enter end location: ")
 
@@ -29,6 +30,7 @@ def add_ride(api_url):
             # "owner_id": owner_id,
             "title": title,
             "description": description,
+            "category": category,
             "start_location": start_location,
             "end_location": end_location,
             "start_date_time": start_date_time,
@@ -77,6 +79,7 @@ def list_rides(api_url, payload):
                 print("Ride ID:", ride.get("ride_id"))
                 print("Title:", ride.get("title"))
                 print("Description:", ride.get("description"))
+                print("Category:", ride.get("category"))
                 print("Created At:", ride.get("created_at"))
                 print("Start Date/Time:", ride.get("start_date_time"))
                 print("Start Location:", ride.get("start_location"))
@@ -142,6 +145,7 @@ def edit_ride(api_url):
         # owner_id = input("Enter your  ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
+        category = input("Enter category: ")
         start_location = input("Enter start location: ")
         end_location = input("Enter end location: ")
 
@@ -162,6 +166,7 @@ def edit_ride(api_url):
             # "owner_id": owner_id,
             "title": title,
             "description": description,
+            "category": category,
             "start_location": start_location,
             "end_location": end_location,
             "start_date_time": start_date_time,

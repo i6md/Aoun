@@ -14,6 +14,7 @@ def add_event(api_url):
         # owner_id = input("Enter your  ID: ")
         title = input("Enter title: ")
         description = input("Enter description: ")
+        category = input("Enter category: ")
 
         # Ask for start date and time separately
         start_date = input("Enter start date (YYYY-MM-DD): ")
@@ -54,6 +55,7 @@ def add_event(api_url):
             # "owner_id": owner_id,
             "title": title,
             "description": description,
+            "category": category,
             "start_date_time": start_date_time,
             "end_date_time": end_date_time,
             "building": building,
@@ -112,6 +114,7 @@ def list_events(api_url, payload):
                 print("Event ID:", event.get("event_id"))
                 print("Title:", event.get("title"))
                 print("Description:", event.get("description"))
+                print("Category:", event.get("category"))
                 print("Created At:", event.get("created_at"))
                 print("Start Date/Time:", event.get("start_date_time"))
                 print("End Date/Time:", event.get("end_date_time"))

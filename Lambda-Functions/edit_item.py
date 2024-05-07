@@ -64,6 +64,7 @@ def lambda_handler(event, context):
             owner_id = None
         title = event.get('title')
         description = event.get('description')
+        category = event.get('category')
 
         # Get the item to update using the item_id
         response = table.scan(
@@ -111,9 +112,9 @@ def lambda_handler(event, context):
 
         response = table.update_item(
             Key={"item_id": item_id},
-            UpdateExpression="set owner_id = :o, title = :t, description = :d",
+            UpdateExpression="set owner_id = :o, title = :t, description = :d, category = :c",
             ExpressionAttributeValues={
-                ":o": owner_id, ":t": title, ":d": description},
+                ":o": owner_id, ":t": title, ":d": description, ":c": category},
             ReturnValues="ALL_NEW",
         )
 

@@ -60,6 +60,7 @@ def lambda_handler(event, context):
             owner_id = None
         title = event.get('title')
         description = event.get('description')
+        category = event.get('category')
         start_location = event.get('start_location')
         end_location = event.get('end_location')
         start_date_time = event.get('start_date_time')
@@ -90,9 +91,9 @@ def lambda_handler(event, context):
 
         response = table.update_item(
             Key={"ride_id": ride_id},
-            UpdateExpression="set owner_id = :o, title = :t, description = :d, start_location = :s, end_location = :e, start_date_time = :st, available_seats = :a",
+            UpdateExpression="set owner_id = :o, title = :t, description = :d, start_location = :s, end_location = :e, start_date_time = :st, available_seats = :a, category = :c",
             ExpressionAttributeValues={
-                ":o": owner_id, ":t": title, ":d": description, ":s": start_location, ":e": end_location, ":st": start_date_time, ":a": available_seats},
+                ":o": owner_id, ":t": title, ":d": description, ":s": start_location, ":e": end_location, ":st": start_date_time, ":a": available_seats, ":c": category},
             ReturnValues="ALL_NEW",
         )
 

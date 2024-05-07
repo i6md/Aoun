@@ -73,6 +73,8 @@ def lambda_handler(event, context):
         building = user_response['Item'].get(
             'building') if 'Item' in user_response else None
 
+        category = event.get('category')
+
         # Create a new item with the specified attributes
         new_item = {
             'item_id': generated_id,
@@ -81,6 +83,7 @@ def lambda_handler(event, context):
             'title': title,
             'description': description,
             'building': building,
+            'category': category,
             'item_type': "offer",
             'expired': False
 

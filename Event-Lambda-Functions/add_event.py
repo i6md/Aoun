@@ -66,6 +66,7 @@ def lambda_handler(event, context):
             owner_id = None
         title = event.get('title')
         description = event.get('description')
+        category = event.get('category')
         start_date_time = event.get('start_date_time')
         end_date_time = event.get('end_date_time')
         building = event.get('building')
@@ -79,6 +80,7 @@ def lambda_handler(event, context):
             'owner_id': owner_id,
             'title': title,
             'description': description,
+            'category': category,  # Add the 'category' attribute
             'start_date_time': start_date_time,
             'end_date_time': end_date_time,
             'building': building,
