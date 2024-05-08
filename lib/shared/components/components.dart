@@ -623,7 +623,6 @@ Widget buildListItem1({
   required String adPlace,
   void Function()? onTapp,
   void Function()? onDelete,
-
   bool showAdminButtons = false,
 }) =>
     Padding(
@@ -866,7 +865,9 @@ Widget buildListItem2({
                         style: TextStyle(fontSize: 11, color: Colors.white),
                       ),
                       Text(
-                        adPlace!,
+                        adPlace?.isNotEmpty ?? false
+                            ? adPlace!
+                            : 'There is no building',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),
@@ -961,7 +962,9 @@ Widget buildListItem3({
                             color: Colors.white),
                       ),
                       Text(
-                        adPlace!,
+                        adPlace?.isNotEmpty ?? false
+                            ? adPlace!
+                            : 'There is no building',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),

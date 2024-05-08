@@ -751,6 +751,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     final requestBody = {
       'title': text1,
       'description': text3,
+      'building': text2,
       'picture_1': {"content": "null", "extension": "null"}
       // Add other pictures as needed
     };

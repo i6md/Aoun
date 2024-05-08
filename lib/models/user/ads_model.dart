@@ -31,7 +31,7 @@ class AdsModel {
       adName: json['title'],
       adResourceType: json['item_type'],
       adDate: DateTime.parse(json['created_at']),
-      adPlace: json['description'],
+      adPlace: json['building'],
       adDescription: json['description'],
       adImages: json['pictures'],
     );
