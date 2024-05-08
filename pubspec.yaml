@@ -50,6 +50,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   web: ^0.5.1
   path: ^1.9.0
+  flutter_datetime_picker_plus: ^2.2.0
 
 dev_dependencies:
   flutter_test:
