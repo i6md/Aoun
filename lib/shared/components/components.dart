@@ -866,8 +866,8 @@ Widget buildListItem2({
                       ),
                       Text(
                         adPlace?.isNotEmpty ?? false
-                            ? adPlace!
-                            : 'There is no building',
+                            ? 'Building: $adPlace'
+                            : '',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),
@@ -963,8 +963,8 @@ Widget buildListItem3({
                       ),
                       Text(
                         adPlace?.isNotEmpty ?? false
-                            ? adPlace!
-                            : 'There is no building',
+                            ? 'Building: $adPlace'
+                            : '',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),
