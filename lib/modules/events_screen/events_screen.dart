@@ -46,7 +46,6 @@ class EventsScreen extends StatelessWidget {
         headers: requestHeaders,
         body: json.encode(requestBody));
     //print('requestHeader: $requestHeaders\n\n\n requestBody: $requestBody');
-
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       var events = data['events'] as List;
@@ -54,7 +53,7 @@ class EventsScreen extends StatelessWidget {
       return events.map((event) => EventsModel.fromJson(event)).toList();
     } else {
       print(
-          'Error viewing items. Status code: ${response.statusCode}, Response: ${response.body}');
+          'Error viewing events. Status code: ${response.statusCode}, Response: ${response.body}');
       throw Exception('Failed to load ads');
     }
   }
@@ -90,7 +89,7 @@ class EventsScreen extends StatelessWidget {
               // Sort thefilteredAds by adDate (newest first)
               //filteredAds.sort((a, b) => b.adDate!.compareTo(a.adDate!));
               // Sort thefilteredAds by adDate (newest first)
-              var sortedAds =filteredAds;
+              var sortedAds = filteredAds;
               sortedAds.sort((a, b) => b.created_at!.compareTo(a.created_at!));
 
               return Column(
@@ -101,10 +100,10 @@ class EventsScreen extends StatelessWidget {
                     textAlign: TextAlign.left,
                     style: GoogleFonts.readexPro(
                         textStyle: TextStyle(
-                          color: Colors.indigo,
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.w700,
-                        )),
+                      color: Colors.indigo,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.w700,
+                    )),
                   ),
                   Container(
                     width: double.infinity,
@@ -130,15 +129,15 @@ class EventsScreen extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => PostDetalis(
-                                          filteredAds[index].event_id,
-                                          filteredAds[index].title!,
-                                          filteredAds[index].expired!,
-                                          filteredAds[index].created_at!,
-                                          filteredAds[index].building!,
-                                          filteredAds[index].description!,
-                                          adPictures: filteredAds[index].pictures!,
-                                        )));
-
+                                              filteredAds[index].event_id,
+                                              filteredAds[index].title!,
+                                              filteredAds[index].expired!,
+                                              filteredAds[index].created_at!,
+                                              filteredAds[index].building!,
+                                              filteredAds[index].description!,
+                                              adPictures:
+                                                  filteredAds[index].pictures!,
+                                            )));
                               });
                         },
                         separatorBuilder: (BuildContext context, int index) {
@@ -150,19 +149,17 @@ class EventsScreen extends StatelessWidget {
                         },
                       ),
                     ),
-
                   ),
                   SizedBox(height: 10),
-
                   Text(
                     " All Items",
                     textAlign: TextAlign.left,
                     style: GoogleFonts.readexPro(
                         textStyle: TextStyle(
-                          color: Colors.indigo,
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.w700,
-                        )),
+                      color: Colors.indigo,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.w700,
+                    )),
                   ),
                   Container(
                     width: double.infinity,
@@ -172,8 +169,10 @@ class EventsScreen extends StatelessWidget {
                   Expanded(
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount:2, // This specifies the number of columns in the grid
-                        childAspectRatio: 3 / 2, // Adjust according to your needs
+                        crossAxisCount:
+                            2, // This specifies the number of columns in the grid
+                        childAspectRatio:
+                            3 / 2, // Adjust according to your needs
                       ),
                       itemCount: filteredAds.length,
                       itemBuilder: (context, index) => buildListItem2(
@@ -187,15 +186,15 @@ class EventsScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PostDetalis(
-                                    filteredAds[index].event_id,
-                                    filteredAds[index].title!,
-                                    filteredAds[index].expired!,
-                                    filteredAds[index].created_at!,
-                                    filteredAds[index].building!,
-                                    filteredAds[index].description!,
-                                    adPictures: filteredAds[index].pictures!,
-
-                                  )));
+                                        filteredAds[index].event_id,
+                                        filteredAds[index].title!,
+                                        filteredAds[index].expired!,
+                                        filteredAds[index].created_at!,
+                                        filteredAds[index].building!,
+                                        filteredAds[index].description!,
+                                        adPictures:
+                                            filteredAds[index].pictures!,
+                                      )));
                         },
                       ),
                     ),
@@ -212,5 +211,4 @@ class EventsScreen extends StatelessWidget {
       },
     );
   }
-
 }

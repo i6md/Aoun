@@ -124,8 +124,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       'title': titleText,
       'category': category,
       'description': bodyText,
-      'start_date_time': fromdateText.toString(),
-      'end_date_time': todateText.toString(),
+      'start_date_time': fromdateText.toIso8601String(),
+      'end_date_time': todateText.toIso8601String(),
       'room': roomText,
       'participants_number': nofpartText,
       'picture_1': {"content": "null", "extension": "null"}
