@@ -103,12 +103,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_event';
     AuthService authService = AuthService();
     var token = await authService.getToken();
+    print('hello this is asem');
 
     String? titleText = titleContoller?.text;
     String? placeText = placeController?.text;
     String? bodyText = bodyController?.text;
-    String? fromdateText = fromdateController?.text;
-    String? todateText = todateController?.text;
+    DateTime? fromdateText = DateTime.parse(fromdateController!.text);
+    DateTime? todateText = DateTime.parse(todateController!.text);
     String? nofpartText = nofpartController?.text;
     String? roomText = roomController?.text;
     final List<String> sList = ['Student Clubs', 'Sports', 'Gatherings'];
