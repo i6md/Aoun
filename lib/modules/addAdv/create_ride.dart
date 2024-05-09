@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aoun_app/layout/home_layout.dart';
+import 'package:aoun_app/modules/login/auth_service.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
@@ -34,8 +35,8 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
   var resValue = 'Travel';
   // List<XFile>? images = [];
   // List<File> _images = [];
-  List<Image> _images = [];
-  List<XFile?> imageFiles = [];
+  //List<Image> _images = [];
+  //List<XFile?> imageFiles = [];
   var absorb = false;
   var allFieldsFilled = true;
   Color addPhotoColor = Color.fromARGB(255, 3, 50, 71);
@@ -72,66 +73,52 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
     return allFieldsFilled;
   }
 
-  Future<void> _uploadImages() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    imageFiles.add(pickedFile);
+  // Future<void> _uploadImages() async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //   imageFiles.add(pickedFile);
 
-    if (pickedFile != null) {
-      setState(() {
-        _images.add(Image.file(File(pickedFile.path),
-            width: 100, height: 100, fit: BoxFit.cover));
-      });
-    }
-  }
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _images.add(Image.file(File(pickedFile.path),
+  //           width: 100, height: 100, fit: BoxFit.cover));
+  //     });
+  //   }
+  // }
 
   Future<void> addRide(
       TextEditingController? titleContoller,
       TextEditingController? fromlocController,
       TextEditingController? tolocController,
-      List<XFile?> images,
+      TextEditingController? startdateController,
+      TextEditingController? avseatController,
+      TextEditingController? bodyController,
       bool ofSelected) async {
-    String apiUrl;
-    if (ofSelected) {
-      apiUrl =
-          'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_item';
-    } else {
-      apiUrl =
-          'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/request_item';
-    }
+    String apiUrl =
+        'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_ride';
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
 
-    String? text1 = titleContoller?.text;
-    String? text2 = fromlocController?.text;
-    String? text3 = tolocController?.text;
+    String? titleText = titleContoller?.text;
+    String? fromLocText = fromlocController?.text;
+    String? toLocText = tolocController?.text;
+    DateTime? startDateText = DateTime.parse(startdateController!.text);
+    String? avSteatText = avseatController?.text;
+    String? bodyText = bodyController?.text;
 
-    print('this is text1 $text1 text2 $text2 text3 $text3');
-    final requestHeaders = {'Content-Type': 'application/json'};
-    final requestBody = {
-      'owner_id': 'asem123',
-      'title': text1,
-      'description': text3,
-      'picture_1': {"content": "null", "extension": "null"}
-      // Add other pictures as needed
+    print('this is text1 $titleText text2 $fromLocText text3 $toLocText');
+    final requestHeaders = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
     };
-    if (imageFiles.isNotEmpty) {
-      int counter = 1;
-      for (XFile? image in imageFiles) {
-        List<int> imageBytes = File(image!.path).readAsBytesSync();
-        String base64Image = base64Encode(imageBytes);
-        //print(
-        //    'I am heeereee\n \n I am heeereee\n \n I am heeereee\n \nI am heeereee\n \n $base64Image');
-        requestBody["picture_$counter"] = {
-          "content": base64Image,
-          "extension": p.extension(image.path).substring(1)
-        };
-        //Object? test1 = requestBody;
-        //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
-        //print('$test1');
-        counter++;
-      }
-    } else {
-      requestBody.remove('picture_1');
-    }
+    final requestBody = {
+      'title': titleText,
+      'description': bodyText,
+      'start_location': fromLocText,
+      'end_location': toLocText,
+      'start_date_time': startDateText.toString(),
+      'available_seats': avSteatText,
+    };
     Object? test1 = requestBody;
     //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
     print('$test1');
@@ -144,16 +131,17 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
-      final itemId = responseData['item']['item_id'];
-      final createdAt = responseData['item']['created_at'];
-      final itemType = responseData['item']['item_type'];
+      // print(responseData);
+      final rideId = responseData['ride']['ride_id'];
+      final createdAt = responseData['ride']['created_at'];
+      final description = responseData['ride']['description'];
       print(
-          'Item created successfully with ID $itemId at $createdAt with item type: $itemType');
+          'Ride created successfully with ID $rideId at $createdAt with description: $description');
 
       // Show success message to user
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Item created successfully!'),
+          content: Text('Ride created successfully!'),
         ),
       );
 
@@ -164,12 +152,12 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
       );
     } else {
       print(
-          'Error creating item. Status code: ${response.statusCode}, Response: ${response.body}');
+          'Error creating Ride. Status code: ${response.statusCode}, Response: ${response.body}');
 
       // Show error message to user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Item could not be created: ${response.body}'),
+          content: Text('Ride could not be created: ${response.body}'),
         ),
       );
     }
@@ -626,6 +614,7 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
                   width: 350,
                   child: TextFormField(
                     controller: startdateController,
+                    enabled: false,
 
                     // focusNode: _model.textFieldFocusNode2,
                     autofocus: true,
@@ -1002,7 +991,24 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
           // ),
           // Spacer(),
           defaultButton(
-              function: () {},
+              function: () {
+                if (_checkFields()) {
+                  addRide(
+                      titleContoller,
+                      fromlocController,
+                      tolocController,
+                      startdateController,
+                      avseatController,
+                      bodyController,
+                      ofSelected);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please Fill All Required Fields!'),
+                    ),
+                  );
+                }
+              },
               //   if (_checkFields()) {
               //     if (categoryValue == 'Item') {
               //       // addEvent(titleContoller, placeController, bodyController,

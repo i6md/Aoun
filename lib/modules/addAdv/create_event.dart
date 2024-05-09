@@ -103,7 +103,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_event';
     AuthService authService = AuthService();
     var token = await authService.getToken();
-    print('hello this is asem');
+    //print('hello this is asem');
 
     String? titleText = titleContoller?.text;
     String? placeText = placeController?.text;
@@ -112,7 +112,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     DateTime? todateText = DateTime.parse(todateController!.text);
     String? nofpartText = nofpartController?.text;
     String? roomText = roomController?.text;
-    final List<String> sList = ['Student Clubs', 'Sports', 'Gatherings'];
+    //final List<String> sList = ['Student Clubs', 'Sports', 'Gatherings'];
 
     print('this is text1 $titleText text2 $placeText text3 $bodyText');
     final requestHeaders = {
@@ -122,9 +122,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     final requestBody = {
       'building': placeText,
       'title': titleText,
+      'category': category,
       'description': bodyText,
-      'start_date_time': fromdateText,
-      'end_date_time': todateText,
+      'start_date_time': fromdateText.toString(),
+      'end_date_time': todateText.toString(),
       'room': roomText,
       'participants_number': nofpartText,
       'picture_1': {"content": "null", "extension": "null"}
@@ -165,7 +166,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       final createdAt = responseData['event']['created_at'];
       final eventType = responseData['event']['category'];
       print(
-          'Item created successfully with ID $eventId at $createdAt with item type: $eventType');
+          'Event created successfully with ID $eventId at $createdAt with event type: $eventType');
 
       // Show success message to user
       ScaffoldMessenger.of(context).showSnackBar(
@@ -696,6 +697,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     width: 350,
                     child: TextFormField(
                       controller: fromdateController,
+                      enabled: false,
 
                       // focusNode: _model.textFieldFocusNode2,
                       autofocus: true,
@@ -770,6 +772,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     width: 350,
                     child: TextFormField(
                       controller: todateController,
+                      enabled: false,
 
                       // focusNode: _model.textFieldFocusNode2,
                       autofocus: true,
