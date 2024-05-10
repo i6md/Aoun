@@ -964,7 +964,7 @@ resource "aws_apigatewayv2_integration" "list_user_info" {
 
 resource "aws_apigatewayv2_route" "list_user_info" {
   api_id    = aws_apigatewayv2_api.lambda.id
-  route_key = "POST /list_user_info"
+  route_key = "GET /list_user_info"
   authorizer_id = aws_apigatewayv2_authorizer.cognito_authorizer.id
   authorization_type = "JWT"
 

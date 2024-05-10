@@ -123,16 +123,8 @@ def edit_user_info_operation():
 
 def list_user_info(api_url):
     try:
-        # ask for the user id
-        user_id = input("Enter the user id: ")
-
-        # Create the payload
-        payload = {
-            "user_id": user_id
-        }
-
         # Make the POST request
-        response = requests.post(api_url, json=payload, headers=headers)
+        response = requests.get(api_url, headers=headers)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
