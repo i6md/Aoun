@@ -177,7 +177,7 @@ class _PostDetailsState extends State<PostDetalis> {
             Align(
               alignment: AlignmentDirectional(-1, 0),
               child: Text(
-                widget.adResourceType!,
+                'Event',
                 style: GoogleFonts.readexPro(
                   fontSize: 14,
                 ),

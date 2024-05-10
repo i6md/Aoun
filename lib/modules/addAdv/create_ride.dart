@@ -116,7 +116,8 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
       'description': bodyText,
       'start_location': fromLocText,
       'end_location': toLocText,
-      'start_date_time': startDateText.toIso8601String(),
+      'start_date_time':
+          DateFormat('yyyy-MM-ddTHH:mm:ss').format(startDateText),
       'available_seats': avSteatText,
     };
     Object? test1 = requestBody;

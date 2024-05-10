@@ -122,6 +122,7 @@ class EventsScreen extends StatelessWidget {
                               adName: sortedAds[index].title,
                               adResourceType: filteredAds[index].expired,
                               adDate: filteredAds[index].created_at,
+                              adImages: filteredAds[index].pictures,
                               adPlace: filteredAds[index].building,
                               photoUrl: filteredAds[index].photoUrl,
                               onTapp: () {
@@ -177,9 +178,10 @@ class EventsScreen extends StatelessWidget {
                       itemCount: filteredAds.length,
                       itemBuilder: (context, index) => buildListItem2(
                         adName: filteredAds[index].title,
-                        adResourceType: filteredAds[index].expired,
+                        adResourceType: 'Event',
                         adDate: filteredAds[index].created_at,
                         adPlace: filteredAds[index].building,
+                        adImages: filteredAds[index].pictures,
                         photoUrl: filteredAds[index].photoUrl,
                         onTapp: () {
                           Navigator.push(

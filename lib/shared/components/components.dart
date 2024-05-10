@@ -811,14 +811,16 @@ Widget buildListItem2({
           ..rotateY(0),
         child: Container(
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(adImages?.first!),
-              fit: BoxFit.fill,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5),
-                BlendMode.srcATop,
-              ),
-            ),
+            image: adImages != null
+                ? DecorationImage(
+                    image: NetworkImage(adImages.first),
+                    fit: BoxFit.fill,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.5),
+                      BlendMode.srcATop,
+                    ),
+                  )
+                : null, // Set to null when adImages is null
             borderRadius: BorderRadius.circular(9.0),
             // boxShadow: [
             //   BoxShadow(
@@ -928,14 +930,16 @@ Widget buildListItem3({
           width: 150,
           height: 10,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(adImages?.first!),
-              fit: BoxFit.fill,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5),
-                BlendMode.srcATop,
-              ),
-            ),
+            image: adImages != null
+                ? DecorationImage(
+                    image: NetworkImage(adImages.first),
+                    fit: BoxFit.fill,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.5),
+                      BlendMode.srcATop,
+                    ),
+                  )
+                : null, // Set to null when adImages is null
             borderRadius: BorderRadius.circular(9.0),
           ),
           child: Card(
