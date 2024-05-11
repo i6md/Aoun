@@ -2,7 +2,7 @@ class RidesModel {
   final String? ride_id;
   final DateTime? created_at;
   final String? owner_id;
-  final String? title;
+  final String? adName;
   final String? description;
   final String? start_loc;
   final String? end_loc;
@@ -10,6 +10,7 @@ class RidesModel {
   final int? total_seats;
   final int? joined;
   final bool? expired;
+  final String? adtype;
   final String photoUrl;
 
   // final Boolean expired;
@@ -19,7 +20,7 @@ class RidesModel {
     required this.ride_id,
     this.created_at,
     this.owner_id,
-    this.title,
+    this.adName,
     this.description,
     this.start_loc,
     this.end_loc,
@@ -27,8 +28,9 @@ class RidesModel {
     this.joined,
     this.total_seats,
     this.expired,
+    this.adtype = 'Ride',
     this.photoUrl =
-        'https://drive.google.com/file/d/1uOX8EaE59dW_bLBx5oC5jpNxNCZn3qxo/view?usp=drive_link',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s',
   });
 
   factory RidesModel.fromJson(Map<String, dynamic> json) {
@@ -39,10 +41,10 @@ class RidesModel {
     // end_date_time_string =
     //     end_date_time_string.substring(0, end_date_time_string.length - 4);
     return RidesModel(
-      ride_id: json['event_id'],
+      ride_id: json['ride_id'],
       created_at: DateTime.parse(json['created_at']),
       owner_id: json['owner_id'],
-      title: json['title'],
+      adName: json['title'],
       description: json['description'],
       start_loc: json['start_location'],
       end_loc: json['end_location'],

@@ -52,7 +52,7 @@ class HomeCubit extends Cubit<HomeStates> {
         return await eventsScreen.fetchEvents(); // Assuming eventsScreen and ridesScreen also have fetchAds method
       case 2:
         return await ridesScreen
-            .ads; // Assuming eventsScreen and ridesScreen also have fetchAds method
+            .fetchRides(); // Assuming eventsScreen and ridesScreen also have fetchAds method
       default:
         return [];
     }

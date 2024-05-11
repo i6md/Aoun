@@ -31,7 +31,7 @@ class EventsScreen extends StatelessWidget {
     AuthService authService = AuthService();
     var token = await authService.getToken();
     print(token);
-    print('we reached here');
+    print('we reached here Events');
     //print(token);
     //_LoginScreenState.getToken();
     final requestHeaders = {
@@ -45,6 +45,9 @@ class EventsScreen extends StatelessWidget {
             'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/list_events'),
         headers: requestHeaders,
         body: json.encode(requestBody));
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    print('State8798');
     //print('requestHeader: $requestHeaders\n\n\n requestBody: $requestBody');
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
@@ -92,116 +95,107 @@ class EventsScreen extends StatelessWidget {
               var sortedAds = filteredAds;
               sortedAds.sort((a, b) => b.created_at!.compareTo(a.created_at!));
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    " Newly Added Items",
-                    textAlign: TextAlign.left,
-                    style: GoogleFonts.readexPro(
-                        textStyle: TextStyle(
-                      color: Colors.indigo,
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w700,
-                    )),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 1.0,
-                    color: Colors.grey[300],
-                  ),
-                  Container(
-                    height: 90,
-                    child: Expanded(
-                      child: ListView.separated(
-                        scrollDirection: Axis
-                            .horizontal, // This makes the ListView scroll horizontally
+              return RefreshIndicator(
+                onRefresh: fetchEvents,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      " Newly Added Events",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.readexPro(
+                          textStyle: TextStyle(
+                        color: Colors.indigo,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w700,
+                      )),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 1.0,
+                      color: Colors.grey[300],
+                    ),
+                    Container(
+                      height: 90,
+                      child: Expanded(
+                        child: ListView.separated(
+                          scrollDirection: Axis
+                              .horizontal, // This makes the ListView scroll horizontally
+                          itemCount: filteredAds.length,
+                          itemBuilder: (context, index) {
+                            return buildListItem3(
+                                adName: sortedAds[index].adName,
+                                adResourceType: filteredAds[index].expired,
+                                adDate: filteredAds[index].created_at,
+                                adImages: filteredAds[index].pictures,
+                                adPlace: filteredAds[index].building,
+                                photoUrl: filteredAds[index].photoUrl,
+                                onTapp: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PostDetalis(
+                                            filteredAds[index]
+                                          )));
+                                });
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Container(
+                              width: 1.0,
+                              height: double.infinity,
+                              color: Colors.grey[300],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      " All Events",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.readexPro(
+                          textStyle: TextStyle(
+                        color: Colors.indigo,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w700,
+                      )),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 1.0,
+                      color: Colors.grey[300],
+                    ),
+                    Expanded(
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount:
+                              2, // This specifies the number of columns in the grid
+                          childAspectRatio:
+                              3 / 2, // Adjust according to your needs
+                        ),
                         itemCount: filteredAds.length,
-                        itemBuilder: (context, index) {
-                          return buildListItem3(
-                              adName: sortedAds[index].title,
-                              adResourceType: filteredAds[index].expired,
-                              adDate: filteredAds[index].created_at,
-                              adImages: filteredAds[index].pictures,
-                              adPlace: filteredAds[index].building,
-                              photoUrl: filteredAds[index].photoUrl,
-                              onTapp: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PostDetalis(
-                                              filteredAds[index].event_id,
-                                              filteredAds[index].title!,
-                                              filteredAds[index].expired!,
-                                              filteredAds[index].created_at!,
-                                              filteredAds[index].building!,
-                                              filteredAds[index].description!,
-                                              adPictures:
-                                                  filteredAds[index].pictures!,
-                                            )));
-                              });
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Container(
-                            width: 1.0,
-                            height: double.infinity,
-                            color: Colors.grey[300],
-                          );
-                        },
+                        itemBuilder: (context, index) => buildListEvent(
+                          title: filteredAds[index].adName,
+                          event_type: 'Event',
+                          created_at: filteredAds[index].created_at,
+                          building: filteredAds[index].building,
+                          pictures: filteredAds[index].pictures,
+                          photoUrl: filteredAds[index].photoUrl,
+                          joined: filteredAds[index].joined,
+                          participants_number: filteredAds[index].participants_number,
+                          onTapp: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PostDetalis(
+                                          filteredAds[index]
+                                        )));
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    " All Items",
-                    textAlign: TextAlign.left,
-                    style: GoogleFonts.readexPro(
-                        textStyle: TextStyle(
-                      color: Colors.indigo,
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w700,
-                    )),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 1.0,
-                    color: Colors.grey[300],
-                  ),
-                  Expanded(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount:
-                            2, // This specifies the number of columns in the grid
-                        childAspectRatio:
-                            3 / 2, // Adjust according to your needs
-                      ),
-                      itemCount: filteredAds.length,
-                      itemBuilder: (context, index) => buildListItem2(
-                        adName: filteredAds[index].title,
-                        adResourceType: 'Event',
-                        adDate: filteredAds[index].created_at,
-                        adPlace: filteredAds[index].building,
-                        adImages: filteredAds[index].pictures,
-                        photoUrl: filteredAds[index].photoUrl,
-                        onTapp: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PostDetalis(
-                                        filteredAds[index].event_id,
-                                        filteredAds[index].title!,
-                                        filteredAds[index].expired!,
-                                        filteredAds[index].created_at!,
-                                        filteredAds[index].building!,
-                                        filteredAds[index].description!,
-                                        adPictures:
-                                            filteredAds[index].pictures!,
-                                      )));
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               );
             } else {
               return Center(

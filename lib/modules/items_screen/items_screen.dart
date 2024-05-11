@@ -75,116 +75,107 @@ class ItemsScreen extends StatelessWidget {
               // Sort thefilteredAds by adDate (newest first)
               filteredAds.sort((a, b) => b.adDate!.compareTo(a.adDate!));
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    " Newly Added Items",
-                    textAlign: TextAlign.left,
-                    style: GoogleFonts.readexPro(
-                        textStyle: TextStyle(
-                          color: Colors.indigo,
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.w700,
-                        )),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 1.0,
-                    color: Colors.grey[300],
-                  ),
-                  Container(
-                    height: 90,
-                    child: Expanded(
-                      child: ListView.separated(
-                        scrollDirection: Axis
-                            .horizontal, // This makes the ListView scroll horizontally
+              return RefreshIndicator(
+                onRefresh: fetchAds,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      " Newly Added Items",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.readexPro(
+                          textStyle: TextStyle(
+                            color: Colors.indigo,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w700,
+                          )),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 1.0,
+                      color: Colors.grey[300],
+                    ),
+                    Container(
+                      height: 90,
+                      child: Expanded(
+                        child: ListView.separated(
+                          scrollDirection: Axis
+                              .horizontal, // This makes the ListView scroll horizontally
+                          itemCount: filteredAds.length,
+                          itemBuilder: (context, index) {
+                            return buildListItem3(
+                                adName: filteredAds[index].adName,
+                                adResourceType: filteredAds[index].adResourceType,
+                                adDate: filteredAds[index].adDate,
+                                adPlace: filteredAds[index].building,
+                                adImages: filteredAds[index].pictures,
+                                photoUrl: filteredAds[index].photoUrl,
+                                onTapp: () {
+                                  print(filteredAds[index]);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PostDetalis(
+                                            filteredAds[index]
+                                          )));
+
+                                });
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Container(
+                              width: 1.0,
+                              height: double.infinity,
+                              color: Colors.grey[300],
+                            );
+                          },
+                        ),
+                      ),
+
+                    ),
+                    SizedBox(height: 10),
+
+                    Text(
+                      " All Items",
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.readexPro(
+                          textStyle: TextStyle(
+                            color: Colors.indigo,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w700,
+                          )),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 1.0,
+                      color: Colors.grey[300],
+                    ),
+                    Expanded(
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount:2, // This specifies the number of columns in the grid
+                          childAspectRatio: 3 / 2, // Adjust according to your needs
+                        ),
                         itemCount: filteredAds.length,
-                        itemBuilder: (context, index) {
-                          return buildListItem3(
-                              adName: filteredAds[index].adName,
-                              adResourceType: filteredAds[index].adResourceType,
-                              adDate: filteredAds[index].adDate,
-                              adPlace: filteredAds[index].adPlace,
-                              adImages: filteredAds[index].adImages,
-                              photoUrl: filteredAds[index].photoUrl,
-                              onTapp: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => PostDetalis(
-                                          filteredAds[index].adId,
-                                          filteredAds[index].adName!,
-                                          filteredAds[index].adResourceType!,
-                                          filteredAds[index].adDate!,
-                                          filteredAds[index].adPlace!,
-                                          filteredAds[index].adDescription!,
-                                          adPictures: filteredAds[index].adImages,
-                                        )));
-
-                              });
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Container(
-                            width: 1.0,
-                            height: double.infinity,
-                            color: Colors.grey[300],
-                          );
-                        },
+                        itemBuilder: (context, index) => buildListItem2(
+                          adName: filteredAds[index].adName,
+                          adResourceType: filteredAds[index].adResourceType,
+                          adDate: filteredAds[index].adDate,
+                          adPlace: filteredAds[index].building,
+                          adImages: filteredAds[index].pictures,
+                          photoUrl: filteredAds[index].photoUrl,
+                          onTapp: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PostDetalis(
+                                      filteredAds[index]
+                                    )));
+                          },
+                        ),
                       ),
                     ),
-
-                  ),
-                  SizedBox(height: 10),
-
-                  Text(
-                    " All Items",
-                    textAlign: TextAlign.left,
-                    style: GoogleFonts.readexPro(
-                        textStyle: TextStyle(
-                          color: Colors.indigo,
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.w700,
-                        )),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 1.0,
-                    color: Colors.grey[300],
-                  ),
-                  Expanded(
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount:2, // This specifies the number of columns in the grid
-                        childAspectRatio: 3 / 2, // Adjust according to your needs
-                      ),
-                      itemCount: filteredAds.length,
-                      itemBuilder: (context, index) => buildListItem2(
-                        adName: filteredAds[index].adName,
-                        adResourceType: filteredAds[index].adResourceType,
-                        adDate: filteredAds[index].adDate,
-                        adPlace: filteredAds[index].adPlace,
-                        adImages: filteredAds[index].adImages,
-                        photoUrl: filteredAds[index].photoUrl,
-                        onTapp: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PostDetalis(
-                                    filteredAds[index].adId,
-                                    filteredAds[index].adName!,
-                                    filteredAds[index].adResourceType!,
-                                    filteredAds[index].adDate!,
-                                    filteredAds[index].adPlace!,
-                                    filteredAds[index].adDescription!,
-                                    adPictures: filteredAds[index].adImages,
-
-                                  )));
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               );
             } else {
               return Center(

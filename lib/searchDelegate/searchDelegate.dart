@@ -84,12 +84,8 @@ class DataSearch extends SearchDelegate<dynamic> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PostDetalis(
-                        suggestionList[index].adId,
-                        suggestionList[index].adName!,
-                        suggestionList[index].adResourceType!,
-                        suggestionList[index].adDate!,
-                        suggestionList[index].adPlace!,
-                        suggestionList[index].adDescription!),
+                         suggestionList[index],
+                    ),
                   ),
                 );
               },

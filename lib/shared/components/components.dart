@@ -542,257 +542,20 @@ String? timeDifference(DateTime? adDate) {
   return timeDiffString;
 }
 
-//Padding(
-//   padding: const EdgeInsets.symmetric(horizontal: 15.0),
-//   child: Row(
-//     children: [
-//       CircleAvatar(
-//         radius: 25,
-//         backgroundImage: NetworkImage('https://cdn.dribbble.com/users/60729/screenshots/3717055/media/d1a7ac75a5a9720fa0b924168e2be0b8.gif'),
-//       ),
-//       Padding(
-//         padding: const EdgeInsetsDirectional.only(
-//           bottom: 5.0,
-//           end: 5.0,
-//         ),
-//       ),
-//       SizedBox(width: 18.0,),
-//       Expanded(
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(adName,
-//               maxLines: 1,
-//               overflow: TextOverflow.ellipsis,
-//               style:TextStyle(
-//                   fontSize: 15,
-//                   fontWeight: FontWeight.bold
-//               ),
-//             ),
-//             SizedBox(
-//               height: 5.0,
-//             ),
-//             Row(
-//               mainAxisSize: MainAxisSize.max,
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text('Resource Type: ${adResourceType}',
-//                       maxLines: 2,
-//                       overflow: TextOverflow.ellipsis,
-//                       style: TextStyle(
-//                         fontSize: 15,
-//                       ),
-//                     ),
-//                     SizedBox(
-//                       height: 3.0,
-//                     ),
-//
-//                     Text(
-//                         maxLines: 2,
-//                         overflow: TextOverflow.ellipsis,
-//                         'Resource Place: ${adPlace}'
-//                     ),
-//                   ],
-//                 ),
-//                 Column(
-//                   // mainAxisSize: MainAxisSize.max,
-//                   crossAxisAlignment:CrossAxisAlignment.end,
-//
-//                   children: [
-//                     Text(
-//                         adDate,
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             )
-//           ],
-//         ),
-//       )
-//
-//     ],
-//   ),
-// );
-Widget buildListItem1({
-  required String adName,
-  required String adResourceType,
-  required String adDate,
-  required String adPlace,
-  void Function()? onTapp,
-  void Function()? onDelete,
-  bool showAdminButtons = false,
-}) =>
-    Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-      child: Transform(
-        alignment: FractionalOffset.center,
-        transform: Matrix4.identity()
-          ..setEntry(3, 2, 0.045) // This value controls the perspective effect
-          ..rotateX(-0.015) // These values control the rotation
-          ..rotateY(0),
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(
-                  'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/AcetoFive.JPG/330px-AcetoFive.JPG'),
-              fit: BoxFit.fill,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5),
-                BlendMode.srcATop,
-              ),
-            ),
-            borderRadius: BorderRadius.circular(9.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.5),
-                blurRadius: 19,
-                spreadRadius: 5.0,
-                offset: Offset(5, 5),
-              ),
-            ],
-          ),
-          child: Card(
-            color: Colors.transparent, // make the card transparent
-            elevation: 9.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(19.0),
-            ),
-            child: ExpansionTile(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(19.0),
-              ),
-              title: Text(
-                adName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              subtitle: Text(
-                adDate,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        if (showAdminButtons) // replace 'showDeleteButton' with your actual condition
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              if (onDelete != null) {
-                                onDelete();
-                              }
-                            },
-                          ),
-                        if (showAdminButtons) // replace 'showEditButton' with your actual condition
-                          IconButton(
-                            icon: Icon(Icons.edit, color: Colors.white),
-                            onPressed: () {
-                              if (onDelete != null) {
-                                onDelete();
-                              }
-                            },
-                          ),
-                        IconButton(
-                          onPressed: () {
-                            // Add functionality here or replace with a non-interactive widget
-                          },
-                          icon: Icon(
-                            Icons.thumb_up_alt_rounded,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          height: (showAdminButtons) ? 25 : 50,
-                        ),
-                        CircleAvatar(
-                          radius: 35,
-                          backgroundImage: NetworkImage(
-                              'https://aoun-item-pictures.s3.eu-north-1.amazonaws.com/i_769af3ac-d_1.jpg'),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "Owner name : Turki",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          height: (showAdminButtons) ? 35 : 65,
-                        ),
-                        Text(
-                          'Place: ${adPlace}',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        Text(
-                          'Type: ${adResourceType}',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ],
-              trailing: IconButton(
-                icon: Icon(
-                  Icons.arrow_forward,
-                  color: Colors.white,
-                ),
-                onPressed: onTapp,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+
+
 
 Widget buildListItem2({
   required String? adName,
   required dynamic? adResourceType,
+  String? category,
   required DateTime? adDate,
   required String? adPlace,
   void Function()? onTapp,
   void Function()? onDelete,
   List<dynamic>? adImages,
   bool showAdminButtons = false,
+
   required String? photoUrl,
 }) {
   // Define a state variable to control the scale of the card
@@ -901,6 +664,287 @@ Widget buildListItem2({
   );
 }
 
+
+Widget buildListEvent({
+  DateTime? created_at,
+  String? event_type,
+  String? owner_id,
+  required String? title,
+  String? description,
+  void Function()? onDelete,
+  bool showAdminButtons = false,
+  DateTime? start_date_time,
+  DateTime? end_date_time,
+  String? building,
+  String? room,
+  int? participants_number,
+  int? joined,
+  bool? expired,
+  required List<dynamic>? pictures,
+  void Function()? onTapp,
+  required String? photoUrl,
+}) {
+  // Define a state variable to control the scale of the card
+  bool isPressed = false;
+
+  return GestureDetector(
+    // When the card is pressed, set isPressed to true to increase the scale
+    onTap: onTapp,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      child: Transform(
+        alignment: FractionalOffset.center,
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.1) // This value controls the perspective effect
+          ..rotateX(-0.0) // These values control the rotation
+          ..rotateY(0),
+        child: Container(
+          decoration: BoxDecoration(
+            image: pictures != null ? DecorationImage(
+              image: NetworkImage(pictures.first),
+              fit: BoxFit.fill,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5),
+                BlendMode.srcATop,
+              ),
+            )
+                : null, // Set to null when adImages is null
+            borderRadius: BorderRadius.circular(9.0),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black.withOpacity(0.5),
+            //     blurRadius: 19,
+            //     spreadRadius: 5.0,
+            //     offset: Offset(5, 5),
+            //   ),
+            // ],
+          ),
+          child: Card(
+            color: Colors.transparent, // make the card transparent
+            elevation: 9.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(19.0),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          event_type!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 13, color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          timeDifference(created_at)!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 11, color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          building?.isNotEmpty ?? false
+                              ? 'Building: $building'
+                              : '',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 11, color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Participants: $joined / $participants_number',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 13, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (showAdminButtons)
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          // Edit logic here
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: onDelete,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
+Widget buildListRide({
+  DateTime? created_at,
+  // String? event_type,
+  String? owner_id,
+  required String? title,
+  String? description,
+  void Function()? onDelete,
+  bool showAdminButtons = false,
+  DateTime? start_date_time,
+  String? start_loc,
+  String? end_loc,
+ // String? room,
+  int? total_seats,
+  int? joined,
+  bool? expired,
+  //required List<dynamic>? pictures,
+  void Function()? onTapp,
+  required String? photoUrl,
+}) {
+  // Define a state variable to control the scale of the card
+  bool isPressed = false;
+
+  return GestureDetector(
+    // When the card is pressed, set isPressed to true to increase the scale
+    onTap: onTapp,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+      child: Transform(
+        alignment: FractionalOffset.center,
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.1) // This value controls the perspective effect
+          ..rotateX(-0.0) // These values control the rotation
+          ..rotateY(0),
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(photoUrl!),
+              fit: BoxFit.fill,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5),
+                BlendMode.srcATop,
+              ),
+            )
+                , // Set to null when adImages is null
+            borderRadius: BorderRadius.circular(9.0),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.black.withOpacity(0.5),
+            //     blurRadius: 19,
+            //     spreadRadius: 5.0,
+            //     offset: Offset(5, 5),
+            //   ),
+            // ],
+          ),
+          child: Card(
+            color: Colors.transparent, // make the card transparent
+            elevation: 9.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(19.0),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'From $start_loc to $end_loc',
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 13, color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          timeDifference(created_at)!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 11, color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Starts at: ${start_date_time!}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 11, color: Colors.white),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Travelers: $joined / $total_seats',
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 13, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (showAdminButtons)
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          // Edit logic here
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: onDelete,
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
 Widget buildListItem3({
   required String? adName,
   dynamic? adResourceType,
@@ -939,7 +983,14 @@ Widget buildListItem3({
                       BlendMode.srcATop,
                     ),
                   )
-                : null, // Set to null when adImages is null
+                : DecorationImage(
+              image: NetworkImage(photoUrl!),
+              fit: BoxFit.fill,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5),
+                BlendMode.srcATop,
+              ),
+            ), // Set to null when adImages is null
             borderRadius: BorderRadius.circular(9.0),
           ),
           child: Card(
@@ -969,6 +1020,96 @@ Widget buildListItem3({
                         adPlace?.isNotEmpty ?? false
                             ? 'Building: $adPlace'
                             : '',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 11, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
+Widget buildListRides3({
+  DateTime? created_at,
+  // String? event_type,
+  String? owner_id,
+  required String? title,
+  String? description,
+  void Function()? onDelete,
+  bool showAdminButtons = false,
+  DateTime? start_date_time,
+  String? start_loc,
+  String? end_loc,
+  // String? room,
+  int? total_seats,
+  int? joined,
+  bool? expired,
+  //required List<dynamic>? pictures,
+  void Function()? onTapp,
+  required String? photoUrl,
+}) {
+  // Define a state variable to control the scale of the card
+  bool isPressed = false;
+
+  return GestureDetector(
+    // When the card is pressed, set isPressed to true to increase the scale
+    onTap: onTapp,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+      child: Transform(
+        alignment: FractionalOffset.center,
+        transform: Matrix4.identity()
+          ..setEntry(3, 2, 0.1) // This value controls the perspective effect
+          ..rotateX(-0.0000) // These values control the rotation
+          ..rotateY(0),
+        child: Container(
+          width: 150,
+          height: 10,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage(photoUrl!),
+              fit: BoxFit.fill,
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.5),
+                BlendMode.srcATop,
+              ),
+            ), // Set to null when adImages is null
+            borderRadius: BorderRadius.circular(9.0),
+          ),
+          child: Card(
+            color: Colors.transparent, // make the card transparent
+            elevation: 9.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(19.0),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                      Text(
+                        'From : $start_loc to $end_loc'
+                            ,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),

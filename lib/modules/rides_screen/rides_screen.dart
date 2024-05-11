@@ -63,7 +63,7 @@ class RidesScreen extends StatelessWidget {
     }
   }
 
-  List<AdsModel> ads = [
+ // List<AdsModel> ads = [
     /*
     AdsModel(
         adName: "KFUPM to Airport",
@@ -121,10 +121,10 @@ class RidesScreen extends StatelessWidget {
         adPlace: "Fashion District",
         photoUrl:
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s'),*/
-  ];
-  void applyFilters(List<String> filters) {
-    List<AdsModel> filteredAds = filters.isNotEmpty
-        ? ads.where((ad) => filters.contains(ad.adResourceType)).toList()
+  //];
+  void applyFilters(List<String> filters,List<RidesModel> ads) {
+    List<RidesModel> filteredAds = filters.isNotEmpty
+        ? ads.where((ad) => filters.contains(ad.start_loc)).toList()
         : ads;
     // Now use filteredAds to update the UI
   }
@@ -199,107 +199,106 @@ class RidesScreen extends StatelessWidget {
             // List<AdsModel> filteredAds = filters.isNotEmpty
             //     ? ads.where((ad) => filters.contains(ad.adResourceType)).toList()
             //     : ads;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  " Newly Added Rides",
-                  textAlign: TextAlign.left,
-                  style: GoogleFonts.readexPro(
-                      textStyle: TextStyle(
-                    color: Colors.indigo,
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w700,
-                  )),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 1.0,
-                  color: Colors.grey[300],
-                ),
-                Container(
-                  height: 90,
-                  child: Expanded(
-                    child: ListView.separated(
-                      scrollDirection: Axis
-                          .horizontal, // This makes the ListView scroll horizontally
+            return RefreshIndicator(
+              onRefresh: fetchRides,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    " Newly Added Rides",
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.readexPro(
+                        textStyle: TextStyle(
+                      color: Colors.indigo,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.w700,
+                    )),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 1.0,
+                    color: Colors.grey[300],
+                  ),
+                  Container(
+                    height: 90,
+                    child: Expanded(
+                      child: ListView.separated(
+                        scrollDirection: Axis
+                            .horizontal, // This makes the ListView scroll horizontally
+                        itemCount: filteredAds.length,
+                        itemBuilder: (context, index) {
+                          return buildListRides3(
+                              title: filteredAds[index].adName!,
+                              start_date_time: filteredAds[index].start_date_time!,
+                              created_at: filteredAds[index].created_at,
+                              end_loc: filteredAds[index].end_loc!,
+                              start_loc: filteredAds[index].start_loc!,
+                              total_seats: filteredAds[index].total_seats!,
+                              joined: filteredAds[index].joined!,
+                              photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s',     onTapp: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PostDetalis(
+                                              filteredAds[index]
+                                        )));
+                              });
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Container(
+                            width: 1.0,
+                            height: double.infinity,
+                            color: Colors.grey[300],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    " All Rides",
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.readexPro(
+                        textStyle: TextStyle(
+                      color: Colors.indigo,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.w700,
+                    )),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 1.0,
+                    color: Colors.grey[300],
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount:
+                            2, // This specifies the number of columns in the grid
+                        childAspectRatio: 3 / 2, // Adjust according to your needs
+                      ),
                       itemCount: filteredAds.length,
-                      itemBuilder: (context, index) {
-                        return buildListItem3(
-                            adName: filteredAds[index].title!,
-                            adResourceType: 'Ride',
-                            adDate: filteredAds[index].start_date_time!,
-                            adPlace: filteredAds[index].end_loc!,
-                            photoUrl: filteredAds[index].photoUrl,
-                            onTapp: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PostDetalis(
-                                            filteredAds[index].ride_id,
-                                            filteredAds[index].title!,
-                                            'Ride',
-                                            filteredAds[index].start_date_time!,
-                                            filteredAds[index].end_loc!,
-                                            filteredAds[index].description!,
-                                          )));
-                            });
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return Container(
-                          width: 1.0,
-                          height: double.infinity,
-                          color: Colors.grey[300],
-                        );
-                      },
+                      itemBuilder: (context, index) => buildListRide(
+                         title: filteredAds[index].adName!,
+                          start_date_time: filteredAds[index].start_date_time!,
+                          created_at: filteredAds[index].created_at,
+                          end_loc: filteredAds[index].end_loc!,
+                          start_loc: filteredAds[index].start_loc!,
+                          total_seats: filteredAds[index].total_seats!,
+                          joined: filteredAds[index].joined!,
+                          photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ22Tv1E3gjmg72p1QMkm3vmCwpX30ye9lDpGqS4TYbhA&s',
+                          onTapp: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PostDetalis(
+                                      filteredAds[index]
+                                    )));
+                          }),
                     ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  " All Rides",
-                  textAlign: TextAlign.left,
-                  style: GoogleFonts.readexPro(
-                      textStyle: TextStyle(
-                    color: Colors.indigo,
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w700,
-                  )),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 1.0,
-                  color: Colors.grey[300],
-                ),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount:
-                          2, // This specifies the number of columns in the grid
-                      childAspectRatio: 3 / 2, // Adjust according to your needs
-                    ),
-                    itemCount: filteredAds.length,
-                    itemBuilder: (context, index) => buildListItem2(
-                        adName: filteredAds[index].title!,
-                        adResourceType: 'Ride',
-                        adDate: filteredAds[index].start_date_time,
-                        adPlace: filteredAds[index].end_loc!,
-                        photoUrl: filteredAds[index].photoUrl,
-                        onTapp: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PostDetalis(
-                                      filteredAds[index].ride_id,
-                                      filteredAds[index].title!,
-                                      'Ride',
-                                      filteredAds[index].start_date_time!,
-                                      filteredAds[index].end_loc!,
-                                      filteredAds[index].description!)));
-                        }),
-                  ),
-                ),
-              ],
+                ],
+              ),
             );
           } else {
             return Center(

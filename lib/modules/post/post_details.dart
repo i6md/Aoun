@@ -7,19 +7,32 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../login/auth_service.dart';
+
 class PostDetalis extends StatefulWidget {
-  const PostDetalis(this.adId, this.adName, this.adResourceType, this.adDate,
-      this.adPlace, this.adDescription,
-      {super.key, this.adPictures});
+  const PostDetalis(
+      this.ad,
+      {super.key});
 
-  final String? adId;
-  final String? adName;
-  final dynamic? adResourceType;
-  final DateTime? adDate;
-  final String? adPlace;
-  final String? adDescription;
-  final List<dynamic>? adPictures;
-
+  // final String? adId;
+  // final String? adName;
+  // final dynamic? adResourceType;
+  // final DateTime? adDate;
+  // final String? adPlace;
+  // final String? adDescription;
+  // final String? adtype;
+  // final List<dynamic>? adPictures;
+  // final DateTime? start_date;
+  // final DateTime? end_date;
+  // final String? start_location;
+  // final String? end_location;
+  // final String? owner_id;
+  // final int? joined;
+  // final bool? expired;
+  // final int? total_seats;
+  // final DateTime? created_at;
+  // final int? participants;
+  final dynamic ad;
   @override
   State<PostDetalis> createState() => _PostDetailsState();
 }
@@ -79,19 +92,6 @@ class _PostDetailsState extends State<PostDetalis> {
                 ),
               ),
               // PopupMenuItem 2
-              const PopupMenuItem(
-                value: 2,
-                // row with two children
-                child: Row(
-                  children: [
-                    Icon(Icons.star_border_rounded),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text("Rate")
-                  ],
-                ),
-              ),
             ],
             offset: const Offset(0, 50),
             color: Colors.white,
@@ -126,7 +126,7 @@ class _PostDetailsState extends State<PostDetalis> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(
-                    widget.adName!,
+                    widget.ad.adName!,
                     style: GoogleFonts.readexPro(
                       fontSize: 25,
                     ),
@@ -177,7 +177,7 @@ class _PostDetailsState extends State<PostDetalis> {
             Align(
               alignment: AlignmentDirectional(-1, 0),
               child: Text(
-                'Event',
+                widget.ad.adtype!,
                 style: GoogleFonts.readexPro(
                   fontSize: 14,
                 ),
@@ -190,13 +190,15 @@ class _PostDetailsState extends State<PostDetalis> {
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
+                    if(widget.ad.adtype != "Ride")
                     Icon(
                       Icons.location_on,
                       color: Colors.black,
                       size: 20,
                     ),
+                    if(widget.ad.adtype != "Ride")
                     Text(
-                      widget.adPlace!,
+                      widget.ad.building ?? "",
                       style: GoogleFonts.readexPro(
                         fontSize: 12,
                       ),
@@ -211,8 +213,23 @@ class _PostDetailsState extends State<PostDetalis> {
                       color: Colors.black,
                       size: 20,
                     ),
+                    if(widget.ad.adtype == 'Item')
                     Text(
-                      timeDifference(widget.adDate)!,
+                      timeDifference(widget.ad.adDate)!,
+                      style: GoogleFonts.readexPro(
+                        fontSize: 12,
+                      ),
+                    ),
+                    if(widget.ad.adtype == 'Events')
+                    Text(
+                      timeDifference(widget.ad.created_at)!,
+                      style: GoogleFonts.readexPro(
+                        fontSize: 12,
+                      ),
+                    ),
+                    if(widget.ad.adtype == 'Ride')
+                    Text(
+                      timeDifference(widget.ad.created_at)!,
                       style: GoogleFonts.readexPro(
                         fontSize: 12,
                       ),
@@ -274,38 +291,6 @@ class _PostDetailsState extends State<PostDetalis> {
                     ],
                   ),
                   Spacer(),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (follow == 'Follow') {
-                        setState(() {
-                          follow = 'Unfollow';
-                        });
-                      } else {
-                        setState(() {
-                          follow = 'Follow';
-                        });
-                      }
-                    },
-                    child: Text(
-                      follow,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      // height: 40,
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                      // iconPadding:
-                      //     EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.black,
-                      textStyle: GoogleFonts.readexPro(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -323,13 +308,15 @@ class _PostDetailsState extends State<PostDetalis> {
             ),
             Align(
               alignment: AlignmentDirectional(-1, 0),
-              child: Text(
-                widget.adDescription!,
+              child:
+              Text(
+                widget.ad.description!,
                 style: GoogleFonts.readexPro(
                   fontSize: 14,
                 ),
               ),
             ),
+            if(widget.ad.adtype!='Ride')
             Align(
               alignment: AlignmentDirectional(-1, 0),
               child: Padding(
@@ -342,6 +329,7 @@ class _PostDetailsState extends State<PostDetalis> {
                 ),
               ),
             ),
+            if(widget.ad.adtype!='Ride')
             Expanded(
                 child: GridView.builder(
               padding: EdgeInsets.zero,
@@ -353,16 +341,16 @@ class _PostDetailsState extends State<PostDetalis> {
               ),
               scrollDirection: Axis.vertical,
               itemCount:
-                  widget.adPictures?.length ?? 0, // Use null-aware operator
+                  widget.ad.pictures?.length ?? 0, // Use null-aware operator
               itemBuilder: (context, index) {
-                if (widget.adPictures == null) {
+                if (widget.ad.pictures == null) {
                   // Render a blank grid cell
                   return Container(); // You can customize this to show any placeholder
                 } else {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.network(
-                      widget.adPictures![index],
+                      widget.ad.pictures![index],
                       width: 300,
                       height: 200,
                       fit: BoxFit.cover,
@@ -377,7 +365,15 @@ class _PostDetailsState extends State<PostDetalis> {
                 padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
                 child: defaultButton(
                     function: () {
-                      orderItem(widget.adId!);
+                      if(widget.ad.adtype == 'Event') {
+                        print(widget.ad.event_id!);
+                        joinEvent(widget.ad.eveent_id!);
+                      } else if(widget.ad.adtype == 'Item') {
+                        orderItem(widget.ad.adId!);
+                      } else if(widget.ad.adtype == 'Ride') {
+                        print(widget.ad.ride_id);
+                        joinRide(widget.ad.ride_id!);
+                      }
                     },
                     text: 'Reserve',
                     IsUpperCase: false),
@@ -413,4 +409,83 @@ class _PostDetailsState extends State<PostDetalis> {
       print('Error ordering item: $error');
     }
   }
+
+
+  Future<void> joinEvent(String eventId) async {
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
+    const String apiUrl =
+        'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/join_event';
+    final requestHeaders = {
+      "Authorization": "Bearer $token",
+    };
+    final requestBody = {
+      'event_id': eventId,
+    };
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: requestHeaders,
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final message = responseData['message'];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Event joined successfully: $message'),
+        ),
+      );
+     // print('Event joined successfully: $message');
+    } else {
+      final errorResponse = json.decode(response.body);
+      final error = errorResponse['error'];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$error'),
+        ),
+      );
+    }
+  }
+
+  Future<void> joinRide(String rideId) async {
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
+    const String apiUrl =
+        'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/join_ride';
+    final requestHeaders = {
+      "Authorization": "Bearer $token",
+    };
+    final requestBody = {
+      'ride_id': rideId,
+    };
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: requestHeaders,
+      body: json.encode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final message = responseData['message'];
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Rides joined successfully: $message'),
+      )
+      );
+    } else {
+      final errorResponse = json.decode(response.body);
+      final error = errorResponse['error'];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$error'),
+        ),
+      );
+    }
+  }
+
 }
+
+//https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/join_event

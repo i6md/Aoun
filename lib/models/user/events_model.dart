@@ -3,7 +3,7 @@ class EventsModel {
   final DateTime? created_at;
   final String? event_type;
   final String? owner_id;
-  final String? title;
+  final String? adName;
   final String? description;
   final DateTime? start_date_time;
   final DateTime? end_date_time;
@@ -12,6 +12,7 @@ class EventsModel {
   final int? participants_number;
   final int? joined;
   final bool? expired;
+  final adtype;
   final List<dynamic>? pictures;
   final String photoUrl;
 
@@ -23,7 +24,7 @@ class EventsModel {
     this.created_at,
     this.event_type,
     this.owner_id,
-    this.title,
+    this.adName,
     this.description,
     this.start_date_time,
     this.end_date_time,
@@ -31,6 +32,7 @@ class EventsModel {
     this.room,
     this.joined,
     this.participants_number,
+    this.adtype='Event',
     this.expired,
     this.pictures,
     this.photoUrl =
@@ -49,7 +51,7 @@ class EventsModel {
       created_at: DateTime.parse(json['created_at']),
       owner_id: json['owner_id'],
       event_type: json['event_type'],
-      title: json['title'],
+      adName: json['title'],
       description: json['description'],
       start_date_time: DateTime.parse(json['start_date_time']),
       end_date_time: DateTime.parse(json['end_date_time']),
