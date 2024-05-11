@@ -12,6 +12,13 @@ def add_user_info(api_url):
         # Get user input
         building = input("Enter your building: ")
         room = input("Enter your room: ")
+
+        # Create the payload
+        payload = {
+            "building": building,
+            "room": room
+        }
+
         root = Tk()  # Create a Tkinter root window
         root.withdraw()  # Hide the root window
 
@@ -22,24 +29,15 @@ def add_user_info(api_url):
         root.destroy()
 
         # Check if any file was selected
-        if not files:
-            print("No file selected.")
-            return
+        if files:
+            file = files[0]  # Use the first file
 
-        file = files[0]  # Use the first file
-
-        # Create the payload
-        payload = {
-            "building": building,
-            "room": room
-        }
-
-        with open(file, "rb") as image_file:
-            encoded_string = base64.b64encode(
-                image_file.read()).decode('utf-8')
-            # Include the file extension
-            payload["pic"] = {"content": encoded_string,
-                              "extension": os.path.splitext(file)[1][1:]}
+            with open(file, "rb") as image_file:
+                encoded_string = base64.b64encode(
+                    image_file.read()).decode('utf-8')
+                # Include the file extension
+                payload["pic"] = {"content": encoded_string,
+                                  "extension": os.path.splitext(file)[1][1:]}
 
         # Make the POST request
         response = requests.post(api_url, json=payload, headers=headers)
@@ -69,6 +67,13 @@ def edit_user_info(api_url):
         # Get user input
         building = input("Enter your building: ")
         room = input("Enter your room: ")
+
+        # Create the payload
+        payload = {
+            "building": building,
+            "room": room
+        }
+
         root = Tk()  # Create a Tkinter root window
         root.withdraw()  # Hide the root window
 
@@ -79,24 +84,15 @@ def edit_user_info(api_url):
         root.destroy()
 
         # Check if any file was selected
-        if not files:
-            print("No file selected.")
-            return
+        if files:
+            file = files[0]  # Use the first file
 
-        file = files[0]  # Use the first file
-
-        # Create the payload
-        payload = {
-            "building": building,
-            "room": room
-        }
-
-        with open(file, "rb") as image_file:
-            encoded_string = base64.b64encode(
-                image_file.read()).decode('utf-8')
-            # Include the file extension
-            payload["pic"] = {"content": encoded_string,
-                              "extension": os.path.splitext(file)[1][1:]}
+            with open(file, "rb") as image_file:
+                encoded_string = base64.b64encode(
+                    image_file.read()).decode('utf-8')
+                # Include the file extension
+                payload["pic"] = {"content": encoded_string,
+                                  "extension": os.path.splitext(file)[1][1:]}
 
         # Make the PUT request
         response = requests.post(api_url, json=payload, headers=headers)

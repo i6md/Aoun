@@ -57,13 +57,15 @@ def lambda_handler(event, context):
 
         building = event.get('building')
         room = event.get('room')
+        pic_url = old_pic_url
         pic_data = event.get("pic")
 
-        pic_file = base64.b64decode(pic_data["content"])
-        file_obj = io.BytesIO(pic_file)
-        filename = f"{user_id}.{pic_data['extension']}"
-        s3_client.upload_fileobj(file_obj, "aoun-user-pictures", filename)
-        pic_url = f"https://aoun-user-pictures.s3.eu-north-1.amazonaws.com/{filename}"
+        if pic_data:
+            pic_file = base64.b64decode(pic_data["content"])
+            file_obj = io.BytesIO(pic_file)
+            filename = f"{user_id}.{pic_data['extension']}"
+            s3_client.upload_fileobj(file_obj, "aoun-user-pictures", filename)
+            pic_url = f"https://aoun-user-pictures.s3.eu-north-1.amazonaws.com/{filename}"
 
         response = table.update_item(
             Key={"user_id": user_id},
