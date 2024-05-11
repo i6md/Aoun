@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:aoun_app/core/app_export.dart';
 import 'package:aoun_app/widgets/custom_elevated_button.dart';
 import 'package:aoun_app/widgets/custom_text_form_field.dart';
+import 'package:http/http.dart' as http;
+import '../../models/user/user_model.dart';
+import '../login/auth_service.dart';
 
 // ignore_for_file: must_be_immutable
 class ProfileProfileInfoPage extends StatefulWidget {
@@ -16,13 +21,54 @@ class ProfileProfileInfoPage extends StatefulWidget {
 
 class ProfileProfileInfoPageState extends State<ProfileProfileInfoPage>
     with AutomaticKeepAliveClientMixin<ProfileProfileInfoPage> {
-  TextEditingController firstNameController = TextEditingController();
 
-  TextEditingController lastNameController = TextEditingController();
+  TextEditingController buildingController = TextEditingController();
 
-  TextEditingController emailController = TextEditingController();
+  TextEditingController roomController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> updateUserInfo() async {
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
+    final requestHeaders = {
+      "Authorization": "Bearer $token",
+    };
+    final requestBody = {
+      "building": buildingController.text,
+      "room": roomController.text,
+      "pic": {
+        "content": "",
+        "extension": "jpg"
+      }
+    };
+
+    final response = await http.post(
+        Uri.parse('https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/edit_user_info'),
+        headers: requestHeaders,
+        body: json.encode(requestBody)
+    );
+
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      final message = responseData['message'];
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Information updated successfully: $message'),
+          )
+      );
+    } else {
+      final errorResponse = json.decode(response.body);
+      final error = errorResponse['error'];
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$error'),
+        ),
+      );
+    }
+
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -57,28 +103,23 @@ class ProfileProfileInfoPageState extends State<ProfileProfileInfoPage>
   }
 
   /// Section Widget
-  Widget _buildFirstName(BuildContext context) {
-    return CustomTextFormField(
-      controller: firstNameController,
-      hintText: "Archie",
-    );
-  }
 
   /// Section Widget
-  Widget _buildLastName(BuildContext context) {
+  Widget _buildBuilding(BuildContext context) {
     return CustomTextFormField(
-      controller: lastNameController,
-      hintText: "Copeland",
-    );
-  }
-
-  /// Section Widget
-  Widget _buildEmail(BuildContext context) {
-    return CustomTextFormField(
-      controller: emailController,
-      hintText: "archiecopeland@gmail.com",
+      controller: buildingController,
+      hintText: "Building number",
       textInputAction: TextInputAction.done,
-      textInputType: TextInputType.emailAddress,
+      textInputType: TextInputType.number,
+    );
+  }
+
+  Widget _buildroom(BuildContext context) {
+    return CustomTextFormField(
+      controller: roomController,
+      hintText: "Room number",
+      textInputAction: TextInputAction.done,
+      textInputType: TextInputType.number,
     );
   }
 
@@ -86,6 +127,17 @@ class ProfileProfileInfoPageState extends State<ProfileProfileInfoPage>
   Widget _buildSaveEdit(BuildContext context) {
     return CustomElevatedButton(
       text: "Save Edit",
+      onPressed: () {
+        if (buildingController.text.isNotEmpty && roomController.text.isNotEmpty) {
+          updateUserInfo();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please fill in all fields'),
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -96,26 +148,20 @@ class ProfileProfileInfoPageState extends State<ProfileProfileInfoPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "First Name",
-            style: theme.textTheme.titleSmall,
-          ),
-          SizedBox(height: 12.v),
-          _buildFirstName(context),
           SizedBox(height: 26.v),
           Text(
-            "Last Name",
+            "Building",
             style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 12.v),
-          _buildLastName(context),
+          _buildBuilding(context),
           SizedBox(height: 26.v),
           Text(
-            "Email address",
+            "Room",
             style: theme.textTheme.titleSmall,
           ),
           SizedBox(height: 12.v),
-          _buildEmail(context),
+          _buildroom(context),
           SizedBox(height: 31.v),
           _buildSaveEdit(context),
         ],
@@ -123,3 +169,4 @@ class ProfileProfileInfoPageState extends State<ProfileProfileInfoPage>
     );
   }
 }
+

@@ -76,7 +76,9 @@ class ItemsScreen extends StatelessWidget {
               filteredAds.sort((a, b) => b.adDate!.compareTo(a.adDate!));
 
               return RefreshIndicator(
-                onRefresh: fetchAds,
+                onRefresh: () async {
+                  await fetchAds();
+                },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

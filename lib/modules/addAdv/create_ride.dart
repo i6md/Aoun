@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:aoun_app/layout/home_layout.dart';
 import 'package:aoun_app/modules/login/auth_service.dart';
 import 'package:aoun_app/shared/components/components.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:google_fonts/google_fonts.dart';
@@ -611,61 +613,67 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
             alignment: AlignmentDirectional(-1, 0),
             child: Row(
               children: [
-                Container(
-                  width: 350,
-                  child: TextFormField(
-                    controller: startdateController,
-                    enabled: false,
-
-                    // focusNode: _model.textFieldFocusNode2,
-                    autofocus: true,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      labelText: '',
-                      labelStyle: GoogleFonts.readexPro(
-                          color: Colors.grey, fontSize: 12),
-                      // hintStyle: FlutterFlowTheme.of(context).labelMedium,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 224, 227, 231),
-                          width: 1,
+                Expanded(
+                  child: Container(
+                    width: 350,
+                    child: Expanded(
+                      child: TextFormField(
+                        controller: startdateController,
+                        enabled: false,
+                      
+                        // focusNode: _model.textFieldFocusNode2,
+                        autofocus: true,
+                        obscureText: false,
+                        decoration: InputDecoration(
+                          labelText: '',
+                          labelStyle: GoogleFonts.readexPro(
+                              color: Colors.grey, fontSize: 12),
+                          // hintStyle: FlutterFlowTheme.of(context).labelMedium,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(255, 224, 227, 231),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromARGB(255, 75, 57, 239),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          contentPadding:
+                              EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        style: const TextStyle(color: Colors.black),
+                        //   validator: _model.placeControllerValidator
+                        //       .asValidator(context),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color.fromARGB(255, 75, 57, 239),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      contentPadding:
-                          EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                     ),
-                    style: const TextStyle(color: Colors.black),
-                    //   validator: _model.placeControllerValidator
-                    //       .asValidator(context),
                   ),
                 ),
-                IconButton(
-                    onPressed: () {
-                      dateTimePickerWidget(context, startdateController);
-                    },
-                    icon: Icon(Icons.calendar_month_outlined)),
+                Expanded(
+                  child: IconButton(
+                      onPressed: () {
+                        dateTimePickerWidget(context, startdateController);
+                      },
+                      icon: Icon(Icons.calendar_month_outlined)),
+                ),
               ],
             ),
           ),

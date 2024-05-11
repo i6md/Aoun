@@ -200,7 +200,9 @@ class RidesScreen extends StatelessWidget {
             //     ? ads.where((ad) => filters.contains(ad.adResourceType)).toList()
             //     : ads;
             return RefreshIndicator(
-              onRefresh: fetchRides,
+              onRefresh: () async {
+                await fetchRides();
+              },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

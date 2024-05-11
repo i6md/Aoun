@@ -96,7 +96,9 @@ class EventsScreen extends StatelessWidget {
               sortedAds.sort((a, b) => b.created_at!.compareTo(a.created_at!));
 
               return RefreshIndicator(
-                onRefresh: fetchEvents,
+                onRefresh: () async {
+                  await fetchEvents();
+                },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

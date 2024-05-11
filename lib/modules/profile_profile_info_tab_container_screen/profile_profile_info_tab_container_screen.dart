@@ -29,6 +29,7 @@ class ProfileProfileInfoTabContainerScreenState
     extends State<ProfileProfileInfoTabContainerScreen>
     with TickerProviderStateMixin {
   late TabController tabviewController;
+  var user;
   Future<List<UserModel>>? userInfoFuture;
 
   Future<List<UserModel>> fetchUserInfo() async {
@@ -75,6 +76,7 @@ class ProfileProfileInfoTabContainerScreenState
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
@@ -91,23 +93,29 @@ class ProfileProfileInfoTabContainerScreenState
                       } else if (snapshot.hasError) {
                         return Text("Error: ${snapshot.error}");
                       } else {
-                        var user = snapshot.data?.first; // Assuming we want the first user's data
-                        return _buildProfileDetails(context, user);
+                        user = snapshot.data?.first; // Assuming we want the first user's data
+                        return Expanded(
+                          child: Column(
+                            children: [
+                              _buildProfileDetails(context, user),
+                              SizedBox(height: 18.v),
+                              _buildTabview(context),
+                              Expanded(
+                                  child: SizedBox(
+                                      height: 443.v,
+                                      child: TabBarView(
+                                          controller: tabviewController,
+                                          children: [
+                                            ProfileProfileInfoPage(),
+                                            ProfileMyOrdersPage(user: user),
+                                            ProfileSecurityPage(),
+                                          ])))
+                            ],
+                          ),
+                        );
                       }
                     },
                   ),
-                  SizedBox(height: 18.v),
-                  _buildTabview(context),
-                  Expanded(
-                      child: SizedBox(
-                          height: 443.v,
-                          child: TabBarView(
-                              controller: tabviewController,
-                              children: [
-                                ProfileProfileInfoPage(),
-                                ProfileMyOrdersPage(),
-                                ProfileSecurityPage(),
-                              ])))
                 ]))));
   }
 

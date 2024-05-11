@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:aoun_app/shared/components/components.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../models/user/user_model.dart';
 import '../login/auth_service.dart';
 
 class PostDetalis extends StatefulWidget {
@@ -484,6 +485,41 @@ class _PostDetailsState extends State<PostDetalis> {
         ),
       );
     }
+  }
+
+}
+
+Future<List<UserModel>> fetchUserInfo() async {
+  AuthService authService = AuthService();
+  var token = await authService.getToken();
+  final requestHeaders = {
+    "Authorization": "Bearer $token",
+  };
+
+  final response = await http.get(
+      Uri.parse('https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/list_user_info'),
+      headers: requestHeaders);
+
+
+  if (response.statusCode == 200) {
+    var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+    var user = jsonResponse['user'] as Map<String, dynamic>? ?? {};
+    // print(jsonResponse); // Logs the whole response
+    // print("name: ${user['name']}"); // Correctly access the 'name'
+    // print("building: ${user['building']}"); // Correctly access the 'building'
+
+    // var body = jsonDecode(jsonResponse['body'] as String) as Map<String, dynamic>;
+    //
+    // print("user info is here");
+    // print(user);
+    // print(body);
+    return [UserModel.fromJson(user)];
+
+    // Assuming UserModel.fromJson can parse the user object directly
+  } else {
+    print(
+        'Error viewing userinfo. Status code: ${response.statusCode}, Response: ${response.body}');
+    throw Exception('Failed to load user info: ${response.body}');
   }
 
 }
