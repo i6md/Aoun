@@ -8,11 +8,11 @@ class AuthService {
   // Method to refresh and get the ID token
   Future<String?> refreshIdToken() async {
     try {
-      // Fetch the current session
-      AuthSession session = await Amplify.Auth.fetchAuthSession();
+      // Fetch the current session, automatically refresh tokens if needed
+      CognitoAuthSession session = await Amplify.Auth.fetchAuthSession(options: CognitoSessionOptions(getAWSCredentials: false)) as CognitoAuthSession;
 
-      // Check if the user is signed in and if it's a Cognito session
-      if (session.isSignedIn && session is CognitoAuthSession) {
+      // Check if the user is signed in
+      if (session.isSignedIn) {
         // Retrieve and return the ID token as a string
         return session.userPoolTokens?.idToken.raw;
       }
@@ -33,6 +33,7 @@ class AuthService {
       // Sign out the user and redirect to login screen
       print("Token not available, signing out.");
       await Amplify.Auth.signOut();
+      // Uncomment the below lines to enable redirection to login screen
       // Navigator.pushReplacement(
       //   context,
       //   MaterialPageRoute(builder: (context) => LoginScreen()),

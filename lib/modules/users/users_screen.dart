@@ -4,112 +4,183 @@ class UsersScreen extends StatelessWidget
 {
   List<UserModel> users =[
     UserModel(
-        id: 1,
+        id: "1",
         name: "Meshal",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+        building: "842",
+        room: "101",
+      pic: "null"
     ),
     UserModel(
-        id: 2,
+        id: "2",
         name: "Turki",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "102",
+        pic: "null"
+
     ),
     UserModel(
-        id: 3,
+        id: "3",
         name: "Khaled",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "103",
+        pic: "null"
+
     ),
     UserModel(
-        id: 4,
+        id: "4",
         name: "Asem",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "104",
+        pic: "null"
+
     ),
     UserModel(
-        id: 5,
+        id: "5",
         name: "Osama",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "105",
+        pic: "null"
+
     ),
     UserModel(
-        id: 6,
+        id: "6",
         name: "Jehad",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "106",
+        pic: "null"
+
     ),
     UserModel(
-        id: 7,
+        id: "7",
         name: "Abdulrahman",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "107",
+        pic: "null"
+
     ),
     UserModel(
-        id: 8,
+        id: "8",
         name: "Nawaf",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "108",
+        pic: "null"
+
     ),
     UserModel(
-        id: 9,
+        id: "9",
         name: "Bader",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "109",
+        pic: "null"
+
     ),
     UserModel(
-        id: 1,
+        id: "1",
         name: "Meshal",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "101",
+        pic: "null"
+
     ),
     UserModel(
-        id: 2,
+        id: "2",
         name: "Turki",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "102",
+        pic: "null"
+
     ),
     UserModel(
-        id: 3,
+        id: "3",
         name: "Khaled",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "103",
+        pic: "null"
+
     ),
     UserModel(
-        id: 4,
+        id: "4",
         name: "Asem",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "104",
+        pic: "null"
+
     ),
     UserModel(
-        id: 5,
+        id: "5",
         name: "Osama",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "105",
+        pic: "null"
+
     ),
     UserModel(
-        id: 6,
+        id: "6",
         name: "Jehad",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "106",
+        pic: "null"
+
     ),
     UserModel(
-        id: 7,
+        id: "7",
         name: "Abdulrahman",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "107",
+        pic: "null"
+
     ),
     UserModel(
-        id: 8,
+        id: "8",
         name: "Nawaf",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "108",
+        pic: "null"
+
     ),
     UserModel(
-        id: 9,
+        id: "9",
         name: "Bader",
         phone: "+966******",
-        email: "*****@gmail.com"
+        email: "*****@gmail.com",
+      building: "842",
+      room: "109",
+        pic: "null"
+
     ),
 
   ];

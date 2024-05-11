@@ -1,23 +1,37 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
+
 
 import '../../layout/home_layout.dart';
+import '../login/auth_service.dart';
 
 class OtpForm extends StatefulWidget {
   final String email;
+  final String password;
 
-  const OtpForm({Key? key, required this.email}) : super(key: key);
+
+  const OtpForm({Key? key, required this.email, required this.password}) : super(key: key);
 
   @override
   _OtpFormState createState() => _OtpFormState();
 }
 
 class _OtpFormState extends State<OtpForm> {
+  List<XFile?> imageFiles = [];
+  List<Image> _images = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _controllers =
       List.generate(6, (_) => TextEditingController());
+
+
 
   void confirmSignUp() async {
     if (_formKey.currentState!.validate()) {
@@ -25,6 +39,7 @@ class _OtpFormState extends State<OtpForm> {
         final String confirmationCode =
             _controllers.map((controller) => controller.text).join();
         final String email = widget.email;
+        final String password = widget.password;
 
         final SignUpResult result = await Amplify.Auth.confirmSignUp(
           username: email,
@@ -33,7 +48,31 @@ class _OtpFormState extends State<OtpForm> {
 
         if (result.isSignUpComplete) {
           print("Verification is complete");
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+
+          // Sign in the user automatically
+          try {
+            SignInResult signInResult = await Amplify.Auth.signIn(
+              username: email,
+              password: password,
+            );
+
+            if (signInResult.isSignedIn) {
+              final AuthService authService = AuthService();
+              final token = await authService.getToken();
+              if (token != null) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+                print("osama is here + $token");
+                await addUserInfo(token);
+                print("user added to database");
+              } else {
+                print("Failed to retrieve token after sign-in.");
+              }
+            } else {
+              print("Failed to sign in.");
+            }
+          } catch (e) {
+            print("Sign in failed: $e");
+          }
         } else {
           print('Sign-up confirmation not complete, additional steps required');
         }
@@ -156,5 +195,71 @@ class _OtpFormState extends State<OtpForm> {
         ),
       ),
     );
+  }
+
+
+  Future<void> _uploadImages() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    imageFiles.add(pickedFile);
+
+    if (pickedFile != null) {
+      setState(() {
+        _images.add(Image.file(File(pickedFile.path),
+            width: 100, height: 100, fit: BoxFit.cover));
+      });
+    }
+  }
+
+  Future<void> addUserInfo(String token) async {
+    var url = 'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_user_info';
+    var headers = {'Authorization': 'Bearer $token'};
+
+    final requestBody = {
+      'building': "Building 1",
+      'room': 'room 101',
+      'picture_1': {"content": "null", "extension": "null"}
+      // Add other pictures as needed
+    };
+    // if (imageFiles.isNotEmpty) {
+    //   int counter = 1;
+    //   for (XFile? image in imageFiles) {
+    //     List<int> imageBytes = File(image!.path).readAsBytesSync();
+    //     String base64Image = base64Encode(imageBytes);
+    //     //print(
+    //     //    'I am heeereee\n \n I am heeereee\n \n I am heeereee\n \nI am heeereee\n \n $base64Image');
+    //     requestBody["picture_$counter"] = {
+    //       "content": base64Image,
+    //       "extension": p.extension(image.path).substring(1)
+    //     };
+    //     //Object? test1 = requestBody;
+    //     //print('$requestBody["picture_$counter"]\n\n\n\n\n heeeree');
+    //     //print('$test1');
+    //     counter++;
+    //   }
+    // } else {
+    //   requestBody.remove('picture_1');
+    // }
+    // Object? test1 = requestBody;
+    // print('$test1');
+
+
+    // var body = jsonEncode({
+    //   "building": "Building 1",
+    //   "room": "Room 101",
+    //   "pic": {
+    //     "content": "C:\Users\ommor\OneDrive\Desktop\plain-green-wall.jpg",
+    //     "extension": "jpg"
+    //   }
+    // });
+
+    var response = await http.post(Uri.parse(url), headers: headers, body: json.encode(requestBody));
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      print(responseBody); // Handle the successful responsee
+    } else {
+      throw Exception('Failed to add user info: ${response.body}');
+    }
   }
 }

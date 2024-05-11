@@ -275,11 +275,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => OtpForm(email: emailController.text)));
+                builder: (context) => OtpForm(email: emailController.text, password: passwordController.text,)));
         // if (result.isSignUpComplete) {
         //   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
         // } else {
-        //   // Handle next steps based on result.nextStep
+        //   // Handle next steps based on result.nextStepp
         //   print("Sign up not complete, additional steps required ${result.nextStep.signUpStep}");
         //   print("Sign up not complete, additional steps required ${result.nextStep}");
         //   print("Additional info: ${result.nextStep.additionalInfo}"); // This might contain useful info

@@ -14,6 +14,7 @@ class _MapScreenState extends State<MapScreen> {
   MapboxMapController? mapController;
   final center = LatLng(26.313258, 50.144962); // Kfupm coordinates
 
+
   void _onMapCreated(MapboxMapController controller) {
     mapController = controller;
     _addAdMarker();

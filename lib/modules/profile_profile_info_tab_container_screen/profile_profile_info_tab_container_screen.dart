@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aoun_app/modules/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aoun_app/core/app_export.dart';
@@ -8,6 +10,11 @@ import 'package:aoun_app/widgets/app_bar/appbar_leading_image.dart';
 import 'package:aoun_app/widgets/app_bar/appbar_title.dart';
 import 'package:aoun_app/widgets/app_bar/custom_app_bar.dart';
 import 'package:aoun_app/widgets/custom_icon_button.dart';
+import 'package:http/http.dart' as http;
+import 'package:aoun_app/models/user/user_model.dart';
+
+
+import '../login/auth_service.dart';
 
 class ProfileProfileInfoTabContainerScreen extends StatefulWidget {
   const ProfileProfileInfoTabContainerScreen({Key? key}) : super(key: key);
@@ -22,11 +29,49 @@ class ProfileProfileInfoTabContainerScreenState
     extends State<ProfileProfileInfoTabContainerScreen>
     with TickerProviderStateMixin {
   late TabController tabviewController;
+  Future<List<UserModel>>? userInfoFuture;
+
+  Future<List<UserModel>> fetchUserInfo() async {
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
+    final requestHeaders = {
+      "Authorization": "Bearer $token",
+    };
+
+    final response = await http.get(
+        Uri.parse('https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/list_user_info'),
+        headers: requestHeaders);
+
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      var user = jsonResponse['user'] as Map<String, dynamic>? ?? {};
+      // print(jsonResponse); // Logs the whole response
+      // print("name: ${user['name']}"); // Correctly access the 'name'
+      // print("building: ${user['building']}"); // Correctly access the 'building'
+
+      // var body = jsonDecode(jsonResponse['body'] as String) as Map<String, dynamic>;
+      //
+      // print("user info is here");
+      // print(user);
+      // print(body);
+      return [UserModel.fromJson(user)];
+
+      // Assuming UserModel.fromJson can parse the user object directly
+    } else {
+      print(
+          'Error viewing userinfo. Status code: ${response.statusCode}, Response: ${response.body}');
+      throw Exception('Failed to load user info: ${response.body}');
+    }
+
+  }
+
 
   @override
   void initState() {
     super.initState();
     tabviewController = TabController(length: 3, vsync: this);
+    userInfoFuture = fetchUserInfo();
   }
 
   @override
@@ -38,7 +83,19 @@ class ProfileProfileInfoTabContainerScreenState
             body: SizedBox(
                 width: double.maxFinite,
                 child: Column(children: [
-                  _buildProfileDetails(context),
+                  FutureBuilder<List<UserModel>>(
+                    future: userInfoFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else {
+                        var user = snapshot.data?.first; // Assuming we want the first user's data
+                        return _buildProfileDetails(context, user);
+                      }
+                    },
+                  ),
                   SizedBox(height: 18.v),
                   _buildTabview(context),
                   Expanded(
@@ -54,7 +111,6 @@ class ProfileProfileInfoTabContainerScreenState
                 ]))));
   }
 
-  /// Section Widget
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return CustomAppBar(
         leadingWidth: 36.h,
@@ -63,28 +119,34 @@ class ProfileProfileInfoTabContainerScreenState
             margin: EdgeInsets.only(left: 12.h, top: 20.v, bottom: 20.v),
             onTap: () {
               onTapArrowDown(context);
-            },),
+            }),
         centerTitle: true,
         title: AppbarTitle(text: "Aoun"),
         styleType: Style.bgFill);
   }
 
-  /// Section Widget
-  Widget _buildProfileDetails(BuildContext context) {
+  Widget _buildProfileDetails(BuildContext context, UserModel? user) {
+    // Debugging: Print user data to the console
+    // if (user != null) {
+    //   print("user is hereeeee ${user}");
+    //   print("User data is available:");
+    //   print("Name: ${user.name}");
+    //   print("Building: ${user.building}");
+    // } else {
+    //   print("User data is null");
+    // }
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 104.h, vertical: 32.v),
         decoration: AppDecoration.white,
         child: Column(children: [
-
-          Text("Archie Copeland".toUpperCase(),
+          Text(user?.name.toUpperCase() ?? "No Name",
               style: theme.textTheme.bodyLarge),
           SizedBox(height: 13.v),
-          Text("Allentown, New Mexico",
+          Text(user?.building ?? "No Location",
               style: CustomTextStyles.bodyMediumGray600)
         ]));
   }
 
-  /// Section Widget
   Widget _buildTabview(BuildContext context) {
     return Container(
       height: 30.v,
@@ -113,10 +175,8 @@ class ProfileProfileInfoTabContainerScreenState
         ],
       ),
     );
-
   }
 
-  /// Navigates back to the previous screen.
   onTapArrowDown(BuildContext context) {
     Navigator.pop(context);
   }

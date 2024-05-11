@@ -29,7 +29,7 @@ import '../post/post_details.dart';
 
 class RidesScreen extends StatelessWidget {
   //'KFUPM to Airport', 'Airport to KFUPM', 'Riyadh to KFUPM', 'KFUPM to Riyadh'
-  Future<List<RidesModel>> fetchRides() async {
+    Future<List<RidesModel>> fetchRides() async {
     AuthService authService = AuthService();
     var token = await authService.getToken();
     print(token);
