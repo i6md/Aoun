@@ -95,7 +95,8 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
       TextEditingController? startdateController,
       TextEditingController? avseatController,
       TextEditingController? bodyController,
-      bool ofSelected) async {
+      bool ofSelected,
+      String category) async {
     String apiUrl =
         'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/add_ride';
     AuthService authService = AuthService();
@@ -118,6 +119,7 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
       'description': bodyText,
       'start_location': fromLocText,
       'end_location': toLocText,
+      'category': category,
       'start_date_time':
           DateFormat('yyyy-MM-ddTHH:mm:ss').format(startDateText),
       'available_seats': avSteatText,
@@ -620,7 +622,7 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
                       child: TextFormField(
                         controller: startdateController,
                         enabled: false,
-                      
+
                         // focusNode: _model.textFieldFocusNode2,
                         autofocus: true,
                         obscureText: false,
@@ -1009,7 +1011,8 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
                       startdateController,
                       avseatController,
                       bodyController,
-                      ofSelected);
+                      ofSelected,
+                      resValue);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

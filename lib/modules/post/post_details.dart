@@ -458,7 +458,11 @@ class _PostDetailsState extends State<PostDetalis> {
   Future<void> orderItem(String itemId) async {
     const String apiUrl =
         'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/order_item';
-    final requestHeaders = {'Content-Type': 'application/json'};
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
+    final requestHeaders = {
+      "Authorization": "Bearer $token",
+    };
     final requestBody = {
       'item_id': itemId,
     };

@@ -3,6 +3,7 @@ class RidesModel {
   final DateTime? created_at;
   final String? owner_id;
   final String? owner_name;
+  final String? category;
   final String? owner_phone;
   final String? adName;
   final String? description;
@@ -23,6 +24,7 @@ class RidesModel {
     this.created_at,
     this.owner_id,
     this.owner_name,
+    this.category,
     this.owner_phone,
     this.adName,
     this.description,
@@ -49,6 +51,7 @@ class RidesModel {
       created_at: DateTime.parse(json['created_at']),
       owner_id: json['owner_id'],
       owner_name: json['owner_name'],
+      category: json['category'],
       owner_phone: json['owner_phone_number'],
       adName: json['title'],
       description: json['description'],

@@ -1,7 +1,7 @@
 class EventsModel {
   final String? event_id;
   final DateTime? created_at;
-  final String? event_type;
+  final String? category;
   final String? owner_id;
   final String? owner_name;
   final String? owner_phone;
@@ -24,7 +24,7 @@ class EventsModel {
     // this.owner_Id,
     required this.event_id,
     this.created_at,
-    this.event_type,
+    this.category,
     this.owner_id,
     this.adName,
     this.description,
@@ -36,7 +36,7 @@ class EventsModel {
     this.owner_phone,
     this.joined,
     this.participants_number,
-    this.adtype='Event',
+    this.adtype = 'Event',
     this.expired,
     this.pictures,
     this.photoUrl =
@@ -56,7 +56,7 @@ class EventsModel {
       owner_id: json['owner_id'],
       owner_name: json['owner_name'],
       owner_phone: json['owner_phone_number'],
-      event_type: json['event_type'],
+      category: json['event_type'],
       adName: json['title'],
       description: json['description'],
       start_date_time: DateTime.parse(json['start_date_time']),

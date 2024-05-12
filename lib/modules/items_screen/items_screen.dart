@@ -69,7 +69,9 @@ class ItemsScreen extends StatelessWidget {
             } else if (snapshot.hasData) {
               List<AdsModel> ads = snapshot.data ?? [];
               List<AdsModel> filteredAds = filters.isNotEmpty
-                  ? ads.where((ad) => filters.contains(ad.adResourceType)).toList()
+                  ? ads
+                      .where((ad) => filters.contains(ad.adResourceType))
+                      .toList()
                   : ads;
 
               // Sort thefilteredAds by adDate (newest first)
@@ -87,10 +89,10 @@ class ItemsScreen extends StatelessWidget {
                       textAlign: TextAlign.left,
                       style: GoogleFonts.readexPro(
                           textStyle: TextStyle(
-                            color: Colors.indigo,
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w700,
-                          )),
+                        color: Colors.indigo,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w700,
+                      )),
                     ),
                     Container(
                       width: double.infinity,
@@ -107,7 +109,8 @@ class ItemsScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return buildListItem3(
                                 adName: filteredAds[index].adName,
-                                adResourceType: filteredAds[index].adResourceType,
+                                adResourceType:
+                                    filteredAds[index].adResourceType,
                                 adDate: filteredAds[index].adDate,
                                 adPlace: filteredAds[index].building,
                                 adImages: filteredAds[index].pictures,
@@ -117,10 +120,8 @@ class ItemsScreen extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => PostDetalis(
-                                            filteredAds[index]
-                                          )));
-
+                                          builder: (context) =>
+                                              PostDetalis(filteredAds[index])));
                                 });
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -132,19 +133,17 @@ class ItemsScreen extends StatelessWidget {
                           },
                         ),
                       ),
-
                     ),
                     SizedBox(height: 10),
-
                     Text(
                       " All Items",
                       textAlign: TextAlign.left,
                       style: GoogleFonts.readexPro(
                           textStyle: TextStyle(
-                            color: Colors.indigo,
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w700,
-                          )),
+                        color: Colors.indigo,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w700,
+                      )),
                     ),
                     Container(
                       width: double.infinity,
@@ -154,8 +153,10 @@ class ItemsScreen extends StatelessWidget {
                     Expanded(
                       child: GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount:2, // This specifies the number of columns in the grid
-                          childAspectRatio: 3 / 2, // Adjust according to your needs
+                          crossAxisCount:
+                              2, // This specifies the number of columns in the grid
+                          childAspectRatio:
+                              3 / 2, // Adjust according to your needs
                         ),
                         itemCount: filteredAds.length,
                         itemBuilder: (context, index) => buildListItem2(
@@ -169,9 +170,8 @@ class ItemsScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => PostDetalis(
-                                      filteredAds[index]
-                                    )));
+                                    builder: (context) =>
+                                        PostDetalis(filteredAds[index])));
                           },
                         ),
                       ),
@@ -189,5 +189,4 @@ class ItemsScreen extends StatelessWidget {
       },
     );
   }
-
 }

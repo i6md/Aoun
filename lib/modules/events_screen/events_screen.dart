@@ -63,7 +63,7 @@ class EventsScreen extends StatelessWidget {
 
   void applyFilters(List<String> filters, List<EventsModel> ads) {
     List<EventsModel> filteredAds = filters.isNotEmpty
-        ? ads.where((ad) => filters.contains(ad.event_type)).toList()
+        ? ads.where((ad) => filters.contains(ad.category)).toList()
         : ads;
     // Now use filteredAds to update the UI
   }
@@ -86,7 +86,7 @@ class EventsScreen extends StatelessWidget {
             } else if (snapshot.hasData) {
               List<EventsModel> ads = snapshot.data ?? [];
               List<EventsModel> filteredAds = filters.isNotEmpty
-                  ? ads.where((ad) => filters.contains(ad.event_type)).toList()
+                  ? ads.where((ad) => filters.contains(ad.category)).toList()
                   : ads;
 
               // Sort thefilteredAds by adDate (newest first)
@@ -136,9 +136,8 @@ class EventsScreen extends StatelessWidget {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => PostDetalis(
-                                            filteredAds[index]
-                                          )));
+                                          builder: (context) =>
+                                              PostDetalis(filteredAds[index])));
                                 });
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -184,14 +183,14 @@ class EventsScreen extends StatelessWidget {
                           pictures: filteredAds[index].pictures,
                           photoUrl: filteredAds[index].photoUrl,
                           joined: filteredAds[index].joined,
-                          participants_number: filteredAds[index].participants_number,
+                          participants_number:
+                              filteredAds[index].participants_number,
                           onTapp: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => PostDetalis(
-                                          filteredAds[index]
-                                        )));
+                                    builder: (context) =>
+                                        PostDetalis(filteredAds[index])));
                           },
                         ),
                       ),
