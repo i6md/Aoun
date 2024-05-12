@@ -44,10 +44,12 @@ def lambda_handler(event, context):
         # Specify the DynamoDB table name
         item_table_name = 'item'
         order_table_name = 'item_order'
+        user_table_name = 'user'
 
         # Get a reference to the DynamoDB table
         item_table = dynamodb.Table(item_table_name)
         order_table = dynamodb.Table(order_table_name)
+        user_table = dynamodb.Table(user_table_name)
 
         # Extract parameters from the event
         item_id = event.get('item_id')
@@ -94,12 +96,20 @@ def lambda_handler(event, context):
         # Get the current datetime
         current_datetime = datetime.utcnow().isoformat()
 
+        user_response = user_table.get_item(Key={'user_id': client_id})
+        client_building = user_response['Item'].get(
+            'building') if 'Item' in user_response else None
+
+        title = items[0].get('title')
+
         # Create a new item in the order_table
         order_table.put_item(
             Item={
                 'order_id': order_id,
                 'item_id': item_id,
+                'title': title,
                 'client_id': client_id,
+                'client_building': client_building,
                 'ordered_at': current_datetime,
                 'status': 'waiting',
                 'accepted_at': ''
