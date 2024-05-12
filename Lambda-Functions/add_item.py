@@ -65,6 +65,9 @@ def lambda_handler(event, context):
             owner_id = match.group(1)
         else:
             owner_id = None
+
+        owner_name = user_data.get('name')
+        owner_phone_number = user_data.get('phone_number')
         title = event.get('title')
         description = event.get('description')
 
@@ -80,6 +83,8 @@ def lambda_handler(event, context):
             'item_id': generated_id,
             'created_at': format_value(created_at),
             'owner_id': owner_id,
+            'owner_name': owner_name,
+            'owner_phone_number': owner_phone_number,
             'title': title,
             'description': description,
             'building': building,
