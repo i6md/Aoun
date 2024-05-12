@@ -2,6 +2,8 @@ class AdsModel {
   final String? adId;
   final String? adName;
   final String? owner_id;
+  final String? owner_name;
+  final String? owner_phone;
   final String? category;
   final String? adResourceType;
   final DateTime? adDate;
@@ -23,6 +25,8 @@ class AdsModel {
     required this.adResourceType,
     required this.adDate,
     required this.building,
+    this.owner_name,
+    this.owner_phone,
     required this.description,
     this.adtype= 'Item',
     this.pictures,
@@ -34,6 +38,8 @@ class AdsModel {
     return AdsModel(
       adId: json['item_id'],
       owner_id: json['owner_id'],
+      owner_name: json['owner_name'],
+      owner_phone: json['owner_phone_number'],
       adName: json['title'],
       category: json['category'],
       expired: json['expired'],

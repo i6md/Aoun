@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:aoun_app/modules/rate/rate_post.dart';
 import 'package:aoun_app/modules/report/report_post.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:aoun_app/shared/components/components.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/user/user_model.dart';
@@ -42,8 +44,22 @@ class _PostDetailsState extends State<PostDetalis> {
   // final scaffoldKey = GlobalKey<ScaffoldState>();
   var follow = 'Follow';
   var heart = Icons.favorite_border_rounded;
+  String formatPhoneNumber(String phoneNumber) {
+    // Remove any leading '+' or '0'
+    String formattedNumber = phoneNumber.replaceFirst(RegExp(r'^\+?0?'), '');
+
+    // Ensure the number starts with '9665'
+    if (!formattedNumber.startsWith('9665')) {
+      formattedNumber = '9665' + formattedNumber;
+    }
+
+    // Add the leading '+'
+    formattedNumber = '+' + formattedNumber;
+
+    return formattedNumber;
+  }
   void sendWhatsappM() {
-    String url = "whatsapp://send?+966555555555";
+    String url = "whatsapp://send?phone=${formatPhoneNumber(widget.ad.owner_phone)}";
     launchUrl(Uri.parse(url));
   }
 
@@ -126,10 +142,12 @@ class _PostDetailsState extends State<PostDetalis> {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(
-                    widget.ad.adName!,
-                    style: GoogleFonts.readexPro(
-                      fontSize: 25,
+                  Expanded(
+                    child: Text(
+                      widget.ad.adName!,
+                      style: GoogleFonts.readexPro(
+                        fontSize: 25,
+                      ),
                     ),
                   ),
                   Flexible(
@@ -261,28 +279,33 @@ class _PostDetailsState extends State<PostDetalis> {
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                         child: Text(
-                          'Meshal Aldajani',
-                          style: GoogleFonts.readexPro(),
+                          '${widget.ad.owner_name}',
+                          style: GoogleFonts.readexPro(
+                            fontSize: 20,
+                          ),
+
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(right: 16),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             const Icon(
-                              Icons.star_sharp,
+                              Icons.phone,
                               color: Colors.black,
                               size: 24,
                             ),
                             Padding(
                               padding:
-                                  EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                                  EdgeInsetsDirectional.fromSTEB(2, 0, 0, 0),
                               child: Text(
-                                '4.6',
+                                '${formatPhoneNumber(widget.ad.owner_phone)}',
                                 style: GoogleFonts.readexPro(),
                               ),
                             ),
@@ -295,6 +318,56 @@ class _PostDetailsState extends State<PostDetalis> {
                 ],
               ),
             ),
+            if(widget.ad.adtype == 'Ride')
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                  child: Text(
+                    'Details',
+                    style: GoogleFonts.readexPro(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            if(widget.ad.adtype == 'Ride')
+              Align(
+
+              alignment: AlignmentDirectional(-1, 0),
+              child:
+              Text(
+                'From ${widget.ad.start_loc} to ${widget.ad.end_loc}.\nAt ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.start_date_time)}.\n${widget.ad.total_seats} seats available.\n${widget.ad.joined} joined.'
+                , style: GoogleFonts.readexPro(
+                  fontSize: 14,
+                ),
+              ),
+                          ),
+            if(widget.ad.adtype == 'Event')
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                  child: Text(
+                    'Details',
+                    style: GoogleFonts.readexPro(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            if(widget.ad.adtype == 'Event')
+              Align(
+
+                alignment: AlignmentDirectional(-1, 0),
+                child:
+                Text(
+                  'In Building ${widget.ad.building}, room number ${widget.ad.room}.\nFrom ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.start_date_time)} to ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.end_date_time)}.\n${widget.ad.participants_number} participants needed.\n${widget.ad.joined} joined.'
+                  , style: GoogleFonts.readexPro(
+                  fontSize: 14,
+                ),
+                ),
+              ),
             Align(
               alignment: AlignmentDirectional(-1, 0),
               child: Padding(
@@ -360,24 +433,26 @@ class _PostDetailsState extends State<PostDetalis> {
                 }
               },
             )),
-            Align(
-              alignment: AlignmentDirectional(-1, 0),
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                child: defaultButton(
-                    function: () {
-                      if(widget.ad.adtype == 'Event') {
-                        print(widget.ad.event_id!);
-                        joinEvent(widget.ad.eveent_id!);
-                      } else if(widget.ad.adtype == 'Item') {
-                        orderItem(widget.ad.adId!);
-                      } else if(widget.ad.adtype == 'Ride') {
-                        print(widget.ad.ride_id);
-                        joinRide(widget.ad.ride_id!);
-                      }
-                    },
-                    text: 'Reserve',
-                    IsUpperCase: false),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                  child: defaultButton(
+                      function: () {
+                        if(widget.ad.adtype == 'Event') {
+                          print(widget.ad.event_id!);
+                          joinEvent(widget.ad.event_id!);
+                        } else if(widget.ad.adtype == 'Item') {
+                          orderItem(widget.ad.adId!);
+                        } else if(widget.ad.adtype == 'Ride') {
+                          print(widget.ad.ride_id);
+                          joinRide(widget.ad.ride_id!);
+                        }
+                      },
+                      text: 'Reserve',
+                      IsUpperCase: false),
+                ),
               ),
             ),
           ],
