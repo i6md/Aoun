@@ -2,6 +2,8 @@ class RidesModel {
   final String? ride_id;
   final DateTime? created_at;
   final String? owner_id;
+  final String? owner_name;
+  final String? owner_phone;
   final String? adName;
   final String? description;
   final String? start_loc;
@@ -20,6 +22,8 @@ class RidesModel {
     required this.ride_id,
     this.created_at,
     this.owner_id,
+    this.owner_name,
+    this.owner_phone,
     this.adName,
     this.description,
     this.start_loc,
@@ -44,6 +48,8 @@ class RidesModel {
       ride_id: json['ride_id'],
       created_at: DateTime.parse(json['created_at']),
       owner_id: json['owner_id'],
+      owner_name: json['owner_name'],
+      owner_phone: json['owner_phone_number'],
       adName: json['title'],
       description: json['description'],
       start_loc: json['start_location'],
