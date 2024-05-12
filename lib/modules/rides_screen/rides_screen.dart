@@ -187,7 +187,7 @@ class RidesScreen extends StatelessWidget {
           } else if (snapshot.hasData) {
             List<RidesModel> ads = snapshot.data ?? [];
             List<RidesModel> filteredAds = filters.isNotEmpty
-                ? ads.where((ad) => filters.contains(ad.ride_id)).toList()
+                ? ads.where((ad) => filters.contains(ad.category)).toList()
                 : ads;
 
             // Sort thefilteredAds by adDate (newest first)

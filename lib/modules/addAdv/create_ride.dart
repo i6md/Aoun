@@ -43,7 +43,7 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
   var allFieldsFilled = true;
   Color addPhotoColor = Color.fromARGB(255, 3, 50, 71);
 
-  final List<String> sList = ['Travel', 'Transportation', 'Delivery'];
+  final List<String> sList = ['Travel', 'Transportation', 'Delivery', 'Other'];
 
   TextEditingController titleContoller = TextEditingController();
   TextEditingController fromlocController = TextEditingController();
