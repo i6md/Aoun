@@ -908,7 +908,7 @@ class _CreateRideScreenState extends State<CreateRideScreen> {
                   }).toList(),
                   onChanged: (sValue) {
                     setState(() {
-                      sValue = resValue;
+                      resValue = sValue!;
                     });
                   }),
             ),

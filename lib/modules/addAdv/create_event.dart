@@ -359,6 +359,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   onPressed: () {
                     setState(() {
                       _images.clear();
+                      imageFiles.clear();
                     });
                   },
                   child: const Text(
@@ -700,7 +701,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         child: TextFormField(
                           controller: fromdateController,
                           enabled: false,
-                        
+
                           // focusNode: _model.textFieldFocusNode2,
                           autofocus: true,
                           obscureText: false,
@@ -993,7 +994,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     }).toList(),
                     onChanged: (sValue) {
                       setState(() {
-                        sValue = resValue;
+                        resValue = sValue!;
                       });
                     }),
               ),

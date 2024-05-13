@@ -79,6 +79,7 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
       TextEditingController? textController1,
       TextEditingController? textController2,
       TextEditingController? textController3,
+      String? resValue,
       List<XFile?> images,
       bool ofSelected) async {
     String apiUrl;
@@ -105,6 +106,7 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
       'title': text1,
       'description': text3,
       'building': text2,
+      'category': resValue,
       'picture_1': {"content": "null", "extension": "null"}
       // Add other pictures as needed
     };
@@ -260,6 +262,7 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
                 onPressed: () {
                   setState(() {
                     _images.clear();
+                    imageFiles.clear();
                   });
                 },
                 child: const Text(
@@ -614,7 +617,7 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
                   }).toList(),
                   onChanged: (sValue) {
                     setState(() {
-                      sValue = resValue;
+                      resValue = sValue!;
                     });
                   }),
             ),
@@ -712,7 +715,7 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
                 if (_checkFields()) {
                   if (categoryValue == 'Item') {
                     addItem(textController1, textController2, textController3,
-                        imageFiles, ofSelected);
+                        resValue, imageFiles, ofSelected);
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

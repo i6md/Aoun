@@ -1,3 +1,4 @@
+import 'package:aoun_app/modules/notifications/notification_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -125,136 +126,6 @@ Widget text_field({
             },
             maxLines: null,
           ),
-        ),
-      ),
-    );
-
-Widget notificationRequest(
-        {required String name,
-        required String place,
-        required String rating}) =>
-    Container(
-      width: double.infinity,
-      height: 100,
-      // decoration: BoxDecoration(
-      //   color: FlutterFlowTheme.of(context).secondaryBackground,
-      // ),
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Align(
-              alignment: AlignmentDirectional(-1, -1),
-              child: Container(
-                width: 70,
-                height: 70,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: Image.network(
-                  'https://picsum.photos/seed/413/600',
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Text(
-                    name,
-                    style: GoogleFonts.readexPro(),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 70, 0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Icon(
-                          Icons.location_on_rounded,
-                          color: Colors.grey,
-                          size: 24,
-                        ),
-                        Text(
-                          place,
-                          style: GoogleFonts.readexPro(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 75, 0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Icon(
-                          Icons.star_rounded,
-                          color: Colors.amber[300],
-                          size: 24,
-                        ),
-                        Text(
-                          rating,
-                          style: GoogleFonts.readexPro(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(50, 0, 0, 0),
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  // color: FlutterFlowTheme.of(context)
-                  //     .secondaryBackground,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Color(0xFFFC0202),
-                    width: 2,
-                  ),
-                ),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.clear_rounded,
-                    color: Color(0xFFFC0202),
-                    size: 24,
-                  ),
-                  onPressed: () {},
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  // color: FlutterFlowTheme.of(context)
-                  //     .secondaryBackground,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Color.fromARGB(255, 3, 50, 71),
-                    width: 2,
-                  ),
-                ),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.check_rounded,
-                    color: Color.fromARGB(255, 3, 50, 71),
-                    size: 24,
-                  ),
-                  onPressed: () {},
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -542,9 +413,6 @@ String? timeDifference(DateTime? adDate) {
   return timeDiffString;
 }
 
-
-
-
 Widget buildListItem2({
   required String? adName,
   required dynamic? adResourceType,
@@ -555,7 +423,6 @@ Widget buildListItem2({
   void Function()? onDelete,
   List<dynamic>? adImages,
   bool showAdminButtons = false,
-
   required String? photoUrl,
 }) {
   // Define a state variable to control the scale of the card
@@ -664,7 +531,6 @@ Widget buildListItem2({
   );
 }
 
-
 Widget buildListEvent({
   DateTime? created_at,
   String? event_type,
@@ -700,14 +566,15 @@ Widget buildListEvent({
           ..rotateY(0),
         child: Container(
           decoration: BoxDecoration(
-            image: pictures != null ? DecorationImage(
-              image: NetworkImage(pictures.first),
-              fit: BoxFit.fill,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5),
-                BlendMode.srcATop,
-              ),
-            )
+            image: pictures != null
+                ? DecorationImage(
+                    image: NetworkImage(pictures.first),
+                    fit: BoxFit.fill,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.5),
+                      BlendMode.srcATop,
+                    ),
+                  )
                 : null, // Set to null when adImages is null
             borderRadius: BorderRadius.circular(9.0),
             // boxShadow: [
@@ -805,7 +672,6 @@ Widget buildListEvent({
   );
 }
 
-
 Widget buildListRide({
   DateTime? created_at,
   // String? event_type,
@@ -817,7 +683,7 @@ Widget buildListRide({
   DateTime? start_date_time,
   String? start_loc,
   String? end_loc,
- // String? room,
+  // String? room,
   int? total_seats,
   int? joined,
   bool? expired,
@@ -848,8 +714,7 @@ Widget buildListRide({
                 Colors.black.withOpacity(0.5),
                 BlendMode.srcATop,
               ),
-            )
-                , // Set to null when adImages is null
+            ), // Set to null when adImages is null
             borderRadius: BorderRadius.circular(9.0),
             // boxShadow: [
             //   BoxShadow(
@@ -944,7 +809,6 @@ Widget buildListRide({
   );
 }
 
-
 Widget buildListItem3({
   required String? adName,
   dynamic? adResourceType,
@@ -984,13 +848,13 @@ Widget buildListItem3({
                     ),
                   )
                 : DecorationImage(
-              image: NetworkImage(photoUrl!),
-              fit: BoxFit.fill,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.5),
-                BlendMode.srcATop,
-              ),
-            ), // Set to null when adImages is null
+                    image: NetworkImage(photoUrl!),
+                    fit: BoxFit.fill,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.5),
+                      BlendMode.srcATop,
+                    ),
+                  ), // Set to null when adImages is null
             borderRadius: BorderRadius.circular(9.0),
           ),
           child: Card(
@@ -1035,7 +899,6 @@ Widget buildListItem3({
     ),
   );
 }
-
 
 Widget buildListRides3({
   DateTime? created_at,
@@ -1108,8 +971,7 @@ Widget buildListRides3({
                             color: Colors.white),
                       ),
                       Text(
-                        'From : $start_loc to $end_loc'
-                            ,
+                        'From : $start_loc to $end_loc',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 11, color: Colors.white),

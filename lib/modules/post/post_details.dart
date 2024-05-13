@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aoun_app/layout/home_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:aoun_app/modules/rate/rate_post.dart';
@@ -477,10 +478,28 @@ class _PostDetailsState extends State<PostDetalis> {
       final responseData = json.decode(response.body);
       final message = responseData['message'];
       print('Item ordered successfully: $message');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Item ordered successfully!'),
+        ),
+      );
+
+      // Navigate to items screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
     } else {
       final errorResponse = json.decode(response.body);
       final error = errorResponse['error'];
       print('Error ordering item: $error');
+      if (error == 'You cannot order your own item') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('You cannot order your own item!'),
+          ),
+        );
+      }
     }
   }
 
