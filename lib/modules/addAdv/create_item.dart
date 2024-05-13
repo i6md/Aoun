@@ -36,7 +36,7 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
   var allFieldsFilled = true;
   Color addPhotoColor = Color.fromARGB(255, 3, 50, 71);
 
-  final List<String> sList = ['Stationary', 'Medicine', 'Car Needs'];
+  final List<String> sList = ['Stationary', 'Medicine', 'Car Needs','Others'];
 
   TextEditingController textController1 = TextEditingController();
   TextEditingController textController2 = TextEditingController();

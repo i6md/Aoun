@@ -42,7 +42,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   var allFieldsFilled = true;
   Color addPhotoColor = Color.fromARGB(255, 3, 50, 71);
 
-  final List<String> sList = ['Student Clubs', 'Sports', 'Gatherings'];
+  final List<String> sList = ['Student Clubs', 'Sports', 'Gatherings','Other'];
 
   TextEditingController titleContoller = TextEditingController();
   TextEditingController placeController = TextEditingController();

@@ -186,21 +186,13 @@ class HomeScreen extends StatelessWidget {
                     List<String> resourceTypes;
                     switch (HomeCubit.get(context).counter) {
                       case 0: // Items
-                        resourceTypes = ['request', 'offer'];
-                        // ['Stationary', 'Medicine', 'Car Needs', 'Others'];
+                        resourceTypes = ['Stationary', 'Medicine', 'Car Needs', 'Other'];
                         break;
                       case 1: // Events
-                        resourceTypes = ['Student Clubs', 'Sports', 'Gatherings', 'Others'];
+                        resourceTypes = ['Student Clubs', 'Sports', 'Gatherings', 'Other'];
                         break;
                       case 2: // Rides
-                        resourceTypes = [
-                          'KFUPM - Airport',
-                          'Airport - KFUPM',
-                          'Riyadh - KFUPM',
-                          'KFUPM - Riyadh',
-                          'SAR - KFUPM',
-                          'KFUPM - SAR',
-                        ];
+                        resourceTypes = ['Travel', 'Transportation', 'Delivery', 'Other'];
                         break;
                       default:
                         resourceTypes = [];

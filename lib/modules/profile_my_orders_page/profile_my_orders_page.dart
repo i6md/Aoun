@@ -153,11 +153,14 @@ class ProfileMyOrdersPageState extends State<ProfileMyOrdersPage>
         body: Container(
           width: double.maxFinite,
           decoration: AppDecoration.white,
-          child: Column(
-            children: [
-              SizedBox(height: 38.v),
-              _buildOrdersList(context),
-            ],
+          child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                SizedBox(height: 38.v),
+                _buildOrdersList(context),
+              ],
+            ),
           ),
         ),
       ),

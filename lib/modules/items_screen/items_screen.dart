@@ -50,7 +50,7 @@ class ItemsScreen extends StatelessWidget {
 
   void applyFilters(List<String> filters, List<AdsModel> ads) {
     List<AdsModel> filteredAds = filters.isNotEmpty
-        ? ads.where((ad) => filters.contains(ad.adResourceType)).toList()
+        ? ads.where((ad) => filters.contains(ad.category)).toList()
         : ads;
     // Update the state of the HomeCubit with the new filters
     HomeCubit.get(context).updateFilters(filters);

@@ -96,61 +96,60 @@ class OrderslistItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              left: 16.h,
-              top: 2.v,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+    return Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            left: 16.h,
+            top: 2.v,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                ad.adName.toString(),
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleMedium,
+              ),
+              SizedBox(height: 12.v),
+              if(ad.adtype=='Item')
                 Text(
-                  ad.adName.toString(),
-                  style: theme.textTheme.titleMedium,
+                  ad.adDate.toString(),
+                  style: theme.textTheme.bodyMedium,
                 ),
-                SizedBox(height: 12.v),
-                if(ad.adtype=='Item')
-                  Text(
-                    ad.adDate.toString(),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                if(ad.adtype=='Event')
-                  Text(
-                    ad.created_at.toString(),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                if(ad.adtype=='Ride')
-                  Text(
-                    ad.created_at.toString(),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                SizedBox(height: 38.v),
-              ],
-            ),
+              if(ad.adtype=='Event')
+                Text(
+                  ad.created_at.toString(),
+                  style: theme.textTheme.bodyMedium,
+                ),
+              if(ad.adtype=='Ride')
+                Text(
+                  ad.created_at.toString(),
+                  style: theme.textTheme.bodyMedium,
+                ),
+              SizedBox(height: 38.v),
+            ],
           ),
-          // Add a delete button
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-                if(ad.adtype == 'Item'){
-                  deleteItem();
-                }
-                else if (ad.adtype=="Event"){
-                  deleteEvent();
-                }
-                else if (ad.adtype=="Ride"){
-                  deleteRide();
-                }
-                else{
-                  print('No such ad type');
-                }
-            },
-          ),
-        ],
-      ),
+        ),
+        // Add a delete button
+        IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () {
+              if(ad.adtype == 'Item'){
+                deleteItem();
+              }
+              else if (ad.adtype=="Event"){
+                deleteEvent();
+              }
+              else if (ad.adtype=="Ride"){
+                deleteRide();
+              }
+              else{
+                print('No such ad type');
+              }
+          },
+        ),
+      ],
     );
   }
 }
