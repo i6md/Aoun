@@ -56,7 +56,7 @@ class EventsModel {
       owner_id: json['owner_id'],
       owner_name: json['owner_name'],
       owner_phone: json['owner_phone_number'],
-      category: json['event_type'],
+      category: json['category'],
       adName: json['title'],
       description: json['description'],
       start_date_time: DateTime.parse(json['start_date_time']),

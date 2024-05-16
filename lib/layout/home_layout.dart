@@ -24,7 +24,7 @@ import '../Filters/filter_dialog.dart';
 import '../searchDelegate/searchDelegate.dart';
 
 class HomeScreen extends StatelessWidget {
-  bool isAdmin = true;
+  bool isAdmin = false;
   HomeScreen({super.key});
 
   Widget build(BuildContext context) {
@@ -186,10 +186,10 @@ class HomeScreen extends StatelessWidget {
                     List<String> resourceTypes;
                     switch (HomeCubit.get(context).counter) {
                       case 0: // Items
-                        resourceTypes = ['Stationary', 'Medicine', 'Car Needs', 'Other'];
+                        resourceTypes = ['Stationary', 'Medicine', 'Car Needs', 'Others'];
                         break;
                       case 1: // Events
-                        resourceTypes = ['Student Clubs', 'Sports', 'Gatherings', 'Other'];
+                        resourceTypes = ['Student Clubs', 'Sports', 'Gatherings','Other'];
                         break;
                       case 2: // Rides
                         resourceTypes = ['Travel', 'Transportation', 'Delivery', 'Other'];

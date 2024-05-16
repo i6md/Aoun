@@ -65,7 +65,8 @@ class EventsScreen extends StatelessWidget {
     List<EventsModel> filteredAds = filters.isNotEmpty
         ? ads.where((ad) => filters.contains(ad.category)).toList()
         : ads;
-    // Now use filteredAds to update the UI
+    // Update the state of the HomeCubit with the new filters
+    HomeCubit.get(context).updateFilters(filters);
   }
 
   @override
@@ -86,12 +87,10 @@ class EventsScreen extends StatelessWidget {
             } else if (snapshot.hasData) {
               List<EventsModel> ads = snapshot.data ?? [];
               List<EventsModel> filteredAds = filters.isNotEmpty
-                  ? ads.where((ad) => filters.contains(ad.category)).toList()
+                  ? ads
+                  .where((ad) => filters.contains(ad.category))
+                  .toList()
                   : ads;
-
-              // Sort thefilteredAds by adDate (newest first)
-              //filteredAds.sort((a, b) => b.adDate!.compareTo(a.adDate!));
-              // Sort thefilteredAds by adDate (newest first)
               var sortedAds = filteredAds;
               sortedAds.sort((a, b) => b.created_at!.compareTo(a.created_at!));
 
@@ -123,21 +122,21 @@ class EventsScreen extends StatelessWidget {
                         child: ListView.separated(
                           scrollDirection: Axis
                               .horizontal, // This makes the ListView scroll horizontally
-                          itemCount: filteredAds.length,
+                          itemCount: sortedAds.length,
                           itemBuilder: (context, index) {
                             return buildListItem3(
                                 adName: sortedAds[index].adName,
-                                adResourceType: filteredAds[index].expired,
-                                adDate: filteredAds[index].created_at,
-                                adImages: filteredAds[index].pictures,
-                                adPlace: filteredAds[index].building,
-                                photoUrl: filteredAds[index].photoUrl,
+                                adResourceType: sortedAds[index].expired,
+                                adDate: sortedAds[index].created_at,
+                                adImages: sortedAds[index].pictures,
+                                adPlace: sortedAds[index].building,
+                                photoUrl: sortedAds[index].photoUrl,
                                 onTapp: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              PostDetalis(filteredAds[index])));
+                                              PostDetalis(sortedAds[index])));
                                 });
                           },
                           separatorBuilder: (BuildContext context, int index) {

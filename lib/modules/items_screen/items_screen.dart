@@ -70,12 +70,14 @@ class ItemsScreen extends StatelessWidget {
               List<AdsModel> ads = snapshot.data ?? [];
               List<AdsModel> filteredAds = filters.isNotEmpty
                   ? ads
-                      .where((ad) => filters.contains(ad.adResourceType))
+                      .where((ad) => filters.contains(ad.category))
                       .toList()
                   : ads;
 
               // Sort thefilteredAds by adDate (newest first)
-              filteredAds.sort((a, b) => b.adDate!.compareTo(a.adDate!));
+              //filteredAds.sort((a, b) => b.adDate!.compareTo(a.adDate!));
+              var sortedAds = filteredAds;
+              sortedAds.sort((a, b) => b.adDate!.compareTo(a.adDate!));
 
               return RefreshIndicator(
                 onRefresh: () async {
@@ -102,26 +104,27 @@ class ItemsScreen extends StatelessWidget {
                     Container(
                       height: 90,
                       child: Expanded(
+
                         child: ListView.separated(
                           scrollDirection: Axis
                               .horizontal, // This makes the ListView scroll horizontally
-                          itemCount: filteredAds.length,
+                          itemCount: sortedAds.length,
                           itemBuilder: (context, index) {
-                            return buildListItem3(
-                                adName: filteredAds[index].adName,
+                            return sortedAds.length == 0 ? Text("") : buildListItem3(
+                                adName: sortedAds[index].adName,
                                 adResourceType:
-                                    filteredAds[index].adResourceType,
-                                adDate: filteredAds[index].adDate,
-                                adPlace: filteredAds[index].building,
-                                adImages: filteredAds[index].pictures,
-                                photoUrl: filteredAds[index].photoUrl,
+                                sortedAds[index].adResourceType,
+                                adDate: sortedAds[index].adDate,
+                                adPlace: sortedAds[index].building,
+                                adImages: sortedAds[index].pictures,
+                                photoUrl: sortedAds[index].photoUrl,
                                 onTapp: () {
-                                  print(filteredAds[index]);
+                                  print(sortedAds[index]);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              PostDetalis(filteredAds[index])));
+                                              PostDetalis(sortedAds[index])));
                                 });
                           },
                           separatorBuilder: (BuildContext context, int index) {
