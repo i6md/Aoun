@@ -5,6 +5,8 @@ import 'package:aoun_app/core/app_export.dart';
 import 'package:http/http.dart' as http;
 
 import '../../login/auth_service.dart';
+import 'list_participant.dart';
+import 'list_passengers.dart';
 
 // ignore: must_be_immutable
 class OrderslistItemWidget extends StatelessWidget {
@@ -97,6 +99,7 @@ class OrderslistItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
           padding: EdgeInsets.only(
@@ -131,23 +134,42 @@ class OrderslistItemWidget extends StatelessWidget {
             ],
           ),
         ),
+        SizedBox(width: 90,),
         // Add a delete button
-        IconButton(
-          icon: Icon(Icons.delete),
-          onPressed: () {
-              if(ad.adtype == 'Item'){
-                deleteItem();
-              }
-              else if (ad.adtype=="Event"){
-                deleteEvent();
-              }
-              else if (ad.adtype=="Ride"){
-                deleteRide();
-              }
-              else{
-                print('No such ad type');
-              }
-          },
+        Column(
+          children: [
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                  if(ad.adtype == 'Item'){
+                    deleteItem();
+                  }
+                  else if (ad.adtype=="Event"){
+                    deleteEvent();
+                  }
+                  else if (ad.adtype=="Ride"){
+                    deleteRide();
+                  }
+                  else{
+                    print('No such ad type');
+                  }
+              },
+            ),
+            if(ad.adtype!='Item')
+            IconButton(
+              icon: Icon(Icons.arrow_forward_ios_sharp),
+              onPressed: () {
+                if(ad.adtype=='Event') {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ListP(event_id: ad.event_id)));
+                }
+                else if(ad.adtype=='Ride'){
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => ListPassengers(ride_id: ad.ride_id)));
+                }
+              },
+            ),
+          ],
         ),
       ],
     );

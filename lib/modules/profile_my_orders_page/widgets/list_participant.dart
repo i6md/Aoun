@@ -1,0 +1,158 @@
+import 'dart:convert';
+
+import 'package:aoun_app/models/list_participations_model.dart';
+import 'package:aoun_app/models/user/user_model.dart';
+import 'package:flutter/material.dart';
+import 'package:aoun_app/core/app_export.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../models/user/events_model.dart';
+import '../../login/auth_service.dart';
+import 'participations_list_widget.dart';
+
+// ignore: must_be_immutable
+class ListP extends StatelessWidget {
+  final String? event_id;
+  const ListP({Key? key, required this.event_id})
+      : super(key: key);
+
+  Future<List<ListParticipationsModel>> listP() async {
+    AuthService authService = AuthService();
+    var token = await authService.getToken();
+    print(token);
+    print('we reached here Events');
+    final requestHeaders = {
+      "Authorization": "Bearer $token",
+    };
+    final requestBody = {
+      'list_type': 'all',
+      'event_id': event_id
+    };
+    final response = await http.post(
+        Uri.parse(
+            'https://f1rb8ipuw4.execute-api.eu-north-1.amazonaws.com/ver1/list_participations'),
+        headers: requestHeaders,
+        body: json.encode(requestBody));
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    print('State8798');
+    //print('requestHeader: $requestHeaders\n\n\n requestBody: $requestBody');
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      var participations = data['participations'] as List;
+      print(participations);
+      return participations.map((participation) => ListParticipationsModel.fromJson(participation)).toList();
+    } else {
+      print(
+          'Error viewing events. Status code: ${response.statusCode}, Response: ${response.body}');
+      throw Exception('No participations yet');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            "Events Participations",
+            style: TextStyle(
+              color: Colors.indigo,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.indigo,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          width: double.maxFinite,
+          decoration: AppDecoration.white,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                SizedBox(height: 38.v),
+                _buildOrdersList(context),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Section Widget
+  Widget _buildOrdersList(BuildContext context) {
+    return FutureBuilder<List<ListParticipationsModel>>(
+      future: listP(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        } else {
+          var participations = snapshot.data ?? [];
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Participations",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(height: 20.v),
+                ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  separatorBuilder: (
+                      context,
+                      index,
+                      ) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 7.5.v),
+                      child: SizedBox(
+                        width: 358.h,
+                        child: Divider(
+                          height: 1.v,
+                          thickness: 2.v,
+                          color: Colors.black,
+                        ),
+                      ),
+                    );
+                  },
+
+                  itemCount: participations.length,
+
+                  itemBuilder: (context, index) {
+
+                    return participations.length == 0
+                        ? Text("No participations available")
+                        : ParticipationslistWidget(participation: participations[index]);
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+
