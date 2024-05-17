@@ -135,322 +135,326 @@ class _PostDetailsState extends State<PostDetalis> {
       ),
       body: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Align(
-              alignment: AlignmentDirectional(0, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.ad.adName!,
-                      style: GoogleFonts.readexPro(
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: Align(
-                      alignment: AlignmentDirectional(1, 0),
-                      child: IconButton(
-                        color: Colors.green,
-                        onPressed: () {
-                          sendWhatsappM();
-                        },
-                        icon: Icon(
-                          Icons.chat,
-                        ),
-                        style: ButtonStyle(
-                            iconSize: MaterialStatePropertyAll(32),
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.white)),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional(1, 0),
-                    child: IconButton(
-                      color: Colors.red,
-                      onPressed: () {
-                        setState(() {
-                          if (heart == Icons.favorite_rounded) {
-                            heart = Icons.favorite_border_rounded;
-                          } else {
-                            heart = Icons.favorite_rounded;
-                          }
-                        });
-                      },
-                      icon: Icon(
-                        heart,
-                      ),
-                      style: ButtonStyle(
-                          iconSize: MaterialStatePropertyAll(32),
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Align(
-              alignment: AlignmentDirectional(-1, 0),
-              child: Text(
-                widget.ad.adtype!,
-                style: GoogleFonts.readexPro(
-                  fontSize: 14,
-                ),
-              ),
-            ),
-            Row(
+        child: Container(
+          child: Expanded(
+            child: Column(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    if (widget.ad.adtype != "Ride")
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.black,
-                        size: 20,
-                      ),
-                    if (widget.ad.adtype != "Ride")
-                      Text(
-                        widget.ad.building ?? "",
-                        style: GoogleFonts.readexPro(
-                          fontSize: 12,
-                        ),
-                      ),
-                  ],
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Icon(
-                      Icons.timer_sharp,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    if (widget.ad.adtype == 'Item')
-                      Text(
-                        timeDifference(widget.ad.adDate)!,
-                        style: GoogleFonts.readexPro(
-                          fontSize: 12,
-                        ),
-                      ),
-                    if (widget.ad.adtype == 'Events')
-                      Text(
-                        timeDifference(widget.ad.created_at)!,
-                        style: GoogleFonts.readexPro(
-                          fontSize: 12,
-                        ),
-                      ),
-                    if (widget.ad.adtype == 'Ride')
-                      Text(
-                        timeDifference(widget.ad.created_at)!,
-                        style: GoogleFonts.readexPro(
-                          fontSize: 12,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Align(
-                    alignment: AlignmentDirectional(-1, 0),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.asset(
-                        'assets/images/Aoun_LOGOBB.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Column(
+                Align(
+                  alignment: AlignmentDirectional(0, 0),
+                  child: Row(
                     mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                      Expanded(
                         child: Text(
-                          '${widget.ad.owner_name}',
+                          widget.ad.adName!,
                           style: GoogleFonts.readexPro(
-                            fontSize: 20,
+                            fontSize: 25,
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.phone,
-                              color: Colors.black,
-                              size: 24,
+                      Flexible(
+                        child: Align(
+                          alignment: AlignmentDirectional(1, 0),
+                          child: IconButton(
+                            color: Colors.green,
+                            onPressed: () {
+                              sendWhatsappM();
+                            },
+                            icon: Icon(
+                              Icons.chat,
                             ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(2, 0, 0, 0),
-                              child: Text(
-                                '${formatPhoneNumber(widget.ad.owner_phone)}',
-                                style: GoogleFonts.readexPro(),
-                              ),
-                            ),
-                          ],
+                            style: ButtonStyle(
+                                iconSize: MaterialStatePropertyAll(32),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white)),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional(1, 0),
+                        child: IconButton(
+                          color: Colors.red,
+                          onPressed: () {
+                            setState(() {
+                              if (heart == Icons.favorite_rounded) {
+                                heart = Icons.favorite_border_rounded;
+                              } else {
+                                heart = Icons.favorite_rounded;
+                              }
+                            });
+                          },
+                          icon: Icon(
+                            heart,
+                          ),
+                          style: ButtonStyle(
+                              iconSize: MaterialStatePropertyAll(32),
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.white)),
                         ),
                       ),
                     ],
                   ),
-                  Spacer(),
-                ],
-              ),
-            ),
-            if (widget.ad.adtype == 'Ride')
-              Align(
-                alignment: AlignmentDirectional(-1, 0),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                ),
+                Align(
+                  alignment: AlignmentDirectional(-1, 0),
                   child: Text(
-                    'Details',
+                    widget.ad.adtype!,
                     style: GoogleFonts.readexPro(
-                      fontSize: 20,
+                      fontSize: 14,
                     ),
                   ),
                 ),
-              ),
-            if (widget.ad.adtype == 'Ride')
-              Align(
-                alignment: AlignmentDirectional(-1, 0),
-                child: Text(
-                  'From ${widget.ad.start_loc} to ${widget.ad.end_loc}.\nAt ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.start_date_time)}.\n${widget.ad.total_seats} seats available.\n${widget.ad.joined} joined.',
-                  style: GoogleFonts.readexPro(
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            if (widget.ad.adtype == 'Event')
-              Align(
-                alignment: AlignmentDirectional(-1, 0),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
-                  child: Text(
-                    'Details',
-                    style: GoogleFonts.readexPro(
-                      fontSize: 20,
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        if (widget.ad.adtype != "Ride")
+                          Icon(
+                            Icons.location_on,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                        if (widget.ad.adtype != "Ride")
+                          Text(
+                            widget.ad.building ?? "",
+                            style: GoogleFonts.readexPro(
+                              fontSize: 12,
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-                ),
-              ),
-            if (widget.ad.adtype == 'Event')
-              Align(
-                alignment: AlignmentDirectional(-1, 0),
-                child: Text(
-                  'In Building ${widget.ad.building}, room number ${widget.ad.room}.\nFrom ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.start_date_time)} to ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.end_date_time)}.\n${widget.ad.participants_number} participants needed.\n${widget.ad.joined} joined.',
-                  style: GoogleFonts.readexPro(
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            Align(
-              alignment: AlignmentDirectional(-1, 0),
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
-                child: Text(
-                  'Description',
-                  style: GoogleFonts.readexPro(
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: AlignmentDirectional(-1, 0),
-              child: Text(
-                widget.ad.description!,
-                style: GoogleFonts.readexPro(
-                  fontSize: 14,
-                ),
-              ),
-            ),
-            if (widget.ad.adtype != 'Ride')
-              Align(
-                alignment: AlignmentDirectional(-1, 0),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 10),
-                  child: Text(
-                    'Pictures',
-                    style: GoogleFonts.readexPro(
-                      fontSize: 20,
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Icon(
+                          Icons.timer_sharp,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                        if (widget.ad.adtype == 'Item')
+                          Text(
+                            timeDifference(widget.ad.adDate)!,
+                            style: GoogleFonts.readexPro(
+                              fontSize: 12,
+                            ),
+                          ),
+                        if (widget.ad.adtype == 'Events')
+                          Text(
+                            timeDifference(widget.ad.created_at)!,
+                            style: GoogleFonts.readexPro(
+                              fontSize: 12,
+                            ),
+                          ),
+                        if (widget.ad.adtype == 'Ride')
+                          Text(
+                            timeDifference(widget.ad.created_at)!,
+                            style: GoogleFonts.readexPro(
+                              fontSize: 12,
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
-              ),
-            if (widget.ad.adtype != 'Ride')
-              Expanded(
-                  child: GridView.builder(
-                padding: EdgeInsets.zero,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 1,
-                ),
-                scrollDirection: Axis.vertical,
-                itemCount:
-                    widget.ad.pictures?.length ?? 0, // Use null-aware operator
-                itemBuilder: (context, index) {
-                  if (widget.ad.pictures == null) {
-                    // Render a blank grid cell
-                    return Container(); // You can customize this to show any placeholder
-                  } else {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.network(
-                        widget.ad.pictures![index],
-                        width: 300,
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }
-                },
-              )),
-            Expanded(
-              child: Align(
-                alignment: AlignmentDirectional(-1, 0),
-                child: Padding(
+                Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                  child: defaultButton(
-                      function: () {
-                        if (widget.ad.adtype == 'Event') {
-                          print(widget.ad.event_id!);
-                          joinEvent(widget.ad.event_id!);
-                        } else if (widget.ad.adtype == 'Item') {
-                          orderItem(widget.ad.adId!);
-                        } else if (widget.ad.adtype == 'Ride') {
-                          print(widget.ad.ride_id);
-                          joinRide(widget.ad.ride_id!);
-                        }
-                      },
-                      text: 'Reserve',
-                      IsUpperCase: false),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional(-1, 0),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: Image.asset(
+                            'assets/images/Aoun_LOGOBB.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                            child: Text(
+                              '${widget.ad.owner_name}',
+                              style: GoogleFonts.readexPro(
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.phone,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsetsDirectional.fromSTEB(2, 0, 0, 0),
+                                  child: Text(
+                                    '${formatPhoneNumber(widget.ad.owner_phone)}',
+                                    style: GoogleFonts.readexPro(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                    ],
+                  ),
                 ),
-              ),
+                if (widget.ad.adtype == 'Ride')
+                  Align(
+                    alignment: AlignmentDirectional(-1, 0),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                      child: Text(
+                        'Details',
+                        style: GoogleFonts.readexPro(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (widget.ad.adtype == 'Ride')
+                  Align(
+                    alignment: AlignmentDirectional(-1, 0),
+                    child: Text(
+                      'From ${widget.ad.start_loc} to ${widget.ad.end_loc}.\nAt ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.start_date_time)}.\n${widget.ad.total_seats} seats available.\n${widget.ad.joined} joined.',
+                      style: GoogleFonts.readexPro(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                if (widget.ad.adtype == 'Event')
+                  Align(
+                    alignment: AlignmentDirectional(-1, 0),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                      child: Text(
+                        'Details',
+                        style: GoogleFonts.readexPro(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (widget.ad.adtype == 'Event')
+                  Align(
+                    alignment: AlignmentDirectional(-1, 0),
+                    child: Text(
+                      'In Building ${widget.ad.building}, room number ${widget.ad.room}.\nFrom ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.start_date_time)} to ${DateFormat('yyyy-MM-dd HH:mm').format(widget.ad.end_date_time)}.\n${widget.ad.participants_number} participants needed.\n${widget.ad.joined} joined.',
+                      style: GoogleFonts.readexPro(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                Align(
+                  alignment: AlignmentDirectional(-1, 0),
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                    child: Text(
+                      'Description',
+                      style: GoogleFonts.readexPro(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: AlignmentDirectional(-1, 0),
+                  child: Text(
+                    widget.ad.description!,
+                    style: GoogleFonts.readexPro(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                if (widget.ad.adtype != 'Ride')
+                  Align(
+                    alignment: AlignmentDirectional(-1, 0),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 10),
+                      child: Text(
+                        'Pictures',
+                        style: GoogleFonts.readexPro(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (widget.ad.adtype != 'Ride')
+                  Expanded(
+                      child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 1,
+                    ),
+                    scrollDirection: Axis.vertical,
+                    itemCount:
+                        widget.ad.pictures?.length ?? 0, // Use null-aware operator
+                    itemBuilder: (context, index) {
+                      if (widget.ad.pictures == null) {
+                        // Render a blank grid cell
+                        return Container(); // You can customize this to show any placeholder
+                      } else {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network(
+                            widget.ad.pictures![index],
+                            width: 300,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+                    },
+                  )),
+                Expanded(
+                  child: Align(
+                    alignment: AlignmentDirectional(-1, 0),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                      child: defaultButton(
+                          function: () {
+                            if (widget.ad.adtype == 'Event') {
+                              print(widget.ad.event_id!);
+                              joinEvent(widget.ad.event_id!);
+                            } else if (widget.ad.adtype == 'Item') {
+                              orderItem(widget.ad.adId!);
+                            } else if (widget.ad.adtype == 'Ride') {
+                              print(widget.ad.ride_id);
+                              joinRide(widget.ad.ride_id!);
+                            }
+                          },
+                          text: 'Reserve',
+                          IsUpperCase: false),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

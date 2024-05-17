@@ -104,15 +104,15 @@ class HomeScreen extends StatelessWidget {
                       // You can add navigation logic here
                     },
                   ),
-                  ListTile(
-                    leading: Icon(Icons.help),
-                    title: Text('About us'),
-                    onTap: () {
-                      // Navigate to the help & support screen
-                      Navigator.pop(context);
-                      // You can add navigation logic here
-                    },
-                  ),
+                  // ListTile(
+                  //   leading: Icon(Icons.help),
+                  //   title: Text('About us'),
+                  //   onTap: () {
+                  //     // Navigate to the help & support screen
+                  //     Navigator.pop(context);
+                  //     // You can add navigation logic here
+                  //   },
+                  // ),
                   if (isAdmin)
                     ListTile(
                       leading: Icon(Icons.supervised_user_circle_sharp),

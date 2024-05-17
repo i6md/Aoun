@@ -92,50 +92,50 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
           const Divider(height: 80),
-          Row(
-            children: [
-              Text(
-                'Delete Account',
-                style: GoogleFonts.readexPro(
-                  fontSize: 15,
-                  color: Colors.red,
-                ),
-              ),
-              const Spacer(),
-              // const SizedBox(width: 150),
-              IconButton(
-                  onPressed: () {
-                    if (delete) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('Are you sure?', style: TextStyle(fontSize: 15)),
-                            actions: [
-                              TextButton(
-                                  onPressed: () {},
-                                  child: const Text(
-                                    'Delete',
-                                    style: TextStyle(color: Colors.red),
-                                  )),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.arrow_forward_ios_rounded, size: 15,)),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     Text(
+          //       'Delete Account',
+          //       style: GoogleFonts.readexPro(
+          //         fontSize: 15,
+          //         color: Colors.red,
+          //       ),
+          //     ),
+          //     const Spacer(),
+          //     // const SizedBox(width: 150),
+          //     IconButton(
+          //         onPressed: () {
+          //           if (delete) {
+          //             showDialog(
+          //               context: context,
+          //               builder: (context) {
+          //                 return AlertDialog(
+          //                   title: const Text('Are you sure?', style: TextStyle(fontSize: 15)),
+          //                   actions: [
+          //                     TextButton(
+          //                         onPressed: () {},
+          //                         child: const Text(
+          //                           'Delete',
+          //                           style: TextStyle(color: Colors.red),
+          //                         )),
+          //                     TextButton(
+          //                       onPressed: () {
+          //                         Navigator.of(context).pop();
+          //                       },
+          //                       child: const Text(
+          //                         'Cancel',
+          //                         style: TextStyle(color: Colors.black),
+          //                       ),
+          //                     ),
+          //                   ],
+          //                 );
+          //               },
+          //             );
+          //           }
+          //         },
+          //         icon: const Icon(Icons.arrow_forward_ios_rounded, size: 15,)),
+          //   ],
+          // ),
         ]),
       ),
     );
