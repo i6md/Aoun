@@ -338,11 +338,15 @@ def list_participations(api_url, payload):
             data = response.json()
             participations = data.get("participations")
 
+            print(participations)
             print("Participations:")
             for participation in participations:
                 print("Order ID:", participation.get("order_id"))
                 print("Event ID:", participation.get("event_id"))
                 print("Client ID:", participation.get("client_id"))
+                print("Client Name:", participation.get("client_name"))
+                print("Client Phone Number:",
+                      participation.get("client_phone_number"))
                 print("Ordered At:", participation.get("ordered_at"))
                 print()
 

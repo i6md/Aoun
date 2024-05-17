@@ -92,12 +92,19 @@ def lambda_handler(event, context):
             }
         # Get the current datetime
         current_datetime = datetime.utcnow().isoformat()
+
+        # Get client's name and phone number
+        client_name = user_data.get('name')
+        client_phone_number = user_data.get('phone_number')
+
         # Create a new item in the participant_table
         participant_table.put_item(
             Item={
                 'order_id': order_id,
                 'event_id': event_id,
                 'client_id': client_id,
+                'client_name': client_name,
+                'client_phone_number': client_phone_number,
                 'ordered_at': current_datetime,
             }
         )
